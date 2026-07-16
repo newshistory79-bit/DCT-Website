@@ -371,3 +371,37 @@ Image Upload
 Status
 - Draft
 - Published
+
+---
+
+# legislation
+
+Purpose
+
+จัดเก็บข้อมูลกฎหมาย ระเบียบ และประกาศ
+
+## Columns
+
+| Column | Type | Description |
+|---------|------|-------------|
+| ID | int | Primary Key |
+| title | varchar(255) | ชื่อกฎหมาย |
+| document_number | varchar(50) | เลขที่ประกาศ |
+| detail | text | รายละเอียด |
+| effective_date | date | วันที่มีผลบังคับใช้ |
+| status | enum(Draft, Published) | สถานะ |
+| created_at | timestamp | วันที่สร้าง |
+| updated_at | timestamp | วันที่แก้ไข |
+| deleted_at | datetime | Soft Delete |
+
+## Index
+
+- PRIMARY KEY (ID)
+- idx_legislation_status
+
+## Notes
+
+- ใช้ Soft Delete
+- Filter ตาม Status
+- Search title/document_number/detail
+- ไม่มี File Upload (ย้ายไป Phase 8)

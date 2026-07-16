@@ -8,18 +8,21 @@ declare(strict_types=1);
 // จะยังคงเป็นจุดเดียวที่ Controller/Middleware/View เรียกใช้ (ไม่ต้องแก้โค้ดที่เรียกใช้งาน)
 return [
     'Admin' => [
-        'departments' => ['view', 'create', 'edit', 'delete'],
-        'employees'   => ['view', 'create', 'edit', 'delete'],
-        'news'        => ['view', 'create', 'edit', 'delete'],
+        'departments'  => ['view', 'create', 'edit', 'delete'],
+        'employees'    => ['view', 'create', 'edit', 'delete'],
+        'news'         => ['view', 'create', 'edit', 'delete'],
+        'legislation'  => ['view', 'create', 'edit', 'delete'],
     ],
     'Editor' => [
-        'departments' => ['view', 'create', 'edit'],
-        'employees'   => ['view', 'create', 'edit'],
-        'news'        => ['view', 'create', 'edit'],
+        'departments'  => ['view', 'create', 'edit'],
+        'employees'    => ['view', 'create', 'edit'],
+        'news'         => ['view', 'create', 'edit'],
+        'legislation'  => ['view', 'create', 'edit'],
     ],
     'Staff' => [
-        'departments' => ['view'],
-        'employees'   => ['view'],
-        'news'        => ['view'],
+        'departments'  => ['view'],
+        'employees'    => ['view'],
+        'news'         => ['view'],
+        'legislation'  => ['view'],
     ],
 ];

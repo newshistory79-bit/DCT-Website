@@ -12,6 +12,7 @@ $menuItems = [
     ['label' => 'Departments',  'url' => 'admin/departments/index.php',  'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Employees',   'url' => 'admin/employees/index.php',    'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'News',         'url' => 'admin/news/index.php',         'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
+    ['label' => 'Legislation',  'url' => 'admin/legislation/index.php',  'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Activities',   'url' => null,              'enabled' => false, 'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Documents',    'url' => null,              'enabled' => false, 'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Gallery',      'url' => null,              'enabled' => false, 'roles' => ['Admin', 'Editor', 'Staff']],
