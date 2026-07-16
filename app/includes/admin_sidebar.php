@@ -14,7 +14,7 @@ $menuItems = [
     ['label' => 'News',         'url' => 'admin/news/index.php',         'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Legislation',  'url' => 'admin/legislation/index.php',  'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Activities',   'url' => null,              'enabled' => false, 'roles' => ['Admin', 'Editor', 'Staff']],
-    ['label' => 'Documents',    'url' => null,              'enabled' => false, 'roles' => ['Admin', 'Editor', 'Staff']],
+    ['label' => 'Documents',    'url' => 'admin/documents/index.php',    'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Gallery',      'url' => null,              'enabled' => false, 'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Users',        'url' => null,              'enabled' => false, 'roles' => ['Admin']],
     ['label' => 'Activity Log', 'url' => null,              'enabled' => false, 'roles' => ['Admin']],

@@ -12,17 +12,20 @@ return [
         'employees'    => ['view', 'create', 'edit', 'delete'],
         'news'         => ['view', 'create', 'edit', 'delete'],
         'legislation'  => ['view', 'create', 'edit', 'delete'],
+        'documents'    => ['view', 'create', 'edit', 'delete'],
     ],
     'Editor' => [
         'departments'  => ['view', 'create', 'edit'],
         'employees'    => ['view', 'create', 'edit'],
         'news'         => ['view', 'create', 'edit'],
         'legislation'  => ['view', 'create', 'edit'],
+        'documents'    => ['view', 'create', 'edit'],
     ],
     'Staff' => [
         'departments'  => ['view'],
         'employees'    => ['view'],
         'news'         => ['view'],
         'legislation'  => ['view'],
+        'documents'    => ['view'],
     ],
 ];
