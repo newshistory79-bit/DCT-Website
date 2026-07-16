@@ -1,0 +1,15 @@
+# Application error logs (keep logs/.htaccess, ignore actual log content)
+logs/*.log
+
+# User-uploaded files at runtime (folders are auto-created by UploadHelper)
+uploads/*/*
+
+# OS / Editor artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# Claude Code local session settings (not part of the website project)
+.claude/

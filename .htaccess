@@ -1,0 +1,7 @@
+# ปิดการแสดง Directory Listing
+Options -Indexes
+
+# ป้องกันการเข้าถึงไฟล์ที่ไม่ควรเปิดผ่าน URL โดยตรง
+<FilesMatch "\.(sql|log|md|ini|env)$">
+    Require all denied
+</FilesMatch>

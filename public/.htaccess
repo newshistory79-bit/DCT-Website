@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# ถ้าเป็นไฟล์หรือโฟลเดอร์จริง (เช่น assets) ให้เข้าถึงตรงๆ
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# นอกนั้นส่งเข้า Front Controller (index.php) ทั้งหมด
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
