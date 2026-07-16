@@ -405,3 +405,146 @@ Purpose
 - Filter ตาม Status
 - Search title/document_number/detail
 - ไม่มี File Upload (ย้ายไป Phase 8)
+
+---
+
+# documents (Phase 8)
+
+Purpose
+
+จัดเก็บเอกสารดาวน์โหลด (PDF/Office Files)
+
+## Columns
+
+| Column | Type | Description |
+|---------|------|-------------|
+| id | int | Primary Key |
+| title | varchar(255) | ชื่อเอกสาร |
+| description | text | รายละเอียด |
+| file_name | varchar(255) | ชื่อไฟล์ที่จัดเก็บจริง (สุ่มด้วย UploadHelper) |
+| original_file_name | varchar(255) | ชื่อไฟล์ต้นฉบับตอนอัปโหลด |
+| file_extension | varchar(10) | นามสกุลไฟล์ |
+| file_size | int | ขนาดไฟล์ (ไบต์) |
+| status | enum(Draft, Published) | สถานะ |
+| created_at | timestamp | วันที่สร้าง |
+| updated_at | timestamp | วันที่แก้ไข |
+| deleted_at | datetime | Soft Delete |
+
+## Index
+
+- PRIMARY KEY (id)
+- idx_documents_status
+
+## Upload Rules
+
+- Extensions: pdf, doc, docx, xls, xlsx, ppt, pptx
+- Maximum Size: 10 MB
+- Create บังคับแนบไฟล์ / Edit ไม่บังคับ
+- Soft Delete ไม่ลบไฟล์จริง
+- uploads/documents/
+
+## Notes
+
+- MIME Whitelist รวม `application/CDFV2`/`application/x-cfb` (ไฟล์ .doc/.xls/.ppt แบบเก่าใช้ OLE Compound
+  Format ร่วมกัน libmagic แยกชนิดเฉพาะไม่ได้) และ `application/zip` (ไฟล์ .docx/.xlsx/.pptx เป็น ZIP Container)
+
+---
+
+# gallery (Phase 9)
+
+Purpose
+
+คลังภาพกิจกรรม (Single Table, 1 รูป = 1 รายการ, ไม่มี Album/Foreign Key)
+
+## Columns
+
+| Column | Type | Description |
+|---------|------|-------------|
+| id | int | Primary Key |
+| title | varchar(255) | ชื่อภาพ/ชุดกิจกรรม |
+| description | text | คำอธิบายภาพ |
+| image | varchar(255) | ชื่อไฟล์ภาพที่จัดเก็บจริง (สุ่มด้วย UploadHelper) |
+| status | enum(Draft, Published) | สถานะ |
+| created_at | timestamp | วันที่สร้าง |
+| updated_at | timestamp | วันที่แก้ไข |
+| deleted_at | datetime | Soft Delete |
+
+## Index
+
+- PRIMARY KEY (id)
+- idx_gallery_status
+
+## Upload Rules
+
+- Extensions: jpg, jpeg, png, webp (ไม่รองรับ gif)
+- Maximum Size: 2 MB
+- Create บังคับแนบรูป / Edit ไม่บังคับ
+- Soft Delete ไม่ลบไฟล์จริง
+- uploads/gallery/
+
+---
+
+# Current Database Status (อัปเดตล่าสุด — หลัง Phase 9)
+
+Tables
+
+- users
+- departments
+- employee
+- news
+- legislation
+- documents
+- gallery
+
+Executed Migrations (เพิ่มเติมจากเดิม)
+
+- 005_news_add_status_soft_delete_and_timestamps.sql ✅ Executed
+- 006_legislation_add_fields_and_soft_delete.sql ✅ Executed
+- 007_create_documents_table.sql ✅ Executed
+- 008_create_gallery_table.sql ✅ Executed
+
+Status
+
+Database Ready for Phase 10 (Final Permission & System Review)
+
+เพิ่มหัวข้อ
+
+## gallery
+
+อธิบายโครงสร้างตาราง
+
+- id
+- title
+- description
+- image
+- status
+- created_at
+- updated_at
+- deleted_at
+
+ระบุ
+
+Primary Key
+
+id
+
+Index
+
+idx_gallery_status(status)
+
+อธิบายความหมายของแต่ละคอลัมน์
+
+อธิบายว่าใช้ Soft Delete
+
+อธิบายว่า image เก็บชื่อไฟล์จริงที่ UploadHelper สุ่ม
+
+ระบุว่ารองรับ
+
+jpg
+jpeg
+png
+webp
+
+ขนาดไม่เกิน
+
+2 MB

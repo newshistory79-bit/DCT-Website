@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 // Permission Matrix ต่อ Role/Module/Action
-// เริ่มใช้งานจริงตั้งแต่ Phase 4 (Departments) เพื่อวางโครงรองรับระบบ Permissions เต็มรูปแบบใน Phase 10
-// เมื่อถึง Phase 10 ไฟล์นี้จะถูกย้ายไปเก็บในตาราง role_permissions แทน โดย App\Core\Permission
-// จะยังคงเป็นจุดเดียวที่ Controller/Middleware/View เรียกใช้ (ไม่ต้องแก้โค้ดที่เรียกใช้งาน)
+// ตั้งแต่ Phase 10 เป็นต้นไป: ไฟล์นี้เป็นเพียง FALLBACK เท่านั้น
+// Source of Truth หลักคือตาราง `role_permissions` ในฐานข้อมูล (อ่านผ่าน App\Core\Permission)
+// ไฟล์นี้จะถูกใช้งานเฉพาะเมื่อ Query ตาราง role_permissions ล้มเหลว หรือยังไม่มีข้อมูลในตารางเท่านั้น
+// ต้องปรับข้อมูลในไฟล์นี้ให้ตรงกับ role_permissions เสมอ เพื่อไม่ให้พฤติกรรมสิทธิ์เปลี่ยนไปตอน Fallback ทำงาน
 return [
     'Admin' => [
         'departments'  => ['view', 'create', 'edit', 'delete'],
@@ -13,6 +14,8 @@ return [
         'news'         => ['view', 'create', 'edit', 'delete'],
         'legislation'  => ['view', 'create', 'edit', 'delete'],
         'documents'    => ['view', 'create', 'edit', 'delete'],
+        'gallery'      => ['view', 'create', 'edit', 'delete'],
+        'users'        => ['view', 'create', 'edit', 'delete'],
     ],
     'Editor' => [
         'departments'  => ['view', 'create', 'edit'],
@@ -20,6 +23,7 @@ return [
         'news'         => ['view', 'create', 'edit'],
         'legislation'  => ['view', 'create', 'edit'],
         'documents'    => ['view', 'create', 'edit'],
+        'gallery'      => ['view', 'create', 'edit'],
     ],
     'Staff' => [
         'departments'  => ['view'],
@@ -27,5 +31,6 @@ return [
         'news'         => ['view'],
         'legislation'  => ['view'],
         'documents'    => ['view'],
+        'gallery'      => ['view'],
     ],
 ];

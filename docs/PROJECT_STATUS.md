@@ -355,3 +355,158 @@ Added index
 
 ▶ Next Phase
 Phase 8 — Documents Module
+
+# Phase 8 — Documents Module ✅ Completed
+
+## Status
+Completed
+
+## Database
+Migration:
+- 007_create_documents_table.sql (Executed)
+
+Table created:
+- id, title, description, file_name, original_file_name, file_extension, file_size,
+  status, created_at, updated_at, deleted_at
+- PRIMARY KEY(id), idx_documents_status(status)
+
+## Features
+- Full CRUD (Create บังคับแนบไฟล์, Edit ไม่บังคับ)
+- Soft Delete (ไม่ลบไฟล์จริง)
+- File Upload: pdf, doc, docx, xls, xlsx, ppt, pptx (สูงสุด 10MB)
+- Search (title/description)
+- Filter (Draft / Published)
+- Sort (id/title/created_at/status)
+- Pagination
+- Permission Control
+- CSRF Protection
+- SQL Injection Protection
+- XSS Protection
+
+## Reused Components
+- BaseController, BaseModel, AuthMiddleware, Permission, UploadHelper, crud.css, admin.js
+
+## Bug Fixed
+- ไฟล์ .doc/.xls/.ppt (OLE Compound Format เดิม) ถูก libmagic ตรวจ MIME เป็น `application/CDFV2`
+  แบบกลาง (แยก Word/Excel/PowerPoint ไม่ได้) — แก้โดยเพิ่ม MIME นี้เข้า Whitelist ของ Controller
+  (ยังคงกรองด้วย Extension Whitelist เสมอ ไม่แก้ไข UploadHelper)
+
+## Testing
+- php -l : PASS (63 files)
+- HTTP Testing : PASS ครบทั้ง 7 นามสกุลไฟล์
+- Security Testing : PASS
+
+---
+
+# Phase 9 — Gallery Module ✅ Completed
+
+## Status
+Completed
+
+## Database
+Migration:
+- 008_create_gallery_table.sql (Executed)
+
+Table created (Single Table, ไม่มี Album/Foreign Key):
+- id, title, description, image, status, created_at, updated_at, deleted_at
+- PRIMARY KEY(id), idx_gallery_status(status)
+
+## Features
+- Full CRUD (Create บังคับแนบรูป, Edit ไม่บังคับ)
+- Soft Delete (ไม่ลบไฟล์รูปจริง)
+- Image Upload: jpg, jpeg, png, webp (สูงสุด 2MB) - Reuse UploadHelper เดิม 100%
+- Search (title/description)
+- Filter (Draft / Published)
+- Sort (id/title/created_at/status)
+- Pagination
+- Permission Control (Admin/Editor/Staff)
+- CSRF Protection
+- SQL Injection Protection
+- XSS Protection
+
+## Reused Components
+- BaseController, BaseModel, AuthMiddleware, Permission, UploadHelper, crud.css, admin.css, admin.js, admin_header.php, admin_footer.php
+
+## Bug Fixed
+- `app/views/admin/gallery/form.php` ใช้ตัวแปร `$item` ชื่อเดียวกับ Loop Variable ภายใน
+  `app/includes/admin_sidebar.php` (`foreach ($menuItems as $item)`) เนื่องจาก `require`
+  ใช้ Scope ร่วมกับไฟล์ที่เรียก ทำให้ Sidebar Overwrite ค่า `$item` ก่อนฟอร์มจะใช้งาน
+  (แสดงผลข้อมูลว่างเปล่า/PHP Warning "Undefined array key")
+  แก้โดย (1) เปลี่ยนชื่อตัวแปรใน `admin_sidebar.php` เป็น `$menuItem` (ป้องกันปัญหานี้ในทุกโมดูลอนาคต)
+  และ (2) เปลี่ยนตัวแปรของ Gallery เองจาก `item`/`$item` เป็น `gallery`/`$gallery` ให้สอดคล้องกับ
+  ชื่อโมดูลอื่น (employee/news/document/legislation) — ทดสอบ Regression ครบทุกหน้าแล้วไม่กระทบโมดูลอื่น
+
+## Testing
+- php -l : PASS (70 files)
+- HTTP Testing : PASS ครบทุกหัวข้อ (Create/Read/Update/Soft Delete/Upload JPG-PNG-WEBP/
+  Replace Image/Search/Filter/Sort/Pagination/Permission/CSRF/SQLi/XSS)
+- Security Testing : PASS
+- Regression Testing : PASS (Sidebar ทุกหน้ายังทำงานถูกต้องหลังแก้ไข)
+
+▶ Next Phase
+Phase 10 — Final Permission & System Review
+
+✅ Phase 9 – Gallery Module เสร็จสมบูรณ์
+
+ระบุว่า
+
+- Migration 008 ผ่าน
+- Gallery Module พร้อมใช้งาน
+- CRUD ครบ
+- Image Upload
+- Search
+- Filter
+- Sort
+- Pagination
+- Soft Delete
+- Permission
+- CSRF
+- SQL Injection Protection
+- XSS Protection
+- Regression Test ผ่าน
+- php -l ผ่าน
+- ไม่มี Bug ค้าง
+
+อัปเดต Roadmap ให้แสดงว่า
+
+Phase 1–9 = Completed
+
+Phase 10 = Next
+
+หากมี Progress Summary หรือ Checklist
+ให้อัปเดตให้ตรงกับสถานะล่าสุด
+
+อัปเดตสถานะโปรเจกต์ให้สะท้อนว่า
+
+✅ Phase 10 – Users Module & Database Permission System เสร็จสมบูรณ์
+
+ระบุว่าเสร็จสมบูรณ์แล้ว
+
+- Users Module
+- CRUD
+- Search
+- Filter
+- Sort
+- Pagination
+- Validation
+- Soft Delete
+- Self Delete Protection
+- Database Permission System
+- role_permissions
+- Database-first Permission
+- Automatic Fallback ไป app/config/permissions.php
+- Regression Test ผ่าน
+- php -l ผ่าน
+- ไม่มี Bug ค้าง
+
+อัปเดต Roadmap
+
+Phase 1–10 = Completed
+
+Phase 11 = Next
+
+หากมี Progress Summary,
+Checklist,
+หรือ Completion Percentage
+
+ให้อัปเดตให้ตรงกับสถานะล่าสุด
