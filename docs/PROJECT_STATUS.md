@@ -1,512 +1,300 @@
-# DTC Website Progress
+# DTC Website — Project Status
 
-## Completed
+**Project:** TCSP Administration System (Department of Technology and Communication of Savannakhet Province)
+**Architecture:** PHP MVC (Native PHP 8+) + PDO + MariaDB 10.4.x
+**Current Phase:** Phase 11 Completed ✅
+**Next Phase:** Phase 12 — Testing / Bug Fix / Optimization / Installation Guide
 
-### Phase 1
-- Project Structure
+---
+
+## Overall Progress
+
+| Phase | Module | Status |
+|-------|--------|--------|
+| Phase 1 | Project Structure / MVC / Authentication Foundation | ✅ Completed |
+| Phase 2 | Users & Login System | ✅ Completed |
+| Phase 3 | Dashboard / Sidebar / Permission Foundation | ✅ Completed |
+| Phase 3.5 | Shared Components (BaseController / BaseModel / ErrorHandler) | ✅ Completed |
+| Phase 4 | Departments Module | ✅ Completed |
+| Phase 5 | Employees Module | ✅ Completed |
+| Phase 6 | News Module | ✅ Completed |
+| Phase 7 | Legislation Module | ✅ Completed |
+| Phase 8 | Documents Module | ✅ Completed |
+| Phase 9 | Gallery Module | ✅ Completed |
+| Phase 10 | Users Module & Database Permission System | ✅ Completed |
+| Phase 11 | Activity Log | ✅ Completed |
+| Phase 12 | Testing / Bug Fix / Optimization / Installation Guide | ⏳ Pending |
+
+---
+
+## Phase 1 — Project Structure
+
+- Project Structure / Folder Convention
 - MVC Architecture
-- Bootstrap
+- Bootstrap (Config, Core, Database Connection)
 
-### Phase 2
-- Authentication
+## Phase 2 — Authentication
+
 - Login / Logout
-- Session
-- CSRF
+- Session Management
+- CSRF Protection
 - Role
 
-### Phase 3
-- Dashboard
+## Phase 3 — Dashboard
 
-### Phase 3.5
+- Dashboard Layout
+- Sidebar / Header / Footer
+- Permission Menu
+
+## Phase 3.5 — Shared Components
+
 - BaseController
 - BaseModel
 - ErrorHandler
 
-### Phase 4
-- Departments CRUD
-- Search
-- Filter
-- Sort
-- Pagination
-- Permission
-- Soft Delete
-
-## Database
-
-Current Tables
-- users
-- departments
-- employee
-- legislation
-- news
-
-## Current Status
-
-✔ Phase 4 Completed
-✔ All tests passed
-✔ No PHP Errors
-✔ No SQL Errors
-
-# PROJECT STATUS
-
-**Project:** TCSP Administration System  
-**Architecture:** PHP MVC + PDO + MariaDB 10.4.x  
-**Current Phase:** Phase 5 Completed ✅  
-**Next Phase:** Phase 6 — News Module
-
----
-
-# Overall Progress
-
-| Phase | Module | Status |
-|--------|--------|--------|
-| Phase 1 | Project Structure / MVC / Authentication Foundation | ✅ Completed |
-| Phase 2 | Users & Login System | ✅ Completed |
-| Phase 3 | Dashboard / Sidebar / Permission Foundation | ✅ Completed |
-| Phase 4 | Departments Module | ✅ Completed |
-| Phase 5 | Employees Module | ✅ Completed |
-| Phase 6 | News Module | ⏳ Pending |
-| Phase 7 | Legislation Module | ⏳ Pending |
-| Phase 8 | Documents Module | ⏳ Pending |
-| Phase 9 | Gallery / Media Module | ⏳ Pending |
-| Phase 10 | Final Permission & System Review | ⏳ Pending |
-
----
-
-# Completed Modules
-
-## Authentication
-
-- Login
-- Logout
-- Session Management
-- Role Management
-- CSRF Protection
-
----
-
-## Dashboard
-
-- Dashboard Layout
-- Sidebar
-- Header
-- Footer
-- Permission Menu
-
----
-
-## Departments
-
-Completed Features
-
-- CRUD
-- Search
-- Filter
-- Sort
-- Pagination
-- Soft Delete
-- Permission
-- CSRF Protection
-- SQL Injection Protection
-- XSS Protection
-
----
-
-## Employees
-
-Completed Features
-
-- CRUD
-- Image Upload
-- Image Replace
-- MIME Validation
-- File Size Validation
-- Search
-- Filter
-- Sort
-- Pagination
-- Soft Delete
-- Permission
-- CSRF Protection
-- SQL Injection Protection
-- XSS Protection
-
----
-
-# Shared Components
-
-Reusable Components
-
-- BaseController
-- BaseModel
-- AuthMiddleware
-- Permission
-- UploadHelper
-- crud.css
-- admin.css
-- admin.js
-
----
-
-# Migration Status
-
-| Migration | Status |
-|------------|--------|
-| 002_create_departments_table.sql | ✅ Executed |
-| 003_departments_soft_delete_unique_fix.sql | ✅ Executed |
-| 004_employee_add_soft_delete_and_timestamps.sql | ✅ Executed |
-
----
-
-# Current Project Status
-
-PHP Syntax
-
-- ✅ php -l ผ่านทุกไฟล์
-
-Security
-
-- ✅ CSRF
-- ✅ SQL Injection Protection
-- ✅ XSS Protection
-- ✅ Permission System
-
-Database
-
-- ✅ Migration ผ่านทั้งหมด
-- ✅ ไม่มี SQL Error
-
-Uploads
-
-- ✅ UploadHelper
-- ✅ Random Filename
-- ✅ MIME Validation
-- ✅ Size Validation
-- ✅ Safe Upload
-
----
-
-# Next Task
-
-Phase 6
-
-News Module
-
-Planned Features
-
-- CRUD
-- Search
-- Filter
-- Sort
-- Pagination
-- Image Upload
-- Soft Delete (ถ้าจำเป็น)
-- Permission
-- Validation
-- CSRF Protection
-
----
-
-Last Updated
-
-Phase 5 Completed
-System Ready for Phase 6
-
-## Phase 6 (Planning)
-
-Status: Ready to Develop
-
-Module:
-- News Management
+## Phase 4 — Departments Module ✅ Completed
 
 Features:
 - CRUD
-- Image Upload
-- Search
-- Status Filter
-- Sort
-- Pagination
+- Search / Filter / Sort / Pagination
 - Soft Delete
-- Permission
-- CSRF Protection
-
-Migration:
-- 005_news_add_status_soft_delete_and_timestamps.sql (Pending Execute)
-
-## Phase 6 – News Module
-
-Status: Development Completed (Pending Migration & Testing)
-
-Progress:
-- ✅ วิเคราะห์ฐานข้อมูล
-- ✅ ออกแบบ Migration
-- ✅ พัฒนา Model
-- ✅ พัฒนา Controller
-- ✅ พัฒนา View
-- ✅ ตรวจสอบ php -l ผ่านทุกไฟล์
-- ⏳ Execute Migration (รออนุมัติ)
-- ⏳ HTTP Testing (รออนุมัติ)
-
-# Phase 6 – News Module (Completed)
-
-## Status
-Completed ✅
-
-## Database
-Migration:
-- 005_news_add_status_soft_delete_and_timestamps.sql (Executed)
-
-Changes:
-- Added status
-- Added created_at
-- Added updated_at
-- Added deleted_at
-- Added idx_news_status
-
-## Features
-- News CRUD
-- Soft Delete
-- Image Upload
-- Search
-- Status Filter
-- Sorting
-- Pagination
 - Permission
 - CSRF Protection
 - SQL Injection Protection
 - XSS Protection
 
-## Reused Components
-- BaseController
-- BaseModel
-- AuthMiddleware
+Migrations:
+- `002_create_departments_table.sql` (Executed)
+- `003_departments_soft_delete_unique_fix.sql` (Executed) — เพิ่ม Generated Columns `code_active`/`name_active` และย้าย UNIQUE INDEX มาไว้ที่ Generated Columns เพื่อรองรับ Soft Delete โดยไม่แก้ไข `code`/`name` เดิม
+
+Seeder:
+- `002_seed_departments.sql` — ข้อมูลตัวอย่าง 12 แถว
+
+## Phase 5 — Employees Module ✅ Completed
+
+Features:
+- CRUD
+- Image Upload / Image Replace
+- MIME Validation / File Size Validation
+- Search / Filter / Sort / Pagination
+- Soft Delete
 - Permission
-- UploadHelper
-- admin.js
-- crud.css
+- CSRF Protection
+- SQL Injection Protection
+- XSS Protection
 
-## Testing
-Passed all functional tests.
-No PHP Error.
-No SQL Error.
-No Security Issue.
-# Phase 7 — Legislation Module ✅ Completed
-
-## Status
-Completed
-
-## Database
 Migration:
-- 006_legislation_add_fields_and_soft_delete.sql
+- `004_employee_add_soft_delete_and_timestamps.sql` (Executed) — เพิ่ม `created_at`, `updated_at`, `deleted_at`
 
-Added columns
-- document_number
-- detail
-- effective_date
-- status
-- created_at
-- updated_at
-- deleted_at
+## Phase 6 — News Module ✅ Completed
 
-Added index
-- idx_legislation_status
+Features:
+- CRUD
+- Soft Delete
+- Image Upload
+- Search / Status Filter / Sort / Pagination
+- Permission
+- CSRF Protection
+- SQL Injection Protection
+- XSS Protection
 
-## Features
+Migration:
+- `005_news_add_status_soft_delete_and_timestamps.sql` (Executed) — เพิ่ม `status`, `created_at`, `updated_at`, `deleted_at`, index `idx_news_status`
+
+Testing: php -l PASS · HTTP Testing PASS · No PHP/SQL Error · No Security Issue
+
+## Phase 7 — Legislation Module ✅ Completed
+
+Features:
 - Full CRUD
 - Soft Delete
-- Search
-- Filter (Draft / Published)
-- Sort
-- Pagination
+- Search / Filter (Draft / Published) / Sort / Pagination
 - Permission Control
 - CSRF Protection
 - SQL Injection Protection
 - XSS Protection
 
-## Reused Components
-- BaseController
-- BaseModel
-- AuthMiddleware
-- Permission
-- crud.css
-- admin.js
-
-## Testing
-- php -l : PASS
-- HTTP Testing : PASS
-- Security Testing : PASS
-- No Bug Found
-
-## Current Progress
-
-✅ Phase 1 Infrastructure
-
-✅ Phase 2 Authentication
-
-✅ Phase 3 User Management
-
-✅ Phase 4 Departments
-
-✅ Phase 5 Employees
-
-✅ Phase 6 News
-
-✅ Phase 7 Legislation
-
-▶ Next Phase
-Phase 8 — Documents Module
-
-# Phase 8 — Documents Module ✅ Completed
-
-## Status
-Completed
-
-## Database
 Migration:
-- 007_create_documents_table.sql (Executed)
+- `006_legislation_add_fields_and_soft_delete.sql` (Executed) — เพิ่ม `document_number`, `detail`, `effective_date`, `status`, `created_at`, `updated_at`, `deleted_at`, index `idx_legislation_status`
 
-Table created:
-- id, title, description, file_name, original_file_name, file_extension, file_size,
-  status, created_at, updated_at, deleted_at
-- PRIMARY KEY(id), idx_documents_status(status)
+Testing: php -l PASS · HTTP Testing PASS · Security Testing PASS · No Bug Found
 
-## Features
+## Phase 8 — Documents Module ✅ Completed
+
+Features:
 - Full CRUD (Create บังคับแนบไฟล์, Edit ไม่บังคับ)
 - Soft Delete (ไม่ลบไฟล์จริง)
-- File Upload: pdf, doc, docx, xls, xlsx, ppt, pptx (สูงสุด 10MB)
-- Search (title/description)
-- Filter (Draft / Published)
-- Sort (id/title/created_at/status)
-- Pagination
+- File Upload: pdf, doc, docx, xls, xlsx, ppt, pptx (สูงสุด 10 MB)
+- Search (title/description) / Filter (Draft / Published) / Sort / Pagination
 - Permission Control
 - CSRF Protection
 - SQL Injection Protection
 - XSS Protection
 
-## Reused Components
-- BaseController, BaseModel, AuthMiddleware, Permission, UploadHelper, crud.css, admin.js
-
-## Bug Fixed
-- ไฟล์ .doc/.xls/.ppt (OLE Compound Format เดิม) ถูก libmagic ตรวจ MIME เป็น `application/CDFV2`
-  แบบกลาง (แยก Word/Excel/PowerPoint ไม่ได้) — แก้โดยเพิ่ม MIME นี้เข้า Whitelist ของ Controller
-  (ยังคงกรองด้วย Extension Whitelist เสมอ ไม่แก้ไข UploadHelper)
-
-## Testing
-- php -l : PASS (63 files)
-- HTTP Testing : PASS ครบทั้ง 7 นามสกุลไฟล์
-- Security Testing : PASS
-
----
-
-# Phase 9 — Gallery Module ✅ Completed
-
-## Status
-Completed
-
-## Database
 Migration:
-- 008_create_gallery_table.sql (Executed)
+- `007_create_documents_table.sql` (Executed)
 
-Table created (Single Table, ไม่มี Album/Foreign Key):
-- id, title, description, image, status, created_at, updated_at, deleted_at
-- PRIMARY KEY(id), idx_gallery_status(status)
+Bug Fixed:
+- ไฟล์ `.doc/.xls/.ppt` (OLE Compound Format เดิม) ถูก libmagic ตรวจ MIME เป็น `application/CDFV2` แบบกลาง (แยก Word/Excel/PowerPoint ไม่ได้) — แก้โดยเพิ่ม MIME นี้เข้า Whitelist ของ Controller (ยังคงกรองด้วย Extension Whitelist เสมอ ไม่แก้ไข UploadHelper)
 
-## Features
+Testing: php -l PASS (63 files) · HTTP Testing PASS ครบทั้ง 7 นามสกุลไฟล์ · Security Testing PASS
+
+## Phase 9 — Gallery Module ✅ Completed
+
+Features:
 - Full CRUD (Create บังคับแนบรูป, Edit ไม่บังคับ)
 - Soft Delete (ไม่ลบไฟล์รูปจริง)
-- Image Upload: jpg, jpeg, png, webp (สูงสุด 2MB) - Reuse UploadHelper เดิม 100%
-- Search (title/description)
-- Filter (Draft / Published)
-- Sort (id/title/created_at/status)
-- Pagination
+- Image Upload: jpg, jpeg, png, webp (สูงสุด 2 MB)
+- Search (title/description) / Filter (Draft / Published) / Sort / Pagination
 - Permission Control (Admin/Editor/Staff)
 - CSRF Protection
 - SQL Injection Protection
 - XSS Protection
 
-## Reused Components
-- BaseController, BaseModel, AuthMiddleware, Permission, UploadHelper, crud.css, admin.css, admin.js, admin_header.php, admin_footer.php
+Migration:
+- `008_create_gallery_table.sql` (Executed)
 
-## Bug Fixed
-- `app/views/admin/gallery/form.php` ใช้ตัวแปร `$item` ชื่อเดียวกับ Loop Variable ภายใน
-  `app/includes/admin_sidebar.php` (`foreach ($menuItems as $item)`) เนื่องจาก `require`
-  ใช้ Scope ร่วมกับไฟล์ที่เรียก ทำให้ Sidebar Overwrite ค่า `$item` ก่อนฟอร์มจะใช้งาน
-  (แสดงผลข้อมูลว่างเปล่า/PHP Warning "Undefined array key")
-  แก้โดย (1) เปลี่ยนชื่อตัวแปรใน `admin_sidebar.php` เป็น `$menuItem` (ป้องกันปัญหานี้ในทุกโมดูลอนาคต)
-  และ (2) เปลี่ยนตัวแปรของ Gallery เองจาก `item`/`$item` เป็น `gallery`/`$gallery` ให้สอดคล้องกับ
-  ชื่อโมดูลอื่น (employee/news/document/legislation) — ทดสอบ Regression ครบทุกหน้าแล้วไม่กระทบโมดูลอื่น
+Bug Fixed:
+- `app/views/admin/gallery/form.php` ใช้ตัวแปร `$item` ชื่อเดียวกับ Loop Variable ภายใน `app/includes/admin_sidebar.php` (`foreach ($menuItems as $item)`) เนื่องจาก `require` ใช้ Scope ร่วมกับไฟล์ที่เรียก ทำให้ Sidebar Overwrite ค่า `$item` ก่อนฟอร์มจะใช้งาน (แสดงผลข้อมูลว่างเปล่า/PHP Warning "Undefined array key") แก้โดย (1) เปลี่ยนชื่อตัวแปรใน `admin_sidebar.php` เป็น `$menuItem` (ป้องกันปัญหานี้ในทุกโมดูลอนาคต) และ (2) เปลี่ยนตัวแปรของ Gallery เองจาก `item`/`$item` เป็น `gallery`/`$gallery` ให้สอดคล้องกับชื่อโมดูลอื่น
 
-## Testing
-- php -l : PASS (70 files)
-- HTTP Testing : PASS ครบทุกหัวข้อ (Create/Read/Update/Soft Delete/Upload JPG-PNG-WEBP/
-  Replace Image/Search/Filter/Sort/Pagination/Permission/CSRF/SQLi/XSS)
-- Security Testing : PASS
-- Regression Testing : PASS (Sidebar ทุกหน้ายังทำงานถูกต้องหลังแก้ไข)
+Testing: php -l PASS (70 files) · HTTP Testing PASS ครบทุกหัวข้อ (Create/Read/Update/Soft Delete/Upload JPG-PNG-WEBP/Replace Image/Search/Filter/Sort/Pagination/Permission/CSRF/SQLi/XSS) · Security Testing PASS · Regression Testing PASS
 
-▶ Next Phase
-Phase 10 — Final Permission & System Review
+## Phase 10 — Users Module & Database Permission System ✅ Completed
 
-✅ Phase 9 – Gallery Module เสร็จสมบูรณ์
-
-ระบุว่า
-
-- Migration 008 ผ่าน
-- Gallery Module พร้อมใช้งาน
-- CRUD ครบ
-- Image Upload
-- Search
-- Filter
-- Sort
-- Pagination
-- Soft Delete
-- Permission
-- CSRF
-- SQL Injection Protection
-- XSS Protection
-- Regression Test ผ่าน
-- php -l ผ่าน
-- ไม่มี Bug ค้าง
-
-อัปเดต Roadmap ให้แสดงว่า
-
-Phase 1–9 = Completed
-
-Phase 10 = Next
-
-หากมี Progress Summary หรือ Checklist
-ให้อัปเดตให้ตรงกับสถานะล่าสุด
-
-อัปเดตสถานะโปรเจกต์ให้สะท้อนว่า
-
-✅ Phase 10 – Users Module & Database Permission System เสร็จสมบูรณ์
-
-ระบุว่าเสร็จสมบูรณ์แล้ว
-
-- Users Module
-- CRUD
-- Search
-- Filter
-- Sort
-- Pagination
+Features:
+- Users CRUD
+- Search / Filter / Sort / Pagination
 - Validation
 - Soft Delete
 - Self Delete Protection
-- Database Permission System
-- role_permissions
-- Database-first Permission
-- Automatic Fallback ไป app/config/permissions.php
-- Regression Test ผ่าน
-- php -l ผ่าน
-- ไม่มี Bug ค้าง
+- Database Permission System (`role_permissions`, Database-first, Automatic Fallback ไป `app/config/permissions.php`)
 
-อัปเดต Roadmap
+Migration:
+- `009_create_role_permissions_table.sql` (Executed)
 
-Phase 1–10 = Completed
+Seeder:
+- `003_seed_role_permissions.sql` — สร้างข้อมูลเริ่มต้น 52 แถว (Admin ทุก Module View/Create/Edit/Delete, Editor ทุก Module ยกเว้น Users View/Create/Edit, Staff ทุก Module ยกเว้น Users View)
 
-Phase 11 = Next
+Testing: Regression Test PASS · php -l PASS · ไม่มี Bug ค้าง
 
-หากมี Progress Summary,
-Checklist,
-หรือ Completion Percentage
+## Phase 11 — Activity Log ✅ Completed
 
-ให้อัปเดตให้ตรงกับสถานะล่าสุด
+Features:
+- ตาราง `activity_logs` (Insert-only / Immutable Audit Trail — ไม่มี Update, Delete, Soft Delete, `updated_at`)
+- บันทึก Login / Login Failed / Logout
+- บันทึก Create / Update / Delete ของทุกโมดูล: Departments, Employees, News, Legislation, Documents, Gallery, Users
+- หน้า Activity Log List: Search (username + description), Filter (Module / Action / Date Range), Sort (id/username/module/action/created_at, ASC/DESC), Pagination (10/25/50/100)
+- Permission: เฉพาะ Admin เท่านั้น (module `activity_log`, action `view`)
+
+Migration:
+- `010_create_activity_logs_table.sql` (Executed)
+
+Seeder:
+- `004_seed_activity_log_permissions.sql` (Executed) — เพิ่มสิทธิ์ Admin/activity_log/view 1 แถว
+
+ไฟล์ที่สร้างใหม่ (7 ไฟล์):
+- `app/controllers/ActivityLogController.php`
+- `app/core/ActivityLogger.php`
+- `app/models/ActivityLogModel.php`
+- `app/views/admin/activity-log/index.php`
+- `public/admin/activity-log/index.php`
+- `database/migrations/010_create_activity_logs_table.sql`
+- `database/seeders/004_seed_activity_log_permissions.sql`
+
+ไฟล์ที่แก้ไข (10 ไฟล์):
+- `app/config/permissions.php`
+- `app/controllers/AuthController.php`
+- `app/controllers/DepartmentController.php`
+- `app/controllers/DocumentController.php`
+- `app/controllers/EmployeeController.php`
+- `app/controllers/GalleryController.php`
+- `app/controllers/LegislationController.php`
+- `app/controllers/NewsController.php`
+- `app/controllers/UserManagementController.php`
+- `app/includes/admin_sidebar.php`
+
+Bug ที่พบและแก้ไข:
+1. `app/controllers/EmployeeController.php` (`destroy()`) — Log การลบพนักงานบันทึกชื่อว่างเปล่า ("ลบพนักงาน:  ") เพราะอ้างอิง `$employee['fname']`/`$employee['lname']` (ตัวพิมพ์เล็ก) แต่ตาราง `employee` ใช้คอลัมน์ `Fname`/`Lname` (ตัวพิมพ์ใหญ่ ห้ามเปลี่ยนตามมาตรฐานโปรเจกต์) — แก้เป็น `$employee['Fname']`/`$employee['Lname']`
+2. `app/models/ActivityLogModel.php` (`buildWhere()`) — Search ด้วย keyword ค้นหาได้เฉพาะ `username` ไม่ครอบคลุม `description` — แก้เป็นค้นหาทั้ง `username OR description` พร้อมปรับ placeholder ใน view ให้ตรงกับพฤติกรรมใหม่
+
+Testing:
+- php -l PASS (82 files)
+- HTTP Testing PASS ครบทุกหัวข้อ: Activity Log List, Permission (Admin/Editor/Staff), Login/Login Failed/Logout, CRUD 7 โมดูล, Search, Filter, Sort, Pagination
+- Security Testing PASS: SQL Injection, XSS, Invalid Sort Column, Invalid Filter Value, CSRF, Permission
+- Data Integrity PASS: ตรวจสอบทุกแถวใน `activity_logs` มีครบ user_id (ยกเว้น login_failed ที่ไม่ทราบตัวตน) / username / role / module / action / description / ip_address / created_at
+- Regression Testing PASS: Login, Permission, CRUD ทุกโมดูล, Upload, Soft Delete, Database Permission System — ไม่มี Feature เดิมเสีย
+- ทำความสะอาดข้อมูลทดสอบเรียบร้อย (ไม่กระทบ `activity_logs` ซึ่งเป็น Insert-only)
+
+Reused Components:
+- BaseController, AuthMiddleware, Permission, crud.css, admin.css, admin.js, admin_header.php, admin_sidebar.php, admin_footer.php
+
+---
+
+## Shared / Reusable Components
+
+- BaseController / BaseModel
+- AuthMiddleware
+- Permission (Database-first + Fallback)
+- UploadHelper
+- ActivityLogger
+- crud.css / admin.css / admin.js
+- admin_header.php / admin_sidebar.php / admin_footer.php
+
+---
+
+## Migration Status
+
+| Migration | Status |
+|-----------|--------|
+| `001_create_users_table.sql` | ✅ Executed |
+| `002_create_departments_table.sql` | ✅ Executed |
+| `003_departments_soft_delete_unique_fix.sql` | ✅ Executed |
+| `004_employee_add_soft_delete_and_timestamps.sql` | ✅ Executed |
+| `005_news_add_status_soft_delete_and_timestamps.sql` | ✅ Executed |
+| `006_legislation_add_fields_and_soft_delete.sql` | ✅ Executed |
+| `007_create_documents_table.sql` | ✅ Executed |
+| `008_create_gallery_table.sql` | ✅ Executed |
+| `009_create_role_permissions_table.sql` | ✅ Executed |
+| `010_create_activity_logs_table.sql` | ✅ Executed |
+
+## Seeder Status
+
+| Seeder | Status |
+|--------|--------|
+| `001_seed_default_admin.sql` | ✅ Executed |
+| `002_seed_departments.sql` | ✅ Executed |
+| `003_seed_role_permissions.sql` | ✅ Executed |
+| `004_seed_activity_log_permissions.sql` | ✅ Executed |
+
+---
+
+## Current Project Status
+
+PHP Syntax:
+- ✅ php -l ผ่านทุกไฟล์ (82 ไฟล์ ล่าสุด ณ Phase 11)
+
+Security:
+- ✅ CSRF Protection
+- ✅ SQL Injection Protection
+- ✅ XSS Protection
+- ✅ Permission System (Database-first + Fallback)
+
+Database:
+- ✅ Migration ผ่านทั้งหมด (010 รายการ)
+- ✅ ไม่มี SQL Error
+
+Uploads:
+- ✅ UploadHelper
+- ✅ Random Filename
+- ✅ MIME Validation
+- ✅ Size Validation
+
+---
+
+## Next Task — Phase 12
+
+Testing / Bug Fix / Optimization / Installation Guide
+
+---
+
+**Last Updated:** 2026-07-17 — Phase 11 (Activity Log) Completed, System Ready for Phase 12

@@ -1,389 +1,105 @@
 # Database Documentation
 
 ## Project
-DTC-Website
+DTC-Website — TCSP Administration System
 
 ## Database
 
-- Database Name: tcsp
+- Database Name: `tcsp`
 - DBMS: MariaDB 10.4.32
 - Character Set: utf8mb4
 - Collation: utf8mb4_general_ci
 
 ---
 
-# Current Tables
+## Current Tables (ณ Phase 11)
 
 | Table | Description |
-|--------|-------------|
-| users | ระบบผู้ใช้งาน |
-| departments | ข้อมูลแผนก |
-| employee | ข้อมูลพนักงาน |
-| legislation | ข้อมูลกฎหมาย |
-| news | ข่าวสาร |
+|-------|-------------|
+| `users` | ระบบผู้ใช้งาน |
+| `departments` | ข้อมูลแผนก |
+| `employee` | ข้อมูลพนักงาน |
+| `news` | ข่าวประชาสัมพันธ์ |
+| `legislation` | กฎหมาย / ระเบียบ |
+| `documents` | เอกสารดาวน์โหลด |
+| `gallery` | คลังภาพกิจกรรม |
+| `role_permissions` | สิทธิ์การใช้งานตาม Role/Module/Action (Database-first Permission) |
+| `activity_logs` | ประวัติการใช้งานระบบ (Audit Trail, Insert-only) |
+
+รวมทั้งหมด 9 ตาราง
 
 ---
 
-# Migration History
+## Table Details
 
-## Phase 2
+### users
 
-### 001_create_users_table.sql
-สร้างตาราง users
+Purpose: ระบบผู้ใช้งาน
 
-### 001_seed_default_admin.sql
-เพิ่มผู้ใช้เริ่มต้น
+Columns:
+- id, username, password, full_name, email
+- role — enum(`Admin`, `Editor`, `Staff`)
+- status — enum(`Active`, `Inactive`)
+- first_login, last_login_at
+- created_at, updated_at, deleted_at
 
-Username: admin
-
-Password: Admin@123456
-
-first_login = TRUE
-
----
-
-## Phase 4
-
-### 002_create_departments_table.sql
-สร้างตาราง departments
-
-### 002_seed_departments.sql
-เพิ่มข้อมูลตัวอย่าง 12 แถว
-
-### 003_departments_soft_delete_unique_fix.sql
-เพิ่ม Generated Columns
-
-- code_active
-- name_active
-
-ย้าย UNIQUE INDEX ไปยัง Generated Columns
-
-รองรับ Soft Delete โดยไม่แก้ไข code/name เดิม
+Primary Key: id
+Soft Delete: ใช้ `deleted_at`
 
 ---
 
-# Current Status
+### departments
 
-Completed
+Purpose: ข้อมูลแผนกภายในองค์กร
 
-- Phase 1
-- Phase 2
-- Phase 3
-- Phase 3.5
-- Phase 4
+Columns: id, code, name, description, status, sort_order, created_at, updated_at, deleted_at
 
-Next Phase
+Generated Columns: `code_active`, `name_active`
 
-- Phase 5 Employees CRUD
+Index:
+- PRIMARY KEY (id)
+- UNIQUE (`code_active`)
+- UNIQUE (`name_active`)
 
----
-
-# Notes
-
-- ใช้ PDO Prepared Statement ทุก Query
-- ใช้ Soft Delete ผ่าน deleted_at
-- ใช้ CSRF Protection ทุก Form
-- ใช้ Permission Middleware
-- ใช้ BaseController/BaseModel
-- ใช้ MariaDB 10.4.32
-
-# DATABASE DOCUMENTATION
-
-Project Database
-
-**Database Name:** tcsp
-
-**DBMS:** MariaDB 10.4.x
+Soft Delete: ใช้ `deleted_at` (Unique Index อยู่บน Generated Columns เพื่อไม่ต้องแก้ `code`/`name` เดิมตอน Soft Delete)
 
 ---
 
-# Tables
+### employee
 
-## users
+Purpose: ข้อมูลพนักงาน
 
-Purpose
+Columns: ID, Fname, Lname, birth_date, gender, phone, email, position, address, image, created_at, updated_at, deleted_at
 
-ระบบผู้ใช้งาน
+Primary Key: ID
+Soft Delete: ใช้ `deleted_at`
 
-Main Columns
-
-- id
-- username
-- password
-- role
-- first_login
-- created_at
-- updated_at
-- deleted_at
+หมายเหตุ: ตารางเดิมใช้ชื่อคอลัมน์ Mixed Case (`Fname`, `Lname`) ตามมาตรฐานโปรเจกต์ที่ห้ามเปลี่ยนชื่อคอลัมน์เดิม — Controller/Model ที่อ้างอิงตารางนี้ต้องใช้ชื่อคอลัมน์ตัวพิมพ์ใหญ่ให้ตรงเสมอ
 
 ---
 
-## departments
+### news
 
-Purpose
+Purpose: ข่าวประชาสัมพันธ์
 
-ข้อมูลแผนกภายในองค์กร
+Columns: ID, title, detail, image, activity_date, status, created_at, updated_at, deleted_at
 
-Columns
+Index:
+- PRIMARY KEY (ID)
+- `idx_news_status` (status)
 
-- id
-- code
-- name
-- description
-- status
-- sort_order
-- created_at
-- updated_at
-- deleted_at
-
-Generated Columns
-
-- code_active
-- name_active
-
-Indexes
-
-PRIMARY KEY
-
-UNIQUE
-
-- code_active
-- name_active
-
-Soft Delete
-
-ใช้ deleted_at
+Soft Delete: ใช้ `deleted_at`
+Image Upload: `uploads/news/` — jpg, jpeg, png, webp, สูงสุด 2 MB
+Status: `Draft`, `Published`
 
 ---
 
-## employee
+### legislation
 
-Purpose
-
-ข้อมูลพนักงาน
-
-Columns
-
-- ID
-- Fname
-- Lname
-- birth_date
-- gender
-- phone
-- email
-- position
-- address
-- image
-
-Additional Columns
-
-- created_at
-- updated_at
-- deleted_at
-
-Primary Key
-
-- ID
-
-Soft Delete
-
-ใช้ deleted_at
-
----
-
-## news
-
-Purpose
-
-ข่าวประชาสัมพันธ์
-
-Status
-
-ยังไม่ได้พัฒนา
-
----
-
-## legislation
-
-Purpose
-
-กฎหมาย / ระเบียบ
-
-Status
-
-ยังไม่ได้พัฒนา
-
----
-
-# Executed Migrations
-
-## 002_create_departments_table.sql
-
-Created
-
-departments
-
----
-
-## 003_departments_soft_delete_unique_fix.sql
-
-Added
-
-- code_active
-- name_active
-
-Updated Unique Index
-
-- departments_code_active_unique
-- departments_name_active_unique
-
----
-
-## 004_employee_add_soft_delete_and_timestamps.sql
-
-Added
-
-employee
-
-- created_at
-- updated_at
-- deleted_at
-
----
-
-# Upload Directories
-
-uploads/
-
-employees/
-
-Used by Employee Module
-
-Validation
-
-- jpg
-- jpeg
-- png
-- webp
-
-Maximum Size
-
-2 MB
-
-Filename
-
-Generated using
-
-random_bytes()
-
----
-
-# Security
-
-PDO Prepared Statements
-
-Enabled
-
-CSRF Protection
-
-Enabled
-
-XSS Protection
-
-Enabled
-
-Permission System
-
-Enabled
-
-Soft Delete
-
-Enabled
-
-Upload MIME Validation
-
-Enabled
-
-Random Filename
-
-Enabled
-
----
-
-# Current Database Status
-
-Tables
-
-- users
-- departments
-- employee
-- news
-- legislation
-
-Status
-
-Database Ready for Phase 6
-
-## Migration 005
-File:
-database/migrations/005_news_add_status_soft_delete_and_timestamps.sql
-
-Purpose:
-เพิ่มคอลัมน์สำหรับระบบจัดการข่าว
-
-Columns
-- status ENUM('Draft','Published')
-- created_at TIMESTAMP
-- updated_at TIMESTAMP
-- deleted_at DATETIME
-
-Index
-- idx_news_status(status)
-
-Status:
-Created ✅
-Executed ❌
-# Table: news
-
-Columns
-
-- ID
-- title
-- detail
-- image
-- activity_date
-- status
-- created_at
-- updated_at
-- deleted_at
-
-Indexes
-
-- PRIMARY KEY(ID)
-- idx_news_status(status)
-
-Soft Delete
-- deleted_at
-
-Image Upload
-- uploads/news/
-
-Status
-- Draft
-- Published
-
----
-
-# legislation
-
-Purpose
-
-จัดเก็บข้อมูลกฎหมาย ระเบียบ และประกาศ
-
-## Columns
+Purpose: จัดเก็บข้อมูลกฎหมาย ระเบียบ และประกาศ
 
 | Column | Type | Description |
-|---------|------|-------------|
+|--------|------|-------------|
 | ID | int | Primary Key |
 | title | varchar(255) | ชื่อกฎหมาย |
 | document_number | varchar(50) | เลขที่ประกาศ |
@@ -394,30 +110,18 @@ Purpose
 | updated_at | timestamp | วันที่แก้ไข |
 | deleted_at | datetime | Soft Delete |
 
-## Index
+Index: PRIMARY KEY (ID), `idx_legislation_status`
 
-- PRIMARY KEY (ID)
-- idx_legislation_status
-
-## Notes
-
-- ใช้ Soft Delete
-- Filter ตาม Status
-- Search title/document_number/detail
-- ไม่มี File Upload (ย้ายไป Phase 8)
+Notes: ใช้ Soft Delete · Filter ตาม Status · Search title/document_number/detail · ไม่มี File Upload
 
 ---
 
-# documents (Phase 8)
+### documents (Phase 8)
 
-Purpose
-
-จัดเก็บเอกสารดาวน์โหลด (PDF/Office Files)
-
-## Columns
+Purpose: จัดเก็บเอกสารดาวน์โหลด (PDF/Office Files)
 
 | Column | Type | Description |
-|---------|------|-------------|
+|--------|------|-------------|
 | id | int | Primary Key |
 | title | varchar(255) | ชื่อเอกสาร |
 | description | text | รายละเอียด |
@@ -430,36 +134,20 @@ Purpose
 | updated_at | timestamp | วันที่แก้ไข |
 | deleted_at | datetime | Soft Delete |
 
-## Index
+Index: PRIMARY KEY (id), `idx_documents_status`
 
-- PRIMARY KEY (id)
-- idx_documents_status
+Upload Rules: pdf, doc, docx, xls, xlsx, ppt, pptx · สูงสุด 10 MB · Create บังคับแนบไฟล์ / Edit ไม่บังคับ · Soft Delete ไม่ลบไฟล์จริง · `uploads/documents/`
 
-## Upload Rules
-
-- Extensions: pdf, doc, docx, xls, xlsx, ppt, pptx
-- Maximum Size: 10 MB
-- Create บังคับแนบไฟล์ / Edit ไม่บังคับ
-- Soft Delete ไม่ลบไฟล์จริง
-- uploads/documents/
-
-## Notes
-
-- MIME Whitelist รวม `application/CDFV2`/`application/x-cfb` (ไฟล์ .doc/.xls/.ppt แบบเก่าใช้ OLE Compound
-  Format ร่วมกัน libmagic แยกชนิดเฉพาะไม่ได้) และ `application/zip` (ไฟล์ .docx/.xlsx/.pptx เป็น ZIP Container)
+Notes: MIME Whitelist รวม `application/CDFV2`/`application/x-cfb` (ไฟล์ .doc/.xls/.ppt แบบเก่าใช้ OLE Compound Format ร่วมกัน libmagic แยกชนิดเฉพาะไม่ได้) และ `application/zip` (ไฟล์ .docx/.xlsx/.pptx เป็น ZIP Container)
 
 ---
 
-# gallery (Phase 9)
+### gallery (Phase 9)
 
-Purpose
-
-คลังภาพกิจกรรม (Single Table, 1 รูป = 1 รายการ, ไม่มี Album/Foreign Key)
-
-## Columns
+Purpose: คลังภาพกิจกรรม (Single Table, 1 รูป = 1 รายการ, ไม่มี Album/Foreign Key)
 
 | Column | Type | Description |
-|---------|------|-------------|
+|--------|------|-------------|
 | id | int | Primary Key |
 | title | varchar(255) | ชื่อภาพ/ชุดกิจกรรม |
 | description | text | คำอธิบายภาพ |
@@ -469,82 +157,132 @@ Purpose
 | updated_at | timestamp | วันที่แก้ไข |
 | deleted_at | datetime | Soft Delete |
 
-## Index
+Index: PRIMARY KEY (id), `idx_gallery_status`
 
-- PRIMARY KEY (id)
-- idx_gallery_status
-
-## Upload Rules
-
-- Extensions: jpg, jpeg, png, webp (ไม่รองรับ gif)
-- Maximum Size: 2 MB
-- Create บังคับแนบรูป / Edit ไม่บังคับ
-- Soft Delete ไม่ลบไฟล์จริง
-- uploads/gallery/
+Upload Rules: jpg, jpeg, png, webp (ไม่รองรับ gif) · สูงสุด 2 MB · Create บังคับแนบรูป / Edit ไม่บังคับ · Soft Delete ไม่ลบไฟล์จริง · `uploads/gallery/`
 
 ---
 
-# Current Database Status (อัปเดตล่าสุด — หลัง Phase 9)
+### role_permissions (Phase 10)
 
-Tables
+Purpose: กำหนดสิทธิ์การใช้งานระบบตาม Role/Module/Action (Database-first Permission)
 
-- users
-- departments
-- employee
-- news
-- legislation
-- documents
-- gallery
+Columns: id, role (enum: Admin/Editor/Staff), module, action
 
-Executed Migrations (เพิ่มเติมจากเดิม)
+Primary Key: id
+Unique Key: `role_permissions_unique` (role, module, action)
 
-- 005_news_add_status_soft_delete_and_timestamps.sql ✅ Executed
-- 006_legislation_add_fields_and_soft_delete.sql ✅ Executed
-- 007_create_documents_table.sql ✅ Executed
-- 008_create_gallery_table.sql ✅ Executed
+Notes:
+- Permission ของระบบอ่านจากฐานข้อมูลเป็นหลัก หากไม่สามารถอ่านฐานข้อมูลได้ จะ Fallback ไปใช้ `app/config/permissions.php` โดยอัตโนมัติ
+- Seeder `003_seed_role_permissions.sql` สร้างข้อมูลเริ่มต้น 52 แถว: Admin (ทุก Module — View/Create/Edit/Delete), Editor (ทุก Module ยกเว้น Users — View/Create/Edit), Staff (ทุก Module ยกเว้น Users — View)
+- Phase 11 เพิ่มอีก 1 แถวผ่าน `004_seed_activity_log_permissions.sql` (Admin/activity_log/view) รวมเป็น 53 แถว
 
-Status
+---
 
-Database Ready for Phase 10 (Final Permission & System Review)
+### activity_logs (Phase 11)
 
-เพิ่มหัวข้อ
+Purpose: บันทึกประวัติการใช้งานระบบ (Audit Trail) — Login / Login Failed / Logout และ Create/Update/Delete ของทุกโมดูล
 
-## gallery
+| Column | Type | Description |
+|--------|------|-------------|
+| id | int(11) | Primary Key, Auto Increment |
+| user_id | int(11) NULL | อ้างอิงผู้ทำรายการ — ไม่ใส่ FK Constraint ตามมาตรฐานโปรเจกต์ — เป็น NULL ได้กรณี Login ล้มเหลวก่อนทราบตัวตน |
+| username | varchar(50) | Snapshot ชื่อผู้ใช้ ณ เวลาที่เกิดเหตุการณ์ |
+| role | varchar(20) | Snapshot สิทธิ์ ณ เวลาที่เกิดเหตุการณ์ |
+| module | varchar(50) | ชื่อโมดูลที่ถูกกระทำ เช่น departments, users, auth |
+| action | varchar(20) | ประเภทการกระทำ เช่น create, update, delete, login, login_failed, logout |
+| description | varchar(255) | ข้อความสรุปเหตุการณ์แบบอ่านง่าย |
+| ip_address | varchar(45) NULL | IP Address ผู้ทำรายการ รองรับทั้ง IPv4/IPv6 |
+| created_at | timestamp | เวลาที่เกิดเหตุการณ์ (DEFAULT CURRENT_TIMESTAMP) |
 
-อธิบายโครงสร้างตาราง
+Index:
+- PRIMARY KEY (id)
+- `idx_activity_logs_module` (module)
+- `idx_activity_logs_action` (action)
+- `idx_activity_logs_user_id` (user_id)
+- `idx_activity_logs_created_at` (created_at)
 
-- id
-- title
-- description
-- image
-- status
-- created_at
-- updated_at
-- deleted_at
+Design Notes:
+- **Insert-only / Immutable** — ไม่มี Update, ไม่มี Delete, ไม่มี Soft Delete
+- **ไม่มีคอลัมน์ `updated_at`** — ใช้ `created_at` เพียงคอลัมน์เดียว
+- **ไม่มีคอลัมน์ `deleted_at`**
+- **ไม่มี Foreign Key Constraint** — สอดคล้องกับมาตรฐานโปรเจกต์ที่ไม่ใส่ FK ในทุกตาราง โดยเก็บ Snapshot ของ `username`/`role` ไว้แทน เพื่อรักษาประวัติแม้ผู้ใช้ที่เกี่ยวข้องจะถูกแก้ไข/ลบในภายหลัง
+- การ Insert ทำผ่าน `App\Core\ActivityLogger::log()` เท่านั้น (ครอบ try/catch ไม่ให้ Business Logic หลักล้มเหลวหากบันทึก Log ไม่สำเร็จ)
 
-ระบุ
+Migration: `010_create_activity_logs_table.sql` ✅ Executed
 
-Primary Key
+Permission: Module `activity_log` — เฉพาะ Admin เท่านั้นที่มีสิทธิ์ `view` (ไม่มี create/edit/delete เพราะระบบสร้าง Log เอง) — Seeder `004_seed_activity_log_permissions.sql` ✅ Executed
 
-id
+---
 
-Index
+## Migration History
 
-idx_gallery_status(status)
+### Phase 2
+- `001_create_users_table.sql` — สร้างตาราง users
+- `001_seed_default_admin.sql` — เพิ่มผู้ใช้เริ่มต้น (username: `admin`, first_login = TRUE)
 
-อธิบายความหมายของแต่ละคอลัมน์
+### Phase 4
+- `002_create_departments_table.sql` — สร้างตาราง departments
+- `002_seed_departments.sql` — เพิ่มข้อมูลตัวอย่าง 12 แถว
+- `003_departments_soft_delete_unique_fix.sql` — เพิ่ม Generated Columns `code_active`/`name_active`, ย้าย UNIQUE INDEX ไปยัง Generated Columns เพื่อรองรับ Soft Delete โดยไม่แก้ไข code/name เดิม
 
-อธิบายว่าใช้ Soft Delete
+### Phase 5
+- `004_employee_add_soft_delete_and_timestamps.sql` — เพิ่ม created_at/updated_at/deleted_at ให้ employee
 
-อธิบายว่า image เก็บชื่อไฟล์จริงที่ UploadHelper สุ่ม
+### Phase 6
+- `005_news_add_status_soft_delete_and_timestamps.sql` — เพิ่ม status/created_at/updated_at/deleted_at/idx_news_status ให้ news
 
-ระบุว่ารองรับ
+### Phase 7
+- `006_legislation_add_fields_and_soft_delete.sql` — เพิ่ม document_number/detail/effective_date/status/created_at/updated_at/deleted_at/idx_legislation_status
 
-jpg
-jpeg
-png
-webp
+### Phase 8
+- `007_create_documents_table.sql` — สร้างตาราง documents
 
-ขนาดไม่เกิน
+### Phase 9
+- `008_create_gallery_table.sql` — สร้างตาราง gallery
 
-2 MB
+### Phase 10
+- `009_create_role_permissions_table.sql` — สร้างตาราง role_permissions
+- `003_seed_role_permissions.sql` — seed ข้อมูลเริ่มต้น 52 แถว
+
+### Phase 11
+- `010_create_activity_logs_table.sql` — สร้างตาราง activity_logs
+- `004_seed_activity_log_permissions.sql` — seed สิทธิ์ Admin/activity_log/view
+
+---
+
+## Upload Directories
+
+`uploads/`
+
+| Folder | Extensions | Max Size |
+|--------|-----------|----------|
+| `employees/` | jpg, jpeg, png, webp | 2 MB |
+| `news/` | jpg, jpeg, png, webp | 2 MB |
+| `documents/` | pdf, doc, docx, xls, xlsx, ppt, pptx | 10 MB |
+| `gallery/` | jpg, jpeg, png, webp | 2 MB |
+
+Filename: สุ่มด้วย `random_bytes()` ผ่าน UploadHelper
+
+---
+
+## Security
+
+- PDO Prepared Statements — Enabled (ทุก Query)
+- CSRF Protection — Enabled
+- XSS Protection — Enabled
+- Permission System — Enabled (Database-first ผ่าน `role_permissions` + Fallback ไป `app/config/permissions.php`)
+- Soft Delete — Enabled (ทุกโมดูลยกเว้น `activity_logs` ซึ่งเป็น Insert-only)
+- Upload MIME Validation — Enabled
+- Random Filename — Enabled
+
+---
+
+## Current Database Status (อัปเดตล่าสุด — หลัง Phase 11)
+
+Tables: users, departments, employee, news, legislation, documents, gallery, role_permissions, activity_logs (รวม 9 ตาราง)
+
+Executed Migrations: 001–010 (ครบทั้งหมด)
+Executed Seeders: 001–004 (ครบทั้งหมด)
+
+Status: Database Ready for Phase 12 (Testing / Bug Fix / Optimization / Installation Guide)

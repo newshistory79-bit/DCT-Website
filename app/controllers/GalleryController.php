@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\ActivityLogger;
 use App\Core\BaseController;
 use App\Core\UploadHelper;
 use App\Middleware\AuthMiddleware;
@@ -122,6 +123,8 @@ class GalleryController extends BaseController
         $model = new GalleryModel();
         $model->create($data);
 
+        ActivityLogger::log('gallery', 'create', 'เพิ่มภาพ: ' . $data['title']);
+
         $this->setFlashMessage('gallery_success', 'เพิ่มภาพสำเร็จ');
         $this->redirect('admin/gallery/index.php');
     }
@@ -170,6 +173,8 @@ class GalleryController extends BaseController
             UploadHelper::delete(self::uploadDirectory(), $item['image']);
         }
 
+        ActivityLogger::log('gallery', 'update', 'แก้ไขภาพ: ' . $data['title']);
+
         $this->setFlashMessage('gallery_success', 'แก้ไขภาพสำเร็จ');
         $this->redirect('admin/gallery/index.php');
     }
@@ -197,6 +202,8 @@ class GalleryController extends BaseController
 
         // Soft Delete เท่านั้น - ไม่ลบไฟล์รูปจริง เพื่อรักษาประวัติข้อมูลตามที่อนุมัติ
         $model->softDelete($id);
+
+        ActivityLogger::log('gallery', 'delete', 'ลบภาพ: ' . $item['title']);
 
         $this->setFlashMessage('gallery_success', 'ลบภาพสำเร็จ');
         $this->redirect('admin/gallery/index.php');

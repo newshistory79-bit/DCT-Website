@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\ActivityLogger;
 use App\Core\BaseController;
 use App\Middleware\AuthMiddleware;
 use App\Models\DepartmentModel;
@@ -100,6 +101,8 @@ class DepartmentController extends BaseController
 
         $model->create($data);
 
+        ActivityLogger::log('departments', 'create', 'เพิ่มหน่วยงาน: ' . $data['name']);
+
         $this->setFlashMessage('department_success', 'เพิ่มข้อมูลแผนกสำเร็จ');
         $this->redirect('admin/departments/index.php');
     }
@@ -125,6 +128,8 @@ class DepartmentController extends BaseController
         }
 
         $model->update($id, $data);
+
+        ActivityLogger::log('departments', 'update', 'แก้ไขหน่วยงาน: ' . $data['name']);
 
         $this->setFlashMessage('department_success', 'แก้ไขข้อมูลแผนกสำเร็จ');
         $this->redirect('admin/departments/index.php');
@@ -152,6 +157,8 @@ class DepartmentController extends BaseController
         }
 
         $model->softDelete($id);
+
+        ActivityLogger::log('departments', 'delete', 'ลบหน่วยงาน: ' . $department['name']);
 
         $this->setFlashMessage('department_success', 'ลบข้อมูลแผนกสำเร็จ');
         $this->redirect('admin/departments/index.php');

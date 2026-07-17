@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\ActivityLogger;
 use App\Core\BaseController;
 use App\Middleware\AuthMiddleware;
 use App\Models\UserManagementModel;
@@ -102,6 +103,8 @@ class UserManagementController extends BaseController
 
         $model->create($data);
 
+        ActivityLogger::log('users', 'create', 'สร้างผู้ใช้งาน: ' . $data['username'] . ' (Role: ' . $data['role'] . ')');
+
         $this->setFlashMessage('user_success', 'เพิ่มผู้ใช้งานสำเร็จ');
         $this->redirect('admin/users/index.php');
     }
@@ -127,6 +130,8 @@ class UserManagementController extends BaseController
         }
 
         $model->update($id, $data);
+
+        ActivityLogger::log('users', 'update', 'แก้ไขผู้ใช้งาน: ' . $data['username']);
 
         $this->setFlashMessage('user_success', 'แก้ไขผู้ใช้งานสำเร็จ');
         $this->redirect('admin/users/index.php');
@@ -162,6 +167,8 @@ class UserManagementController extends BaseController
 
         // Soft Delete เท่านั้น - ไม่ลบข้อมูลจริง
         $model->softDelete($id);
+
+        ActivityLogger::log('users', 'delete', 'ลบผู้ใช้งาน: ' . $user['username']);
 
         $this->setFlashMessage('user_success', 'ลบผู้ใช้งานสำเร็จ');
         $this->redirect('admin/users/index.php');

@@ -16,6 +16,7 @@ return [
         'documents'    => ['view', 'create', 'edit', 'delete'],
         'gallery'      => ['view', 'create', 'edit', 'delete'],
         'users'        => ['view', 'create', 'edit', 'delete'],
+        'activity_log' => ['view'],
     ],
     'Editor' => [
         'departments'  => ['view', 'create', 'edit'],

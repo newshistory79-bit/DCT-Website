@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\ActivityLogger;
 use App\Core\BaseController;
 use App\Models\User;
 
@@ -41,12 +42,28 @@ class AuthController extends BaseController
         $user      = $userModel->findByUsername($username);
 
         if ($user === null || !password_verify($password, $user['password'])) {
+            ActivityLogger::log(
+                'auth',
+                'login_failed',
+                'เข้าสู่ระบบล้มเหลว (ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง): ' . $username,
+                null,
+                $username,
+                '-'
+            );
             $this->setFlashMessage('login_error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
             $this->redirect('admin/login.php');
             return;
         }
 
         if ($user['status'] !== 'Active') {
+            ActivityLogger::log(
+                'auth',
+                'login_failed',
+                'เข้าสู่ระบบล้มเหลว (บัญชีถูกระงับการใช้งาน): ' . $user['username'],
+                (int) $user['id'],
+                $user['username'],
+                $user['role']
+            );
             $this->setFlashMessage('login_error', 'บัญชีนี้ถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ');
             $this->redirect('admin/login.php');
             return;
@@ -63,6 +80,8 @@ class AuthController extends BaseController
 
         $userModel->updateLastLogin((int) $user['id']);
 
+        ActivityLogger::log('auth', 'login', 'เข้าสู่ระบบสำเร็จ: ' . $user['username']);
+
         if ($_SESSION['first_login']) {
             $this->redirect('admin/change-password.php');
             return;
@@ -73,6 +92,17 @@ class AuthController extends BaseController
 
     public function logout(): void
     {
+        if (isset($_SESSION['user_id'])) {
+            ActivityLogger::log(
+                'auth',
+                'logout',
+                'ออกจากระบบ: ' . ($_SESSION['username'] ?? ''),
+                (int) $_SESSION['user_id'],
+                $_SESSION['username'] ?? null,
+                $_SESSION['role'] ?? null
+            );
+        }
+
         $_SESSION = [];
         session_destroy();
         $this->redirect('admin/login.php');

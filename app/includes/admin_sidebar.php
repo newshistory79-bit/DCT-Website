@@ -17,7 +17,7 @@ $menuItems = [
     ['label' => 'Documents',    'url' => 'admin/documents/index.php',    'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Gallery',      'url' => 'admin/gallery/index.php',      'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff']],
     ['label' => 'Users',        'url' => 'admin/users/index.php',        'enabled' => true,  'roles' => ['Admin']],
-    ['label' => 'Activity Log', 'url' => null,              'enabled' => false, 'roles' => ['Admin']],
+    ['label' => 'Activity Log', 'url' => 'admin/activity-log/index.php', 'enabled' => true, 'roles' => ['Admin']],
     ['label' => 'Settings',     'url' => null,              'enabled' => false, 'roles' => ['Admin']],
 ];
 ?>

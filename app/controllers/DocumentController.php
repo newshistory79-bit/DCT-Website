@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\ActivityLogger;
 use App\Core\BaseController;
 use App\Core\UploadHelper;
 use App\Middleware\AuthMiddleware;
@@ -141,6 +142,8 @@ class DocumentController extends BaseController
         $model = new DocumentModel();
         $model->create($data);
 
+        ActivityLogger::log('documents', 'create', 'เพิ่มเอกสาร: ' . $data['title']);
+
         $this->setFlashMessage('document_success', 'เพิ่มเอกสารสำเร็จ');
         $this->redirect('admin/documents/index.php');
     }
@@ -195,6 +198,8 @@ class DocumentController extends BaseController
             UploadHelper::delete(self::uploadDirectory(), $document['file_name']);
         }
 
+        ActivityLogger::log('documents', 'update', 'แก้ไขเอกสาร: ' . $data['title']);
+
         $this->setFlashMessage('document_success', 'แก้ไขเอกสารสำเร็จ');
         $this->redirect('admin/documents/index.php');
     }
@@ -222,6 +227,8 @@ class DocumentController extends BaseController
 
         // Soft Delete เท่านั้น - ไม่ลบไฟล์จริง เพื่อรักษาประวัติข้อมูลตามที่อนุมัติ
         $model->softDelete($id);
+
+        ActivityLogger::log('documents', 'delete', 'ลบเอกสาร: ' . $document['title']);
 
         $this->setFlashMessage('document_success', 'ลบเอกสารสำเร็จ');
         $this->redirect('admin/documents/index.php');

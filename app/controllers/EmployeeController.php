@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\ActivityLogger;
 use App\Core\BaseController;
 use App\Core\UploadHelper;
 use App\Middleware\AuthMiddleware;
@@ -114,6 +115,8 @@ class EmployeeController extends BaseController
         $model = new EmployeeModel();
         $model->create($data);
 
+        ActivityLogger::log('employees', 'create', 'เพิ่มพนักงาน: ' . $data['fname'] . ' ' . $data['lname']);
+
         $this->setFlashMessage('employee_success', 'เพิ่มข้อมูลพนักงานสำเร็จ');
         $this->redirect('admin/employees/index.php');
     }
@@ -160,6 +163,8 @@ class EmployeeController extends BaseController
             UploadHelper::delete(self::uploadDirectory(), $employee['image']);
         }
 
+        ActivityLogger::log('employees', 'update', 'แก้ไขพนักงาน: ' . $data['fname'] . ' ' . $data['lname']);
+
         $this->setFlashMessage('employee_success', 'แก้ไขข้อมูลพนักงานสำเร็จ');
         $this->redirect('admin/employees/index.php');
     }
@@ -187,6 +192,8 @@ class EmployeeController extends BaseController
 
         // Soft Delete เท่านั้น - ไม่ลบไฟล์รูปจริง เพื่อรักษาประวัติข้อมูลตามที่อนุมัติ
         $model->softDelete($id);
+
+        ActivityLogger::log('employees', 'delete', 'ลบพนักงาน: ' . $employee['Fname'] . ' ' . $employee['Lname']);
 
         $this->setFlashMessage('employee_success', 'ลบข้อมูลพนักงานสำเร็จ');
         $this->redirect('admin/employees/index.php');

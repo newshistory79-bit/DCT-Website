@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\ActivityLogger;
 use App\Core\BaseController;
 use App\Middleware\AuthMiddleware;
 use App\Models\LegislationModel;
@@ -101,6 +102,8 @@ class LegislationController extends BaseController
         $model = new LegislationModel();
         $model->create($data);
 
+        ActivityLogger::log('legislation', 'create', 'เพิ่มกฎหมาย/ระเบียบ: ' . $data['title']);
+
         $this->setFlashMessage('legislation_success', 'เพิ่มข้อมูลกฎหมาย/ระเบียบสำเร็จ');
         $this->redirect('admin/legislation/index.php');
     }
@@ -126,6 +129,8 @@ class LegislationController extends BaseController
         }
 
         $model->update($id, $data);
+
+        ActivityLogger::log('legislation', 'update', 'แก้ไขกฎหมาย/ระเบียบ: ' . $data['title']);
 
         $this->setFlashMessage('legislation_success', 'แก้ไขข้อมูลกฎหมาย/ระเบียบสำเร็จ');
         $this->redirect('admin/legislation/index.php');
@@ -154,6 +159,8 @@ class LegislationController extends BaseController
 
         // Soft Delete เท่านั้น - อัปเดตเฉพาะ deleted_at ไม่ลบข้อมูลจริง
         $model->softDelete($id);
+
+        ActivityLogger::log('legislation', 'delete', 'ลบกฎหมาย/ระเบียบ: ' . $legislation['title']);
 
         $this->setFlashMessage('legislation_success', 'ลบข้อมูลกฎหมาย/ระเบียบสำเร็จ');
         $this->redirect('admin/legislation/index.php');

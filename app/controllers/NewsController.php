@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Core\ActivityLogger;
 use App\Core\BaseController;
 use App\Core\UploadHelper;
 use App\Middleware\AuthMiddleware;
@@ -114,6 +115,8 @@ class NewsController extends BaseController
         $model = new NewsModel();
         $model->create($data);
 
+        ActivityLogger::log('news', 'create', 'เพิ่มข่าว: ' . $data['title']);
+
         $this->setFlashMessage('news_success', 'เพิ่มข่าวสำเร็จ');
         $this->redirect('admin/news/index.php');
     }
@@ -160,6 +163,8 @@ class NewsController extends BaseController
             UploadHelper::delete(self::uploadDirectory(), $news['image']);
         }
 
+        ActivityLogger::log('news', 'update', 'แก้ไขข่าว: ' . $data['title']);
+
         $this->setFlashMessage('news_success', 'แก้ไขข่าวสำเร็จ');
         $this->redirect('admin/news/index.php');
     }
@@ -187,6 +192,8 @@ class NewsController extends BaseController
 
         // Soft Delete เท่านั้น - ไม่ลบไฟล์รูปจริง เพื่อรักษาประวัติข้อมูลตามที่อนุมัติ
         $model->softDelete($id);
+
+        ActivityLogger::log('news', 'delete', 'ลบข่าว: ' . $news['title']);
 
         $this->setFlashMessage('news_success', 'ลบข่าวสำเร็จ');
         $this->redirect('admin/news/index.php');
