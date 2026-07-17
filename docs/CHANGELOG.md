@@ -47,3 +47,33 @@ Status : Stable
 - Seeder: `004_seed_activity_log_permissions.sql` (Executed)
 
 Status : Stable
+
+## Phase 12 — Testing / Bug Fix / Optimization / Installation Guide
+
+### Added
+- `docs/INSTALLATION.md` — คู่มือติดตั้งระบบครบวงจร
+
+### Changed
+- `app/core/bootstrap.php` — เพิ่ม `session_set_cookie_params()` ก่อน `session_start()` (httponly, samesite=Lax, secure ตามเงื่อนไข HTTPS)
+- `app/models/DashboardModel.php` — เชื่อม Mapping สถิติของ `departments`/`documents`/`gallery`/`legislation` ให้ครบ (เดิมบางโมดูล Map เป็น `null` หรือไม่มีในรายการ)
+- `app/views/admin/dashboard.php` — เพิ่ม Stat Card สำหรับ Gallery และ Legislation
+
+### Security
+- Session Cookie เพิ่ม Attribute `HttpOnly` และ `SameSite=Lax` ป้องกัน Session ถูกอ่านผ่าน JavaScript และลดความเสี่ยง CSRF บางรูปแบบ
+
+### Testing
+- Regression Testing เต็มรูปแบบทุก Module (Authentication, Dashboard, Departments, Employees, News, Legislation, Documents, Gallery, Users, Permission, Activity Log) รวม Upload/Search/Filter/Sort/Pagination/Validation/SQL Injection/XSS/CSRF/Session — 92 รายการ PASS
+- Fixed: Session Cookie ไม่มี HttpOnly/SameSite (`app/core/bootstrap.php`)
+- Fixed: Dashboard แสดงสถิติ Departments/Documents ผิดพลาดและไม่มี Gallery/Legislation (`app/models/DashboardModel.php`, `app/views/admin/dashboard.php`)
+- Regression Testing เฉพาะจุดหลังแก้ไข PASS ทั้งหมด (Session Cookie / Dashboard Statistics / Permission / Login-Logout) ไม่พบ Regression
+- php -l PASS (82 files)
+
+### Technical Debt (บันทึกไว้ ไม่แก้ในเฟสนี้)
+- `paginate()` ซ้ำใน 8 Model — เหมาะสำหรับรวมเป็น Shared Helper ใน `BaseModel` ในอนาคต (ต้องแยก Task เฉพาะ)
+- `app/config/roles.php` เป็น Dead Code (ไม่มีการเรียกใช้งานจริง) — คงไฟล์ไว้ตามคำสั่ง
+- Dashboard "กิจกรรมล่าสุด" ยังไม่เชื่อมกับ `activity_logs`
+
+### Database
+- ไม่มีการแก้ไขฐานข้อมูล / ไม่มี Migration ใหม่ในเฟสนี้
+
+Status : Stable

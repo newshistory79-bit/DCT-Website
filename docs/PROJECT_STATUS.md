@@ -2,8 +2,8 @@
 
 **Project:** TCSP Administration System (Department of Technology and Communication of Savannakhet Province)
 **Architecture:** PHP MVC (Native PHP 8+) + PDO + MariaDB 10.4.x
-**Current Phase:** Phase 11 Completed ✅
-**Next Phase:** Phase 12 — Testing / Bug Fix / Optimization / Installation Guide
+**Current Phase:** Phase 12 Completed ✅
+**Next Phase:** ไม่มี Phase ถัดไปตาม Roadmap เดิม (Phase 1–12 ครบตาม MasterPrompt) — งานถัดไปขึ้นอยู่กับ Technical Debt/Requirement ใหม่ที่จะได้รับมอบหมาย
 
 ---
 
@@ -23,7 +23,7 @@
 | Phase 9 | Gallery Module | ✅ Completed |
 | Phase 10 | Users Module & Database Permission System | ✅ Completed |
 | Phase 11 | Activity Log | ✅ Completed |
-| Phase 12 | Testing / Bug Fix / Optimization / Installation Guide | ⏳ Pending |
+| Phase 12 | Testing / Bug Fix / Optimization / Installation Guide | ✅ Completed |
 
 ---
 
@@ -228,6 +228,37 @@ Testing:
 Reused Components:
 - BaseController, AuthMiddleware, Permission, crud.css, admin.css, admin.js, admin_header.php, admin_sidebar.php, admin_footer.php
 
+## Phase 12 — Testing / Bug Fix / Optimization / Installation Guide ✅ Completed
+
+ขอบเขต: Regression Testing ครบทั้งระบบ (Authentication, Dashboard, Departments, Employees, News, Legislation, Documents, Gallery, Users, Permission, Activity Log รวม Upload/Search/Filter/Sort/Pagination/Validation/SQL Injection/XSS/CSRF/Session) ตามด้วย Bug Fix และ Query Optimization/Code Cleanup ขนาดเล็กเฉพาะรายการที่อนุมัติเท่านั้น (ไม่ Refactor ข้ามโมดูล/ไม่เปลี่ยน Architecture) และจัดทำ Installation Guide — ไม่มีการแก้ไขฐานข้อมูล/Migration ในเฟสนี้
+
+Bug ที่พบและแก้ไข:
+1. `app/core/bootstrap.php` — Session Cookie (`PHPSESSID`) ไม่มี Attribute `HttpOnly`/`Secure`/`SameSite` (ใช้ค่า Default จาก php.ini ซึ่งปิดอยู่ทั้งหมด) ทำให้ขาด Defense-in-Depth ป้องกัน Session ถูกอ่านผ่าน JavaScript หากเกิดช่องโหว่ XSS ในอนาคต — แก้โดยเพิ่ม `session_set_cookie_params()` ก่อนเรียก `session_start()` กำหนด `httponly = true`, `samesite = 'Lax'`, `secure` ตามเงื่อนไข HTTPS จริงเท่านั้น (ไม่บังคับ true บน HTTP/localhost)
+
+Feature Gap ที่พบและแก้ไข:
+1. Dashboard แสดงสถิติไม่ครบและไม่ถูกต้องตาม MasterPrompt หัวข้อ DASHBOARD — `app/models/DashboardModel.php` (`MODULE_TABLES`) เดิม Map `departments`/`documents` เป็น `null` ทั้งที่มีตารางจริงอยู่แล้วตั้งแต่ Phase 4/8 และไม่มี `gallery`/`legislation` อยู่ในรายการเลย ทำให้หน้า Dashboard แสดง "ยังไม่มีโมดูล" ผิดพลาดและไม่แสดงสถิติ Gallery/Legislation — แก้โดยเชื่อม Mapping ให้ครบทั้ง 4 โมดูล ใน `app/models/DashboardModel.php` และเพิ่ม Stat Card สำหรับ Gallery/Legislation ใน `app/views/admin/dashboard.php`
+
+Documentation:
+- สร้าง `docs/INSTALLATION.md` — คู่มือติดตั้งระบบครบวงจร (System Requirements, การสร้างฐานข้อมูลและรัน Migration/Seeder ตามลำดับ, การตั้งค่า Config, สิทธิ์โฟลเดอร์ Upload, การ Login ครั้งแรก, โครงสร้างโปรเจกต์, Troubleshooting)
+
+Technical Debt (บันทึกไว้ ยังไม่แก้ในเฟสนี้):
+- `paginate()` มีโครงสร้างซ้ำกันเกือบทั้งหมดใน 8 Model (`DepartmentModel`, `EmployeeModel`, `NewsModel`, `LegislationModel`, `DocumentModel`, `GalleryModel`, `UserManagementModel`, `ActivityLogModel`) — เหมาะสำหรับรวมเป็น Shared Helper ใน `BaseModel` ในอนาคต แต่ต้องแยกเป็น Task เฉพาะที่มี Regression Test ครอบคลุมทุกโมดูลพร้อมกัน เนื่องจากกระทบทุก CRUD Module
+- `app/config/roles.php` เป็น Dead Code ยืนยันแล้วว่าไม่มีไฟล์ใดในโปรเจกต์ `require`/`include` ไฟล์นี้เลย — คงไฟล์ไว้ตามคำสั่ง (ไม่อนุมัติให้ลบในเฟสนี้)
+- Dashboard "กิจกรรมล่าสุด" ตาม MasterPrompt ยังไม่ได้เชื่อมกับตาราง `activity_logs` (Phase 11) — ปัจจุบันมีเฉพาะ "ผู้ใช้ Login ล่าสุด" (Recent Logins จากตาราง `users`) ซึ่งเป็นคนละความหมายกัน
+
+ไฟล์ที่แก้ไข (3 ไฟล์):
+- `app/core/bootstrap.php`
+- `app/models/DashboardModel.php`
+- `app/views/admin/dashboard.php`
+
+ไฟล์ที่สร้างใหม่ (1 ไฟล์):
+- `docs/INSTALLATION.md`
+
+Testing:
+- Regression Testing เต็มรูปแบบก่อนแก้ไข: รวม 92 รายการ PASS (พบ 1 Bug + 1 Feature Gap ตามที่ระบุข้างต้น ไม่พบ Bug ที่กระทบข้อมูล/บายพาส Permission ได้)
+- Regression Testing เฉพาะจุดหลังแก้ไข: Session Cookie (ยืนยัน `HttpOnly; SameSite=Lax` จาก Response Header จริง), Dashboard Statistics (departments=12, documents/gallery/legislation=0 แสดงค่าจริงถูกต้อง แทน "ยังไม่มีโมดูล"), Permission (Admin/Editor/Staff ทุก Module ผลลัพธ์เหมือนเดิมทุกจุด), Login/Logout (ทำงานปกติหลังเปลี่ยน Session Cookie Params) — PASS ทั้งหมด ไม่พบ Regression
+- php -l PASS (82 files)
+
 ---
 
 ## Shared / Reusable Components
@@ -271,13 +302,14 @@ Reused Components:
 ## Current Project Status
 
 PHP Syntax:
-- ✅ php -l ผ่านทุกไฟล์ (82 ไฟล์ ล่าสุด ณ Phase 11)
+- ✅ php -l ผ่านทุกไฟล์ (82 ไฟล์ ล่าสุด ณ Phase 12)
 
 Security:
 - ✅ CSRF Protection
 - ✅ SQL Injection Protection
 - ✅ XSS Protection
 - ✅ Permission System (Database-first + Fallback)
+- ✅ Session Cookie: HttpOnly + SameSite=Lax (Secure ตามเงื่อนไข HTTPS จริง) — เพิ่มใน Phase 12
 
 Database:
 - ✅ Migration ผ่านทั้งหมด (010 รายการ)
@@ -291,10 +323,10 @@ Uploads:
 
 ---
 
-## Next Task — Phase 12
+## Next Task
 
-Testing / Bug Fix / Optimization / Installation Guide
+ไม่มี Phase ถัดไปตาม Roadmap เดิมของ MasterPrompt (ครบ Phase 1–12 แล้ว) — รายการ Technical Debt ที่บันทึกไว้ในหัวข้อ Phase 12 สามารถพิจารณาเป็นงานถัดไปได้หากต้องการ
 
 ---
 
-**Last Updated:** 2026-07-17 — Phase 11 (Activity Log) Completed, System Ready for Phase 12
+**Last Updated:** 2026-07-17 — Phase 12 (Testing / Bug Fix / Optimization / Installation Guide) Completed

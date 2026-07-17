@@ -11,6 +11,8 @@ $statLabels = [
     'departments' => 'จำนวนแผนก',
     'activities'  => 'จำนวนกิจกรรม',
     'documents'   => 'จำนวนเอกสาร',
+    'gallery'     => 'จำนวนภาพกิจกรรม',
+    'legislation' => 'จำนวนกฎหมาย/ระเบียบ',
 ];
 ?>
 <!DOCTYPE html>

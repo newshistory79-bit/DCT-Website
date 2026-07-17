@@ -27,5 +27,12 @@ ini_set('error_log', LOG_PATH . '/error.log');
 
 // เริ่ม Session
 if (session_status() === PHP_SESSION_NONE) {
+    // httponly ป้องกัน JavaScript อ่าน Session Cookie, samesite=Lax ป้องกัน CSRF บางส่วน
+    // secure เปิดเฉพาะเมื่อรันบน HTTPS จริงเท่านั้น (ไม่บังคับ true เพื่อไม่ให้ Cookie ใช้งานไม่ได้บน HTTP ตอนพัฒนา)
+    session_set_cookie_params([
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    ]);
     session_start();
 }

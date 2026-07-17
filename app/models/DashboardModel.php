@@ -14,9 +14,11 @@ class DashboardModel extends BaseModel
     private const MODULE_TABLES = [
         'news'        => 'news',
         'employees'   => 'employee',
-        'departments' => null,
+        'departments' => 'departments',
         'activities'  => null,
-        'documents'   => null,
+        'documents'   => 'documents',
+        'gallery'     => 'gallery',
+        'legislation' => 'legislation',
     ];
 
     // คืนค่าจำนวนข้อมูลของแต่ละโมดูล หรือ null หากยังไม่มีตารางรองรับ
