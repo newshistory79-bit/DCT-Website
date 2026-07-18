@@ -75,6 +75,21 @@ function thaiDateParts(?string $date): ?array
     ];
 }
 
+// แปลงขนาดไฟล์ (Byte) เป็นข้อความอ่านง่าย (KB/MB) สำหรับ Documents ฝั่ง Public
+// คืนค่า '-' หาก $bytes เป็น null (ไม่ทราบขนาดไฟล์)
+function formatFileSize(?int $bytes): string
+{
+    if ($bytes === null) {
+        return '-';
+    }
+
+    if ($bytes >= 1048576) {
+        return round($bytes / 1048576, 2) . ' MB';
+    }
+
+    return round($bytes / 1024, 1) . ' KB';
+}
+
 // หน้า 404 กลาง ใช้ร่วมกันได้ทุก Public Controller (News/Activities/Departments/ฯลฯ)
 // เรียกแล้ว return ทันทีจาก Controller เสมอ ห้ามมีโค้ดทำงานต่อหลังเรียกฟังก์ชันนี้
 function renderNotFound(): void

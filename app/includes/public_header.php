@@ -7,7 +7,8 @@ declare(strict_types=1);
 // $metaDescription   string   คำอธิบายหน้าใน <meta name="description"> / og:description
 // $metaKeywords      string   คำค้นหา (ไม่บังคับ - มีค่า Default)
 // $ogType            string   'website' หรือ 'article' (ไม่บังคับ - Default 'website')
-// $ogImage           ?string  URL รูปภาพสำหรับ og:image (ไม่บังคับ - ถ้าไม่มีรูปจริงจะไม่แสดง Tag นี้ ไม่ใช้รูป Dummy)
+// $ogImage           ?string  URL รูปภาพสำหรับ og:image/twitter:image (ไม่บังคับ - ถ้าไม่มีรูปจริงจะไม่แสดง Tag นี้ ไม่ใช้รูป Dummy)
+// $breadcrumb        array    รายการเดียวกับที่ส่งให้ renderBreadcrumb() ในหน้า View (ไม่บังคับ - ถ้ามีจะสร้าง JSON-LD BreadcrumbList ให้อัตโนมัติ ไม่ต้องกำหนดข้อมูลซ้ำสองที่)
 // $activeNav         string   Key ของเมนูที่ Active ปัจจุบัน
 
 $resolvedTitle       = (($pageTitle ?? '') !== '' ? $pageTitle . ' - ' : '') . APP_NAME;
@@ -17,6 +18,37 @@ $resolvedOgType      = $ogType ?? 'website';
 $resolvedOgImage     = $ogImage ?? null;
 $resolvedOgUrl       = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
     . '://' . (string) ($_SERVER['HTTP_HOST'] ?? '') . (string) ($_SERVER['REQUEST_URI'] ?? '');
+$resolvedCanonical   = $resolvedOgUrl;
+$resolvedTwitterCard = $resolvedOgImage !== null ? 'summary_large_image' : 'summary';
+$resolvedBreadcrumb  = $breadcrumb ?? [];
+
+// JSON-LD ฝัง Static เพื่อไม่ให้ Title/Description ที่มาจาก DB ทำลาย <script> Context (json_encode ด้วย Flag ป้องกัน HTML/Unicode Escape เอง)
+$jsonLdFlags = JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+
+$organizationJsonLd = [
+    '@context' => 'https://schema.org',
+    '@type'    => 'GovernmentOrganization',
+    'name'     => APP_NAME,
+    'url'      => baseUrl(''),
+];
+
+$breadcrumbJsonLd = null;
+if (!empty($resolvedBreadcrumb)) {
+    $breadcrumbJsonLd = [
+        '@context'        => 'https://schema.org',
+        '@type'           => 'BreadcrumbList',
+        'itemListElement' => array_values(array_map(
+            static fn (int $index, array $item): array => [
+                '@type'    => 'ListItem',
+                'position' => $index + 1,
+                'name'     => $item['label'],
+                'item'     => $item['url'] ?? $resolvedOgUrl,
+            ],
+            array_keys($resolvedBreadcrumb),
+            $resolvedBreadcrumb
+        )),
+    ];
+}
 
 $navItems = [
     'home'        => ['label' => 'หน้าแรก', 'url' => baseUrl('')],
@@ -45,6 +77,17 @@ $navItems = [
     <meta property="og:image" content="<?= e($resolvedOgImage) ?>">
     <?php endif; ?>
     <meta property="og:url" content="<?= e($resolvedOgUrl) ?>">
+    <meta name="twitter:card" content="<?= e($resolvedTwitterCard) ?>">
+    <meta name="twitter:title" content="<?= e($resolvedTitle) ?>">
+    <meta name="twitter:description" content="<?= e($resolvedDescription) ?>">
+    <?php if ($resolvedOgImage !== null): ?>
+    <meta name="twitter:image" content="<?= e($resolvedOgImage) ?>">
+    <?php endif; ?>
+    <link rel="canonical" href="<?= e($resolvedCanonical) ?>">
+    <script type="application/ld+json"><?= json_encode($organizationJsonLd, $jsonLdFlags) ?></script>
+    <?php if ($breadcrumbJsonLd !== null): ?>
+    <script type="application/ld+json"><?= json_encode($breadcrumbJsonLd, $jsonLdFlags) ?></script>
+    <?php endif; ?>
     <link rel="stylesheet" href="<?= e(baseUrl('assets/css/public.css')) ?>">
 </head>
 <body>

@@ -793,6 +793,37 @@ Badge / Empty State / Breadcrumb / Pagination
 }
 
 /* ============================================================
+   Document Card (Documents Module — ไม่มี Detail Page)
+   ============================================================ */
+.doc-ext-badge {
+    background: var(--color-accent-light);
+    color: var(--color-primary);
+}
+
+.doc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 8px 0 12px;
+    font-size: 12.5px;
+    color: var(--color-text-muted);
+}
+
+.doc-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.doc-missing {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+/* ============================================================
    Detail Article (News / Legislation / Activities ฯลฯ)
    ============================================================ */
 .detail-article {
@@ -846,6 +877,71 @@ Badge / Empty State / Breadcrumb / Pagination
     line-height: 1.8;
     color: var(--color-text);
     margin-bottom: 32px;
+}
+
+/* ============================================================
+   Prev/Next Navigation + Related Items (Detail Page ทุกโมดูล)
+   ============================================================ */
+.prev-next-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 8px 0 32px;
+    padding: 18px 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.prev-next-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 46%;
+    text-decoration: none;
+    color: var(--color-text);
+    min-width: 0;
+}
+
+.prev-next-next {
+    margin-left: auto;
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+.prev-next-icon {
+    flex-shrink: 0;
+    color: var(--color-accent);
+}
+
+.icon-flip {
+    transform: scaleX(-1);
+}
+
+.prev-next-label {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.prev-next-title {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.related-items {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--color-border);
+}
+
+.related-items-title {
+    font-size: 20px;
+    color: var(--color-text);
+    margin: 0 0 20px;
 }
 
 .breadcrumb {
@@ -1043,6 +1139,132 @@ Badge / Empty State / Breadcrumb / Pagination
 /* ============================================================
    Responsive
    ============================================================ */
+/* ============================================================
+   Gallery Search + Lightbox (Stage 2.4)
+   ============================================================ */
+.gallery-search {
+    margin: 0 0 24px;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 14, 26, 0.92);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+    padding: 24px;
+}
+
+.lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.lightbox[hidden] {
+    display: none;
+}
+
+.lightbox-content {
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lightbox-image {
+    max-width: 100%;
+    max-height: 68vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    background: var(--color-bg-alt);
+}
+
+.lightbox-caption {
+    color: var(--color-white);
+    text-align: center;
+    margin-top: 16px;
+    max-width: 640px;
+}
+
+.lightbox-title {
+    font-size: 17px;
+    margin: 0 0 6px;
+}
+
+.lightbox-description {
+    font-size: 14px;
+    opacity: 0.85;
+    margin: 0;
+}
+
+.lightbox-counter {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    margin: 10px 0 0;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    border-radius: 50%;
+    color: var(--color-white);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.lightbox-close:hover,
+.lightbox-prev:hover:not(:disabled),
+.lightbox-next:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.lightbox-close {
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+}
+
+.lightbox-prev,
+.lightbox-next {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+}
+
+.lightbox-prev {
+    left: 20px;
+}
+
+.lightbox-next {
+    right: 20px;
+}
+
+.lightbox-prev:disabled,
+.lightbox-next:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+body.lightbox-open {
+    overflow: hidden;
+}
+
 @media (max-width: 1024px) {
     .top-bar-links {
         display: none;
@@ -1160,5 +1382,42 @@ Badge / Empty State / Breadcrumb / Pagination
 
     .site-brand-subtitle {
         display: none;
+    }
+
+    .lightbox {
+        padding: 12px;
+    }
+
+    .lightbox-close {
+        top: 8px;
+        right: 8px;
+        width: 38px;
+        height: 38px;
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        width: 40px;
+        height: 40px;
+    }
+
+    .lightbox-prev {
+        left: 8px;
+    }
+
+    .lightbox-next {
+        right: 8px;
+    }
+
+    .lightbox-image {
+        max-height: 58vh;
+    }
+
+    .lightbox-title {
+        font-size: 15px;
+    }
+
+    .lightbox-description {
+        font-size: 13px;
     }
 }

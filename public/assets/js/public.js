@@ -1,8 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
+    initNavigation();
+    initLightbox();
+});
+
+// ============================================================
+// Navigation (Nav Toggle / Hero Slider / Back Links)
+// ============================================================
+function initNavigation() {
     initNavToggle();
     initHeroSlider();
     initBackLinks();
-});
+}
 
 // ปุ่ม "กลับหน้าก่อนหน้า" (เช่นหน้า 404) - ใช้ History กลับไปหน้าก่อน ถ้าไม่มีประวัติให้ไปหน้าแรกแทน
 function initBackLinks() {
@@ -98,4 +106,167 @@ function initHeroSlider() {
     slider.addEventListener('mouseleave', start);
 
     start();
+}
+
+// ============================================================
+// Gallery Lightbox (Stage 2.4) - Fullscreen, Prev/Next, Keyboard,
+// Touch Swipe, Focus Trap, Restore Focus - Vanilla JS ล้วน
+// ============================================================
+function initLightbox() {
+    var triggers = document.querySelectorAll('[data-lightbox-image]');
+
+    if (!triggers.length) {
+        return;
+    }
+
+    var lightbox = document.getElementById('galleryLightbox');
+
+    if (!lightbox) {
+        return;
+    }
+
+    var items = Array.prototype.map.call(triggers, function (el) {
+        return {
+            image: el.getAttribute('data-lightbox-image'),
+            title: el.getAttribute('data-lightbox-title') || '',
+            description: el.getAttribute('data-lightbox-description') || ''
+        };
+    });
+
+    var imageEl        = lightbox.querySelector('.lightbox-image');
+    var titleEl        = lightbox.querySelector('.lightbox-title');
+    var descriptionEl  = lightbox.querySelector('.lightbox-description');
+    var counterEl      = lightbox.querySelector('.lightbox-counter');
+    var closeBtn       = lightbox.querySelector('.lightbox-close');
+    var prevBtn        = lightbox.querySelector('.lightbox-prev');
+    var nextBtn        = lightbox.querySelector('.lightbox-next');
+
+    var currentIndex       = 0;
+    var lastFocusedElement = null;
+    var touchStartX        = null;
+
+    function render() {
+        var item = items[currentIndex];
+
+        imageEl.src = item.image;
+        imageEl.alt = item.title;
+        titleEl.textContent = item.title;
+        descriptionEl.textContent = item.description;
+        descriptionEl.hidden = item.description === '';
+        counterEl.textContent = (currentIndex + 1) + ' / ' + items.length;
+        prevBtn.disabled = items.length <= 1;
+        nextBtn.disabled = items.length <= 1;
+    }
+
+    function openAt(index) {
+        currentIndex = index;
+        lastFocusedElement = document.activeElement;
+
+        render();
+
+        lightbox.hidden = false;
+        document.body.classList.add('lightbox-open');
+        document.addEventListener('keydown', onKeydown);
+
+        // เปิด Class .active ในเฟรมถัดไปเพื่อให้ CSS Transition (Fade In) ทำงาน
+        // ต้องโฟกัสปุ่มปิด "หลัง" จากนั้นเท่านั้น เพราะก่อนมี .active องค์ประกอบยังเป็น visibility:hidden
+        // (Browser จะเพิกเฉยต่อ .focus() บน Element ที่มองไม่เห็นอยู่แบบเงียบๆ)
+        window.requestAnimationFrame(function () {
+            lightbox.classList.add('active');
+            closeBtn.focus();
+        });
+    }
+
+    function goTo(index) {
+        currentIndex = (index + items.length) % items.length;
+        render();
+    }
+
+    function close() {
+        lightbox.classList.remove('active');
+        document.body.classList.remove('lightbox-open');
+        document.removeEventListener('keydown', onKeydown);
+
+        window.setTimeout(function () {
+            lightbox.hidden = true;
+            imageEl.src = '';
+        }, 250);
+
+        if (lastFocusedElement) {
+            lastFocusedElement.focus();
+        }
+    }
+
+    function onKeydown(event) {
+        if (event.key === 'Escape') {
+            close();
+        } else if (event.key === 'ArrowLeft') {
+            goTo(currentIndex - 1);
+        } else if (event.key === 'ArrowRight') {
+            goTo(currentIndex + 1);
+        } else if (event.key === 'Tab') {
+            trapFocus(event);
+        }
+    }
+
+    // Focus Trap - วนโฟกัสอยู่ในปุ่มของ Lightbox เท่านั้นขณะเปิด (WCAG Keyboard Trap ที่ถูกต้อง)
+    function trapFocus(event) {
+        var focusable = lightbox.querySelectorAll('button:not(:disabled)');
+
+        if (!focusable.length) {
+            return;
+        }
+
+        var first = focusable[0];
+        var last  = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    }
+
+    triggers.forEach(function (trigger, index) {
+        trigger.addEventListener('click', function (event) {
+            event.preventDefault();
+            openAt(index);
+        });
+    });
+
+    closeBtn.addEventListener('click', close);
+    prevBtn.addEventListener('click', function () { goTo(currentIndex - 1); });
+    nextBtn.addEventListener('click', function () { goTo(currentIndex + 1); });
+
+    // คลิกพื้นหลังนอกกรอบภาพเพื่อปิด (ไม่ปิดเมื่อคลิกที่ตัวภาพ/Caption)
+    lightbox.addEventListener('click', function (event) {
+        if (event.target === lightbox) {
+            close();
+        }
+    });
+
+    // Touch Swipe ซ้าย/ขวาเพื่อเปลี่ยนภาพ
+    lightbox.addEventListener('touchstart', function (event) {
+        touchStartX = event.touches[0].clientX;
+    }, { passive: true });
+
+    lightbox.addEventListener('touchend', function (event) {
+        if (touchStartX === null) {
+            return;
+        }
+
+        var deltaX = event.changedTouches[0].clientX - touchStartX;
+
+        if (Math.abs(deltaX) > 40) {
+            if (deltaX > 0) {
+                goTo(currentIndex - 1);
+            } else {
+                goTo(currentIndex + 1);
+            }
+        }
+
+        touchStartX = null;
+    }, { passive: true });
 }
