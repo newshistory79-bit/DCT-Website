@@ -15,11 +15,17 @@ class DashboardModel extends BaseModel
         'news'        => 'news',
         'employees'   => 'employee',
         'departments' => 'departments',
-        'activities'  => null,
+        'activities'  => 'activities',
         'documents'   => 'documents',
         'gallery'     => 'gallery',
         'legislation' => 'legislation',
     ];
+
+    // ตารางที่ต้องนับเฉพาะแถวที่ยังไม่ถูก Soft Delete (deleted_at IS NULL)
+    // ขอบเขตเฉพาะ activities ตามที่อนุมัติใน Phase 13 Stage 3 - ไม่ขยายผลไปยังโมดูลอื่น
+    // เพราะโมดูลอื่นมีข้อมูลที่ถูก Soft Delete อยู่แล้วจริง (เช่น departments 12 แถว/Active 9 แถว)
+    // การเปลี่ยน Query ของโมดูลเดิมจะทำให้ตัวเลขบน Stat Card เดิมเปลี่ยนไปโดยไม่ได้รับอนุมัติ
+    private const EXCLUDE_DELETED_TABLES = ['activities'];
 
     // คืนค่าจำนวนข้อมูลของแต่ละโมดูล หรือ null หากยังไม่มีตารางรองรับ
     public function getModuleCounts(): array
@@ -32,7 +38,13 @@ class DashboardModel extends BaseModel
                 continue;
             }
 
-            $stmt = $this->db->query('SELECT COUNT(*) FROM `' . $table . '`');
+            $sql = 'SELECT COUNT(*) FROM `' . $table . '`';
+
+            if (in_array($table, self::EXCLUDE_DELETED_TABLES, true)) {
+                $sql .= ' WHERE deleted_at IS NULL';
+            }
+
+            $stmt = $this->db->query($sql);
             $counts[$label] = (int) $stmt->fetchColumn();
         }
 

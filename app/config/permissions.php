@@ -15,6 +15,7 @@ return [
         'legislation'  => ['view', 'create', 'edit', 'delete'],
         'documents'    => ['view', 'create', 'edit', 'delete'],
         'gallery'      => ['view', 'create', 'edit', 'delete'],
+        'activities'   => ['view', 'create', 'edit', 'delete'],
         'users'        => ['view', 'create', 'edit', 'delete'],
         'activity_log' => ['view'],
     ],
@@ -25,6 +26,7 @@ return [
         'legislation'  => ['view', 'create', 'edit'],
         'documents'    => ['view', 'create', 'edit'],
         'gallery'      => ['view', 'create', 'edit'],
+        'activities'   => ['view', 'create', 'edit'],
     ],
     'Staff' => [
         'departments'  => ['view'],
@@ -33,5 +35,6 @@ return [
         'legislation'  => ['view'],
         'documents'    => ['view'],
         'gallery'      => ['view'],
+        'activities'   => ['view'],
     ],
 ];

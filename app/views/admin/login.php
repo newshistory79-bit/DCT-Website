@@ -13,6 +13,7 @@ declare(strict_types=1);
 </head>
 <body>
 <main class="login-box">
+    <div class="login-mark">DTC</div>
     <h1><?= e(APP_NAME) ?></h1>
     <h2>เข้าสู่ระบบผู้ดูแลระบบ</h2>
 

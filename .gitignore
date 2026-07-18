@@ -13,3 +13,6 @@ Desktop.ini
 
 # Claude Code local session settings (not part of the website project)
 .claude/
+
+# Design reference mockups (used during development only, not required at runtime)
+design/

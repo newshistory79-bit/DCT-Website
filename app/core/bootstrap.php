@@ -17,6 +17,7 @@ require_once APP_PATH . '/core/Autoloader.php';
 
 // โหลด Helper Function
 require_once APP_PATH . '/helpers/functions.php';
+require_once APP_PATH . '/helpers/icons.php';
 
 // ตั้งค่า Error Logging ไปยัง logs/error.log
 ini_set('log_errors', '1');

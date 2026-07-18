@@ -2,8 +2,8 @@
 
 **Project:** TCSP Administration System (Department of Technology and Communication of Savannakhet Province)
 **Architecture:** PHP MVC (Native PHP 8+) + PDO + MariaDB 10.4.x
-**Current Phase:** Phase 12 Completed ✅
-**Next Phase:** ไม่มี Phase ถัดไปตาม Roadmap เดิม (Phase 1–12 ครบตาม MasterPrompt) — งานถัดไปขึ้นอยู่กับ Technical Debt/Requirement ใหม่ที่จะได้รับมอบหมาย
+**Current Phase:** Phase 13 (Activities Management System) — Stage 1–4 + Quality Review Completed ✅
+**Next Phase:** รอผู้ใช้อนุมัติ Commit/Push Phase 13 จากนั้นกลับไปทำ Public Website Stage 2 (News/Legislation/Documents/Gallery) และ Admin Panel Redesign Module 2 (Employees) ที่ค้างไว้
 
 ---
 
@@ -24,6 +24,7 @@
 | Phase 10 | Users Module & Database Permission System | ✅ Completed |
 | Phase 11 | Activity Log | ✅ Completed |
 | Phase 12 | Testing / Bug Fix / Optimization / Installation Guide | ✅ Completed |
+| Phase 13 | Activities Management System (Admin CRUD + Dashboard + Public + Quality Review) | ✅ Completed |
 
 ---
 
@@ -323,10 +324,156 @@ Uploads:
 
 ---
 
-## Next Task
+## Public Website — Stage 1: Foundation + Layout + Home ✅ Completed
 
-ไม่มี Phase ถัดไปตาม Roadmap เดิมของ MasterPrompt (ครบ Phase 1–12 แล้ว) — รายการ Technical Debt ที่บันทึกไว้ในหัวข้อ Phase 12 สามารถพิจารณาเป็นงานถัดไปได้หากต้องการ
+ขอบเขต: สร้างโครงเว็บไซต์ Public (Header/Nav/Footer/Design System) และหน้า Home จริง แทนที่ Phase-1 stub เดิมใน `public/index.php` — ดึงข้อมูลข่าวล่าสุดจาก `NewsModel` เดิม (ไม่สร้าง Model ใหม่ซ้ำ, ไม่แก้ Database Schema, ไม่มี Dummy Data)
+
+ไฟล์ที่สร้างใหม่ (7 ไฟล์):
+- `app/helpers/icons.php` — ชุดไอคอน Inline SVG กลางของ Public Website
+- `app/includes/public_header.php`, `app/includes/public_footer.php`
+- `app/controllers/PublicHomeController.php`
+- `app/views/public/home.php`
+- `public/assets/css/public.css`, `public/assets/js/public.js`
+
+ไฟล์ที่แก้ไข (2 ไฟล์):
+- `public/index.php` — เปลี่ยนจาก Phase-1 DB Connection Test Stub เป็น Front Controller เรียก `PublicHomeController`
+- `app/core/bootstrap.php` — เพิ่ม `require_once` โหลด `app/helpers/icons.php` (Additive เท่านั้น ไม่กระทบพฤติกรรมเดิม)
+
+การตัดสินใจสำคัญ (อ้างอิงจากการวิเคราะห์ Design Reference `design/image.png` และข้อจำกัดของฐานข้อมูลจริง):
+- ยังไม่มีไฟล์รูปภาพจริงในโปรเจกต์ (มีเฉพาะ Design Mockup และรูปพนักงานตัวอย่าง 1 ไฟล์) → Hero ใช้ Placeholder/Graphic (Inline SVG + CSS Gradient) แทนภาพถ่ายจริงไปก่อน
+- ตาราง `employee` ไม่มี `department_id` เชื่อมกับ `departments` → ออกแบบให้ Departments/Employees เป็น 2 หมวดอิสระจากกัน (ไม่แก้ Schema)
+- ตัด Language-switcher (ธง 2 ธง) ออกจาก Top Bar ของ Design Mockup เพราะข้อมูลใน DB เป็นภาษาเดียวต่อ Record ไม่มีคอลัมน์รองรับ Multi-language จริง — แทนที่ด้วยข้อมูลติดต่อ (โทร/อีเมล) ที่ใช้งานได้จริง
+
+Reused Components: `BaseController`, `BaseModel`, `NewsModel::paginate()`, `Database`, `Autoloader`, `app/helpers/functions.php` (`e()`, `baseUrl()`, `uploadUrl()`) — ไม่แก้ไข Admin Controller/Model/View/CSS/JS แม้แต่ไฟล์เดียว
+
+Testing:
+- `php -l` PASS ทุกไฟล์ที่สร้าง/แก้ไข (7 ไฟล์)
+- HTTP Testing PASS: `GET /public/` → 200, `public.css`/`public.js` → 200, แสดง Empty State ข่าวถูกต้อง (ตาราง `news` ยังไม่มีข้อมูล Published ในขณะนี้), ไม่พบ PHP Warning/Notice/Fatal ใน Output
+- Regression PASS: `public/admin/login.php` และ `admin.css` ยังโหลดได้ปกติ (200) — Admin Panel ไม่ถูกกระทบ
+- หมายเหตุ: ยังไม่ได้ตรวจสอบด้วย Browser Screenshot จริง (ไม่มีเครื่องมือ Browser Automation ในสภาพแวดล้อมนี้) ผู้ใช้ควรเปิด `http://localhost/DTC-Website/public/` ด้วยตนเองเพื่อตรวจสอบ UI ก่อนเริ่ม Stage 2
+
+รอตรวจสอบ/อนุมัติจากผู้ใช้ก่อนเริ่ม **Stage 2 — Content Modules (News, Legislation, Documents, Gallery)**
+
+### Revision — ปรับ Home ให้ตรงกับ `design/index.png` แบบละเอียด
+
+ผู้ใช้พบว่า `design/index.png` (คนละไฟล์กับ `design/image.png` ที่ใช้วิเคราะห์ตอนแรก) มีรายละเอียดครบกว่ามาก และขอให้ทำตามภาพนี้ให้ใกล้เคียงที่สุด จึงปรับ Header/Hero/Quick Menu/News Card/Stats Bar ใหม่ทั้งหมด (ไฟล์เดิม ไม่มีไฟล์ใหม่เพิ่มด้าน Layout):
+
+- **Top Bar**: เพิ่มเวลาทำการ, ลิงก์ "บริการออนไลน์ / คำถามที่พบบ่อย / แผนผังเว็บไซต์", ช่องค้นหาเปลี่ยนเป็นพื้นขาวทึบ + ปุ่มค้นหาวงกลมกรมท่า (จากเดิมโปร่งแสง)
+- **Header**: แก้บั๊ก Flexbox ที่ทำให้ข้อความล้น/ทับกัน (`flex-shrink: 0`), เปลี่ยนข้อความชื่อหน่วยงานให้ตรงกับตัวอักษรในภาพ ("พะแนก เทคโนโลยีและการสื่อสาร / แขวงสะหวันนะเขต"), เปลี่ยนสไตล์เมนู Active จากพื้นหลังทึบเป็นขีดเส้นใต้สีน้ำเงินตามภาพ, ตัด "กฎหมาย/ระเบียบ" ออกจากเมนูหลัก (ภาพต้นฉบับมี 8 รายการ ไม่มี Legislation) — ย้ายไปไว้ที่ Footer แทนเพื่อให้ยังเข้าถึงได้
+- **Hero**: เปลี่ยนปุ่มรองจากปุ่มโปร่งใสเป็นปุ่มขาวทึบ, จุด Slider จาก 3 เป็น 5 จุด (วงแหวนโปร่ง/วงกลมทึบ แทน Pill), จัดข้อความกึ่งกลางแนวตั้งแทนการชิดล่าง
+- **Quick Menu**: ไอคอนเอาพื้นหลังวงกลมออก (ใช้ไอคอนเปล่าตามภาพ), หัวข้อเปลี่ยนเป็นสีน้ำเงินกรมท่า
+- **News Card**: Badge วันที่เปลี่ยนจากพื้นเข้มเป็นพื้นขาว + เงา ตามภาพ
+- **Stats Bar**: ปรับคำต่อท้ายป้ายให้ตรงภาพ ("...รายการ", "...คน", "...โครงการ")
+- เพิ่มหน้า **แผนผังเว็บไซต์** (`public/sitemap.php`, `PublicPageController::sitemap()`, `app/views/public/sitemap.php`) เพื่อให้ลิงก์ใน Top Bar ใช้งานได้จริง ไม่ใช่ลิงก์หลอก
+
+**ข้อยกเว้นที่ตั้งใจไม่ Copy ตรงเป๊ะ 2 จุด (แจ้งผู้ใช้แล้ว)**:
+1. โลโก้ตราแผ่นดินลาว (รายละเอียดสูง) — ใช้ตราวงกลมสีทองแบบย่อแทน เพราะเป็นสัญลักษณ์ทางการที่ไม่ควรลอกเลียนแบบผิดเพี้ยน
+2. หัวข้อ Hero ในภาพต้นฉบับใช้คำว่า "จังหวัด" (คำไทย) แต่แก้ไขเป็น "แขวง" (คำศัพท์ทางการปกครองที่ถูกต้องของลาว) เพื่อความถูกต้อง เนื่องจากหน่วยงานอยู่ใน สปป.ลาว
+
+Testing: `php -l` PASS ทุกไฟล์ (10 ไฟล์ที่แก้/สร้างเพิ่ม), CSS Brace Balanced, HTTP Testing PASS (`GET /public/` และ `GET /public/sitemap.php` → 200 ไม่มี PHP Warning/Error), Regression PASS (Admin Panel ปกติ)
+
+## Admin Panel — Design Refresh (คั่นระหว่าง Public Website Stage 1 และ 2 ตามคำขอผู้ใช้)
+
+ผู้ใช้ขอให้ปรับ Design ของ Admin Panel ทั้งระบบให้มี Identity เดียวกับ Public Website ที่เพิ่งทำ (สีกรมท่า/ฟ้า, มุมโค้ง, เงานุ่ม) ก่อนกลับไปทำ Public Stage 2 ต่อ
+
+ขอบเขต: **ปรับเฉพาะ CSS + Include ที่ใช้ร่วมกันทุกโมดูล เท่านั้น** — ไม่แตะ Controller/Model และไม่แก้ไข View รายโมดูล (Departments/Employees/News/Legislation/Documents/Gallery/Users/Activity Log) แม้แต่ไฟล์เดียว เพราะทุกโมดูลใช้ Class เดียวกันจาก `admin.css`/`crud.css` อยู่แล้ว (ยืนยันจากการอ่านโค้ดจริงของ `departments/index.php` ก่อนแก้) ทำให้ Design ใหม่ไหลไปถึงทุกหน้าโดยอัตโนมัติ
+
+ไฟล์ที่แก้ไข (7 ไฟล์):
+- `public/assets/css/admin.css` — เพิ่ม CSS Variables (Design Token ชุดเดียวกับ `public.css`), ปรับ Topbar/Sidebar/Stat Card/Info Box ใหม่ทั้งหมด
+- `public/assets/css/crud.css` — ปรับปุ่ม/Filter Bar/ตาราง/Badge/Pagination/ฟอร์มให้ใช้ Token ชุดเดียวกัน
+- `public/assets/css/auth.css` — ปรับหน้า Login ใหม่ (พื้นหลัง Gradient, ปุ่ม/Input Focus State)
+- `app/helpers/icons.php` — เพิ่มไอคอนใหม่ 5 แบบ (`dashboard`, `users`, `settings`, `log`, `logout`) สำหรับ Sidebar/Dashboard
+- `app/includes/admin_sidebar.php` — เพิ่มไอคอนหน้าเมนูทุกรายการ + เพิ่ม Logic ไฮไลท์เมนูปัจจุบัน (Active State ตาม URL จริง, เดิมไม่มี Logic นี้)
+- `app/views/admin/login.php` — เพิ่ม `<div class="login-mark">` (ตราวงกลมเหนือชื่อระบบ)
+- `app/views/admin/dashboard.php` — เพิ่มไอคอนใน Stat Card แต่ละใบ
+
+Reused: ทุก Class เดิม (`.page-heading`, `.btn-primary`, `.filter-bar`, `.data-table`, `.badge`, `.pagination-links`, `.data-form` ฯลฯ) และ ID ที่ `admin.js` อ้างอิง (`#sidebarToggle`, `#adminSidebar`, `data-confirm`) **ไม่มีการเปลี่ยนชื่อ Class/ID ใดๆ ที่กระทบ JavaScript หรือ PHP เดิม**
+
+Testing:
+- `php -l` PASS ทุกไฟล์ที่แก้ (4 ไฟล์ PHP), CSS Brace Balanced ทั้ง 3 ไฟล์ (admin.css 49/49, crud.css 50/50, auth.css 13/13)
+- HTTP Testing PASS: `GET /admin/login.php` → 200 ไม่มี PHP Warning/Error, Asset ทั้ง 3 ไฟล์ CSS โหลด 200
+- Regression PASS: Public Website ไม่ถูกกระทบ (ตรวจแล้ว `icons.php` เป็นการเพิ่ม Entry ใหม่ ไม่กระทบของเดิม)
+- **หมายเหตุ**: ไม่ได้ทดสอบ Login จริงเข้าหน้า Dashboard เพราะจะต้องเปลี่ยน Session/Password ของบัญชี Admin จริงตาม `first_login` Flag ซึ่งเป็นการเปลี่ยนสถานะข้อมูลจริงโดยไม่จำเป็น — ผู้ใช้ควร Login ตรวจสอบหน้า Dashboard/Sidebar/CRUD ด้วยตนเองอีกครั้ง
+
+รอตรวจสอบจากผู้ใช้ ก่อนกลับไปทำ **Public Website Stage 2**
+
+## Admin Panel — UI/UX Redesign (Module 1/9: Dashboard) — อ้างอิง `design/admin.jpeg`
+
+ผู้ใช้ขอ Redesign Admin Panel ทั้งระบบแบบละเอียด (Sidebar จัดกลุ่ม, Topbar มี Notification/User Dropdown, Dashboard มี Stat Card ไล่เฉด/Quick Action/Timeline/Chart, ตารางแบบ Modern ฯลฯ) พร้อมกำหนดเงื่อนไขชัดเจน: **ห้ามแก้ Business Logic/Controller/Model/Routing/Database/Permission/Authentication ใดๆ ทำเฉพาะ UI/UX** และให้ทำทีละโมดูล หยุดรออนุมัติทุกครั้งก่อนไปต่อ ลำดับ: Dashboard → Employees → Departments → News → Documents → Gallery → Users → Activity Log → Settings
+
+**Module 1: Dashboard — เสร็จแล้ว**
+
+ไฟล์ที่แก้ไข (7 ไฟล์):
+- `public/assets/css/admin.css` — Design Token ใหม่ตามสีที่ผู้ใช้กำหนด (Primary #1A3D7C, Secondary #2563EB, Success/Warning/Danger), Topbar/Sidebar/Stat Card/Quick Action/Timeline/Chart ทั้งหมด
+- `app/includes/admin_header.php` — เพิ่ม Notification Dropdown + User Avatar Dropdown (แทนลิงก์ออกจากระบบเปล่าๆ เดิม)
+- `app/includes/admin_sidebar.php` — เพิ่มไอคอน, จัดกลุ่มเมนู (Dashboard/Content/Management/System), รองรับ Sidebar แบบย่อ (Collapsed)
+- `public/assets/js/admin.js` — เพิ่ม Logic เปิด/ปิด Dropdown และ Sidebar Collapse (จอใหญ่) แยกจากพฤติกรรม Slide-in เดิมบนจอเล็ก (ของเดิมยังทำงานเหมือนเดิมทุกประการ)
+- `app/views/admin/dashboard.php` — Stat Card ไล่เฉดสี + ลิงก์ดูทั้งหมด, Quick Action (กรอง Permission ด้วย `can()` เดิม), Timeline กิจกรรมล่าสุด, กราฟเส้น CSS/SVG (ไม่ใช้ Library ภายนอก)
+- `app/controllers/DashboardController.php`, `app/models/ActivityLogModel.php` — เพิ่ม Method อ่านข้อมูลอย่างเดียว (`getDailyCounts()`) และดึงข้อมูล `recentActivity`/`dailyCounts` เพิ่มเติม (Additive เท่านั้น ไม่แก้ไข Logic เดิมที่มีอยู่ - `$stats`/`$recentLogins` ยังทำงานเหมือนเดิมทุกประการ)
+
+**การตัดสินใจสำคัญด้านความปลอดภัย**: ข้อมูล Timeline/กราฟดึงจากตาราง `activity_logs` ซึ่งตาม Phase 11 กำหนดให้ดูได้เฉพาะ Role ที่มีสิทธิ์ `activity_log:view` (Admin เท่านั้น) — จึงเช็ค `can('activity_log','view')` ก่อนดึงข้อมูลทุกจุด (ทั้งใน Controller และ Topbar) เพื่อไม่ให้ Editor/Staff เห็นข้อมูล Audit Log ผ่าน Dashboard/Notification โดยไม่ได้ตั้งใจ (เดิมหน้า Activity Log จำกัดเฉพาะ Admin อยู่แล้ว ต้องคงพฤติกรรมเดิมไว้) — สำหรับ Role ที่ไม่มีสิทธิ์ จะเห็น Fallback เป็นข้อมูลบัญชีตัวเอง/ผู้ Login ล่าสุดแทน (เนื้อหาเดิมก่อน Redesign)
+
+**Known Deliberate Deviation จาก Design Reference**: ไม่ได้ทำระบบ Notification จริง (ตาราง `notifications`/สถานะอ่านแล้ว-ยังไม่อ่านไม่มีในฐานข้อมูล) — ใช้ Feed กิจกรรมล่าสุดจาก `activity_logs` แทน (ข้อมูลจริง ไม่ใช่ Dummy) ไม่มีตัวเลข Badge ปลอมบนกระดิ่ง
+
+Testing:
+- `php -l` PASS ทุกไฟล์ที่แก้ (5 ไฟล์ PHP), CSS Brace Balanced (admin.css 106/106)
+- Render Test ผ่าน CLI จำลอง Session Admin (ไม่แตะ Database/Password จริงของบัญชี Admin จริง เพื่อเลี่ยงปัญหา `first_login` บังคับเปลี่ยนรหัสผ่าน) — ยืนยันไม่มี PHP Warning/Notice/Exception, Timeline/Chart/Quick Action/Dropdown แสดงข้อมูลจริงจากฐานข้อมูลถูกต้องครบถ้วน
+- Regression PASS: หน้า Login และ Public Website โหลดปกติ (200) ไม่ถูกกระทบ
+
+รอผู้ใช้ตรวจสอบและอนุมัติ ก่อนเริ่ม **Module 2: Employees** (งานนี้ถูกคั่นกลางด้วย Phase 13 — ยังไม่ได้กลับไปทำต่อ)
 
 ---
 
-**Last Updated:** 2026-07-17 — Phase 12 (Testing / Bug Fix / Optimization / Installation Guide) Completed
+## Phase 13 — Activities Management System ✅ Completed
+
+สร้าง Module "Activities" (กิจกรรม) ที่ Dashboard/Public Website เตรียม Placeholder ไว้ตั้งแต่ต้นแต่ยังไม่มีตารางฐานข้อมูลรองรับจริง ทำตามมาตรฐานเดียวกับ News/Gallery ทุกประการ วิเคราะห์ก่อนแล้วขออนุมัติทีละ Stage (Stage 1: DB → Stage 2: Admin CRUD → Stage 3: Dashboard → Stage 4: Public → Quality Review) ตามที่ผู้ใช้กำหนด
+
+### Stage 1 — Database
+- Migration `011_create_activities_table.sql`: id, title, description, activity_date (NOT NULL), location, image (Optional), status, timestamps, deleted_at, Index บน status และ activity_date
+- Seeder `005_seed_activities_permissions.sql`: Admin (view/create/edit/delete), Editor (view/create/edit), Staff (view) — Pattern เดียวกับ gallery — Execute แล้ว ยืนยันด้วย `DESCRIBE`/`SELECT` จริง
+
+### Stage 2 — Admin CRUD
+ไฟล์ใหม่: `app/models/ActivityModel.php`, `app/controllers/ActivityController.php`, `app/views/admin/activities/{index,form}.php`, `public/admin/activities/{index,form,delete}.php`
+แก้ไข: `app/includes/admin_sidebar.php` (เปิดเมนู Activities)
+ทดสอบผ่าน HTTP จริงครบ: Create (มี/ไม่มีรูป), Edit (เปลี่ยน/ไม่เปลี่ยนรูป), Soft Delete, CSRF, XSS, SQL Injection, Search/Filter/Sort/Pagination, Permission Matrix 3 Role — PASS ทั้งหมด
+
+### Stage 3 — Dashboard Integration
+แก้ไข: `app/models/DashboardModel.php` (Map ตาราง activities จริง + นับเฉพาะ `deleted_at IS NULL` **เฉพาะ activities** เพื่อไม่กระทบตัวเลข Stat Card เดิมของโมดูลอื่นที่มีข้อมูล Soft Delete อยู่แล้วจริง เช่น departments 12 total/9 active), `app/views/admin/dashboard.php` (ลิงก์ Stat Card), `app/config/permissions.php` (Fallback ให้ตรง Seeder)
+ทดสอบ Dashboard ทั้ง Admin/Editor/Staff ผ่าน CLI Session จำลอง — PASS ทั้งหมด, Departments Stat Card ยืนยันยังแสดง 12 เหมือนเดิม (ไม่มี Regression)
+
+### Stage 4 — Public Website Integration
+ไฟล์ใหม่: `app/controllers/PublicActivityController.php`, `app/views/public/activities/{index,detail}.php`, `public/activities/{index,detail}.php`
+แก้ไข: `public_header.php`/`public_footer.php`/`home.php` (เมนู "กิจกรรม" ชี้ Activities แทน Gallery, เพิ่มเมนู "คลังภาพ" แยก), `PublicHomeController.php` (Stat กิจกรรมนับจาก ActivityModel จริง)
+**บั๊กที่พบและแก้ไข**: Front Controller ใช้ `dirname(__DIR__)` ผิด (ต้องเป็น `dirname(__DIR__, 2)`) ทำให้ Fatal Error หา bootstrap.php ไม่เจอ — แก้ไขและทดสอบซ้ำผ่านแล้ว
+ทดสอบ: Published/Draft/Soft-Delete Visibility, Sort `activity_date DESC`, Pagination, Empty State, XSS — PASS ทั้งหมด
+
+### Quality Review (ก่อน Stage 5) — ขอบเขตเฉพาะหน้าที่สร้างจริงแล้ว (Home + Activities)
+ผู้ใช้ยืนยันขอบเขตเฉพาะหน้าที่มีอยู่จริง ไม่สร้าง Public Module อื่น (News/Departments ฯลฯ) ที่ยังไม่เริ่ม (Public Website Stage 2)
+
+ไฟล์ใหม่ (3 ไฟล์): `app/views/public/404.php`, `app/includes/public_empty_state.php`
+แก้ไข (11 ไฟล์): `app/helpers/functions.php` (`renderNotFound()`, `renderEmptyState()`), `app/includes/public_header.php` (SEO Meta ครบ: keywords/og:title/description/type/image/url), `app/includes/public_footer.php` (`defer`), `public/assets/css/public.css` (Breadcrumb Semantic, Focus State, Empty State Actions), `public/assets/js/public.js` (`.js-back-link`), `app/views/public/{home,sitemap}.php`, `app/views/public/activities/{index,detail}.php`, `app/controllers/{PublicHomeController,PublicActivityController,PublicPageController}.php`
+
+รายละเอียด:
+1. **404 กลาง** — `renderNotFound()` Helper ใช้ร่วมได้ทุก Public Controller ในอนาคต, Wire เข้ากับ `PublicActivityController::detail()` แล้ว (เดิมเขียน Inline แยกเอง)
+2. **SEO** — เพิ่ม keywords/og:title/description/type/image/url ครบทุกหน้า ใช้ข้อมูลจริงต่อหน้า (Activity Detail ใช้ชื่อกิจกรรมจริง, og:image ใช้รูปจริงถ้ามี — **ไม่ใส่ og:image ปลอมเมื่อไม่มีรูปจริง** เพราะยังไม่มี Asset ภาพจริงของเว็บไซต์)
+3. **Breadcrumb** — อัปเกรดเป็น Semantic `<nav aria-label="breadcrumb"><ol>` ทุกหน้า (Activities Index/Detail, Sitemap) — Home ไม่ใส่ตามธรรมเนียม UX มาตรฐาน (Root Page ไม่ต้องมี Breadcrumb ชี้ตัวเอง)
+4. **Empty State** — รวมเป็นข้อความเดียวกันทั้งเว็บไซต์ "ยังไม่มีข้อมูลในขณะนี้" + ปุ่มกลับหน้าหลัก ผ่าน `renderEmptyState()`
+5. **Performance** — เพิ่ม `defer` บน Script, `loading="lazy"` บนรูปทั้งหมด, ตรวจสอบแล้วไม่มี CSS/JS ซ้ำ
+6. **Accessibility** — พบและแก้ `outline: none` ที่ Search Box ไม่มี Focus Indicator ทดแทน (เพิ่ม `:focus-within`), เพิ่ม Global `:focus-visible` Style, ตรวจ alt/aria-label ครบทุกจุดอยู่แล้ว
+7. **Security Re-check** — ตรวจ Output ทุกจุด Escape ด้วย `e()` ครบ, GET Parameter ผ่าน `(int)` Cast ครบ, รูปภาพผ่าน `uploadUrl()` ครบ ไม่มี Path Traversal (ชื่อไฟล์มาจาก UploadHelper สุ่มเสมอ)
+
+Testing: `php -l` PASS 12/12 ไฟล์, CSS Brace Balanced (163/163), ทดสอบ 404/Empty State/OG Meta/Breadcrumb ผ่าน HTTP จริงทั้งหมด, Regression ครบทุกโมดูล Admin (9 โมดูล + Dashboard คืน 302 ตามปกติเมื่อไม่ Login) และ Public Website ไม่ถูกกระทบ
+
+**ข้อมูลทดสอบทั้งหมดถูกลบออกจากฐานข้อมูลและไฟล์อัปโหลดหลังทดสอบเสร็จทุกครั้ง**
+
+รอผู้ใช้อนุมัติ Commit/Push (ยังไม่ Commit/Push ตามคำสั่ง)
+
+---
+
+## Next Task
+
+รอคำสั่งอนุมัติ Commit/Push Phase 13 จากผู้ใช้ จากนั้นเลือกกลับไปทำต่อระหว่าง Public Website Stage 2 หรือ Admin Panel Redesign Module 2 (Employees)
+
+---
+
+**Last Updated:** 2026-07-18 — Phase 13 (Activities Management System) Stage 1–4 + Quality Review Completed

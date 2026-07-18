@@ -27,17 +27,6 @@ function redirect(string $path): void
     exit;
 }
 
-// Debug helper - ใช้เฉพาะ development
-function dd(mixed ...$vars): void
-{
-    echo '<pre>';
-    foreach ($vars as $var) {
-        var_dump($var);
-    }
-    echo '</pre>';
-    exit;
-}
-
 // สร้าง CSRF Token ประจำ Session (สร้างครั้งเดียวแล้วใช้ซ้ำจนกว่า Session จะหมดอายุ)
 function generateCsrfToken(): string
 {
@@ -58,4 +47,49 @@ function verifyCsrfToken(string $token): bool
 function can(string $module, string $action): bool
 {
     return \App\Core\Permission::can($_SESSION['role'] ?? '', $module, $action);
+}
+
+// แปลงวันที่ (Y-m-d ฯลฯ) เป็นวัน/เดือนย่อไทย/ปี ค.ศ. สำหรับ Badge วันที่ฝั่ง Public เช่น 20 พ.ย. 2024
+// คืนค่า null หาก $date ว่างหรือแปลงไม่ได้ (View ต้องเช็คก่อนแสดงผล)
+function thaiDateParts(?string $date): ?array
+{
+    if ($date === null || $date === '') {
+        return null;
+    }
+
+    $timestamp = strtotime($date);
+
+    if ($timestamp === false) {
+        return null;
+    }
+
+    $months = [
+        1 => 'ม.ค.', 2 => 'ก.พ.', 3 => 'มี.ค.', 4 => 'เม.ย.', 5 => 'พ.ค.', 6 => 'มิ.ย.',
+        7 => 'ก.ค.', 8 => 'ส.ค.', 9 => 'ก.ย.', 10 => 'ต.ค.', 11 => 'พ.ย.', 12 => 'ธ.ค.',
+    ];
+
+    return [
+        'day'   => date('j', $timestamp),
+        'month' => $months[(int) date('n', $timestamp)],
+        'year'  => date('Y', $timestamp),
+    ];
+}
+
+// หน้า 404 กลาง ใช้ร่วมกันได้ทุก Public Controller (News/Activities/Departments/ฯลฯ)
+// เรียกแล้ว return ทันทีจาก Controller เสมอ ห้ามมีโค้ดทำงานต่อหลังเรียกฟังก์ชันนี้
+function renderNotFound(): void
+{
+    http_response_code(404);
+
+    $pageTitle       = 'ไม่พบหน้าที่คุณต้องการ';
+    $metaDescription = 'ไม่พบหน้าที่คุณต้องการ กรุณาตรวจสอบ URL อีกครั้ง หรือกลับไปหน้าหลัก';
+    $activeNav       = '';
+
+    require APP_PATH . '/views/public/404.php';
+}
+
+// Empty State กลาง ใช้ข้อความ/โครงสร้างเดียวกันทุกโมดูลฝั่ง Public (ห้ามเขียนข้อความ Empty State แยกเอง)
+function renderEmptyState(string $iconName = 'news'): void
+{
+    require APP_PATH . '/includes/public_empty_state.php';
 }

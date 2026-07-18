@@ -57,6 +57,33 @@ class ActivityLogModel extends BaseModel
         ];
     }
 
+    // นับจำนวน Log ต่อวันย้อนหลัง $days วัน (รวมวันนี้) สำหรับ Dashboard Chart - เติม 0 ให้วันที่ไม่มีข้อมูลเสมอ
+    public function getDailyCounts(int $days = 7): array
+    {
+        $from = (new \DateTimeImmutable('-' . ($days - 1) . ' days'))->format('Y-m-d 00:00:00');
+
+        $stmt = $this->db->prepare(
+            'SELECT DATE(created_at) AS day, COUNT(*) AS total
+             FROM activity_logs
+             WHERE created_at >= :from
+             GROUP BY DATE(created_at)'
+        );
+        $stmt->execute(['from' => $from]);
+
+        $rows = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $rows[$row['day']] = (int) $row['total'];
+        }
+
+        $result = [];
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date            = (new \DateTimeImmutable('-' . $i . ' days'))->format('Y-m-d');
+            $result[$date] = $rows[$date] ?? 0;
+        }
+
+        return $result;
+    }
+
     private function buildWhere(array $filters): array
     {
         $conditions = ['1 = 1'];
