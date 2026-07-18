@@ -25,10 +25,11 @@ $title  = $isEdit ? 'แก้ไขข่าว' : 'เพิ่มข่าว
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1><?= e($title) ?></h1>
-            <a href="<?= e(baseUrl('admin/news/index.php')) ?>" class="btn-secondary">กลับไปรายการ</a>
-        </div>
+        <?php renderAdminPageHeader(
+            $title,
+            $isEdit ? 'แก้ไขข้อมูลข่าว "' . $news['title'] . '"' : 'กรอกข้อมูลเพื่อเพิ่มข่าวใหม่เข้าสู่ระบบ',
+            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/news/index.php'), 'class' => 'btn-secondary']]
+        ); ?>
 
         <?php if ($formError !== null): ?>
             <p class="alert alert-error"><?= e($formError) ?></p>
@@ -36,40 +37,49 @@ $title  = $isEdit ? 'แก้ไขข่าว' : 'เพิ่มข่าว
 
         <form method="post"
               action="<?= e(baseUrl('admin/news/form.php' . ($isEdit ? '?id=' . $news['ID'] : ''))) ?>"
-              class="data-form"
+              class="data-form admin-form-sectioned"
               enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
             <?php if ($isEdit): ?>
                 <input type="hidden" name="id" value="<?= (int) $news['ID'] ?>">
             <?php endif; ?>
 
-            <label for="title">หัวข้อข่าว</label>
-            <input type="text" id="title" name="title" required
-                   value="<?= e((string) ($news['title'] ?? '')) ?>">
+            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($news): void { ?>
+                <label for="title">หัวข้อข่าว</label>
+                <input type="text" id="title" name="title" required
+                       value="<?= e((string) ($news['title'] ?? '')) ?>">
 
-            <label for="detail">รายละเอียด</label>
-            <textarea id="detail" name="detail" rows="6" required><?= e((string) ($news['detail'] ?? '')) ?></textarea>
+                <label for="detail">รายละเอียด</label>
+                <textarea id="detail" name="detail" rows="6" required><?= e((string) ($news['detail'] ?? '')) ?></textarea>
 
-            <label for="activity_date">วันที่กิจกรรม</label>
-            <input type="date" id="activity_date" name="activity_date"
-                   value="<?= e($news['activity_date'] ?? '') ?>">
+                <label for="activity_date">วันที่กิจกรรม</label>
+                <input type="date" id="activity_date" name="activity_date"
+                       value="<?= e($news['activity_date'] ?? '') ?>">
+            <?php }, 'หัวข้อและเนื้อหาของข่าวประชาสัมพันธ์'); ?>
 
-            <label for="status">สถานะ</label>
-            <select id="status" name="status">
-                <option value="Published" <?= ($news['status'] ?? 'Published') === 'Published' ? 'selected' : '' ?>>Published</option>
-                <option value="Draft" <?= ($news['status'] ?? '') === 'Draft' ? 'selected' : '' ?>>Draft</option>
-            </select>
+            <?php renderAdminSectionCard('สถานะ', function () use ($news): void { ?>
+                <label for="status">สถานะการเผยแพร่</label>
+                <select id="status" name="status">
+                    <option value="Published" <?= ($news['status'] ?? 'Published') === 'Published' ? 'selected' : '' ?>>Published</option>
+                    <option value="Draft" <?= ($news['status'] ?? '') === 'Draft' ? 'selected' : '' ?>>Draft</option>
+                </select>
+            <?php }, 'กำหนดว่าข่าวนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
 
-            <label for="image">รูปภาพ</label>
-            <?php if ($isEdit && !empty($news['image'])): ?>
-                <div class="current-image">
-                    <img src="<?= e(uploadUrl('news/' . $news['image'])) ?>" alt="">
-                </div>
-            <?php endif; ?>
-            <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
-            <small>อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB</small>
+            <?php renderAdminSectionCard('รูปภาพ', function () use ($news, $isEdit): void { ?>
+                <?php if ($isEdit && !empty($news['image'])): ?>
+                    <div class="current-image">
+                        <img src="<?= e(uploadUrl('news/' . $news['image'])) ?>" alt="">
+                    </div>
+                <?php endif; ?>
+                <label for="image">รูปภาพประกอบข่าว</label>
+                <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
+                <small>อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB</small>
+            <?php }, 'ภาพประกอบข่าว (ไม่บังคับ)'); ?>
 
-            <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มข่าว' ?></button>
+            <div class="admin-form-actions">
+                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มข่าว' ?></button>
+                <a href="<?= e(baseUrl('admin/news/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+            </div>
         </form>
     </main>
 </div>

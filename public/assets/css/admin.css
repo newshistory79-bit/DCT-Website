@@ -792,3 +792,164 @@ body {
         min-width: 0;
     }
 }
+
+/* ============================================================
+   Design System v2 — Stage DS1 (Additive Layer)
+   ห้ามลบ/แก้ไข Selector เดิมด้านบน — Section นี้เพิ่ม Class ใหม่
+   และ Rule เสริมสำหรับ Selector เดิม (Cascade เพิ่ม/Override เฉพาะ
+   Property ที่ระบุ ไม่กระทบ Property อื่นของ Rule เดิม)
+   ============================================================ */
+:root {
+    --radius-xl: 20px;
+    --glass-blur: 14px;
+}
+
+/* Focus State ที่มองเห็นชัดเจนสำหรับ Keyboard Navigation (WCAG 2.4.7) — Admin CSS เดิมยังไม่มี Rule นี้มาก่อน
+   (Public public.css มีอยู่แล้ว) เพิ่มเป็น Global Rule ใหม่ ไม่กระทบ Element ใดที่ไม่ได้ใช้ Keyboard Focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Topbar — Glass Effect เบาๆ (เสริมของเดิม ไม่ลบ Gradient เดิม) */
+.admin-topbar {
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Breadcrumb (ใหม่ — Stage DS1) */
+.admin-breadcrumb {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.admin-breadcrumb ol {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-breadcrumb li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-breadcrumb li:not(:last-child)::after {
+    content: '/';
+    opacity: 0.5;
+}
+
+.admin-breadcrumb a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+}
+
+.admin-breadcrumb a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.admin-breadcrumb li[aria-current="page"] {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Sidebar — เสริม Transition/Hover/Active (ของเดิมด้านบนไม่ถูกลบ) */
+.admin-sidebar li a {
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-sidebar li a:hover {
+    transform: translateX(2px);
+}
+
+.admin-sidebar li a.active {
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-sidebar li a .menu-icon {
+    transition: transform 0.2s ease;
+}
+
+.admin-sidebar li a:hover .menu-icon {
+    transform: scale(1.08);
+}
+
+/* Page Header (ใหม่ — รองรับ Retrofit ในอนาคต) */
+.admin-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.admin-page-header-text h1 {
+    margin: 0;
+    font-size: 22px;
+    color: var(--color-primary);
+}
+
+.admin-page-description {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.admin-page-header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Card Radius ปรับตาม Theme ใหม่ (16-20px) — เสริม Property เดียว ของเดิมที่เหลือไม่เปลี่ยน */
+.stat-card,
+.info-box,
+.quick-action-btn {
+    border-radius: var(--radius-xl);
+}
+
+@media (max-width: 768px) {
+    .admin-breadcrumb {
+        display: none;
+    }
+}
+
+/* ============================================================
+   Design System v2 — Stage DS3 (Retrofit: News/Legislation/Activities)
+   ============================================================ */
+
+/* Bug ที่พบระหว่าง Retrofit: .admin-content เป็น Flex Item ของ .admin-layout (display:flex) แต่ไม่เคย
+   กำหนด min-width มาก่อน (Default ของ Browser คือ min-width:auto) ทำให้เมื่อตารางข้อมูลจริงกว้างมาก
+   (เช่น News มี 8 คอลัมน์ + หัวข้อข่าวยาว) .admin-content ขยายตัวเกิน Viewport แทนที่จะปล่อยให้
+   .table-wrapper (ซึ่งมี overflow-x:auto อยู่แล้ว) เป็นตัว Scroll แนวนอนแทน ทำให้ทั้งหน้าเกิด Horizontal
+   Scroll ที่ระดับ Body แก้โดยเพิ่ม min-width:0 ให้ Flex Item นี้ (Property ใหม่ที่ไม่เคยถูกกำหนดมาก่อน) */
+.admin-content {
+    min-width: 0;
+}
+
+/* Bug ที่พบระหว่าง Retrofit Stage DS4: Activity Log มีคอลัมน์ "รายละเอียด" ที่ไม่มี Class .truncate
+   (ต่างจากทุกโมดูลอื่นที่ Truncate คอลัมน์ข้อความยาวเสมอ) ทำให้ที่หน้าจอมือถือ (375px) แม้จะแก้ min-width:0
+   ไปแล้วใน DS3 แต่ Content ของตารางที่กว้างมากยังทำให้ .admin-content.scrollWidth เกิน Viewport อยู่ดี
+   (เกิดจาก overflow-x:auto ของ .table-wrapper ไม่ได้ตัด Scroll Leak ขึ้นไปยัง Parent ที่ไม่มี overflow
+   กำหนดไว้เอง) แก้ปัญหาที่ต้นเหตุคู่กัน: (1) เพิ่ม .truncate ให้คอลัมน์รายละเอียดของ Activity Log
+   (2) เพิ่ม overflow-x:hidden ให้ .admin-content เป็นเกราะป้องกันชั้นที่สอง กัน Content กว้างผิดปกติจาก
+   ตารางใดๆ ในอนาคตไม่ให้หลุดออกไปทำให้ Body Scroll แนวนอนอีก (.table-wrapper ยังคง Scroll ได้เองตามปกติ) */
+.admin-content {
+    overflow-x: hidden;
+}

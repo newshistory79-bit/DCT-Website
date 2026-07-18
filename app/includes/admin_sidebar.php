@@ -4,24 +4,9 @@ declare(strict_types=1);
 
 $currentRole = $_SESSION['role'] ?? '';
 
-// รายการเมนู Sidebar ทั้งหมดตาม MasterPrompt
-// enabled=false คือโมดูลที่ยังไม่พัฒนา (แสดงแบบ Disabled กดไม่ได้)
-// roles คือ Role ที่มองเห็นเมนูนี้ (Users/Activity Log/Settings เห็นเฉพาะ Admin)
-// icon คือ Key ของ icon() Helper (app/helpers/icons.php) ใช้แสดงไอคอนหน้าชื่อเมนู
-// group คือหมวดสำหรับแสดงเป็น Section Header ใน Sidebar (จัดกลุ่มการแสดงผลเท่านั้น ไม่กระทบ Permission)
-$menuItems = [
-    ['label' => 'Dashboard',    'url' => 'admin/index.php',              'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff'], 'icon' => 'dashboard',  'group' => 'Dashboard'],
-    ['label' => 'News',         'url' => 'admin/news/index.php',         'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff'], 'icon' => 'news',       'group' => 'Content'],
-    ['label' => 'Legislation',  'url' => 'admin/legislation/index.php',  'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff'], 'icon' => 'news',       'group' => 'Content'],
-    ['label' => 'Activities',   'url' => 'admin/activities/index.php',   'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff'], 'icon' => 'activity',   'group' => 'Content'],
-    ['label' => 'Gallery',      'url' => 'admin/gallery/index.php',      'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff'], 'icon' => 'image',      'group' => 'Content'],
-    ['label' => 'Documents',    'url' => 'admin/documents/index.php',    'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff'], 'icon' => 'download',   'group' => 'Content'],
-    ['label' => 'Departments',  'url' => 'admin/departments/index.php',  'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff'], 'icon' => 'department', 'group' => 'Management'],
-    ['label' => 'Employees',   'url' => 'admin/employees/index.php',    'enabled' => true,  'roles' => ['Admin', 'Editor', 'Staff'], 'icon' => 'employee',   'group' => 'Management'],
-    ['label' => 'Users',        'url' => 'admin/users/index.php',        'enabled' => true,  'roles' => ['Admin'], 'icon' => 'users',      'group' => 'Management'],
-    ['label' => 'Activity Log', 'url' => 'admin/activity-log/index.php', 'enabled' => true, 'roles' => ['Admin'], 'icon' => 'log',        'group' => 'System'],
-    ['label' => 'Settings',     'url' => null,              'enabled' => false, 'roles' => ['Admin'], 'icon' => 'settings', 'group' => 'System'],
-];
+// รายการเมนู Sidebar ทั้งหมด — ย้ายไปเป็น Single Source of Truth ที่ app/config/admin_menu.php แล้ว
+// (ใช้ร่วมกับ admin_header.php สำหรับ Breadcrumb) ค่า/Key เดิมทุกตัวไม่เปลี่ยน (label/url/enabled/roles/icon/group)
+$menuItems = require APP_PATH . '/config/admin_menu.php';
 
 $currentPath = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
 

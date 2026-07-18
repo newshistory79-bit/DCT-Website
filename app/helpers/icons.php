@@ -29,6 +29,17 @@ function icon(string $name, int $size = 24): string
         'settings'   => '<circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M17.7 6.3l-1.6 1.6M7.9 16.1l-1.6 1.6M17.7 17.7l-1.6-1.6M7.9 7.9 6.3 6.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
         'log'        => '<path d="M6 3.5h9l3.5 3.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
         'logout'     => '<path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M15 8l4 4-4 4M19 12H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+
+        // เพิ่มสำหรับ Admin Panel Design System v2 (Stage DS1) — Entry ใหม่เท่านั้น ไม่แก้ Entry เดิมด้านบน
+        'edit'            => '<path d="M4 20l1-4L16 5l3 3L8 19l-4 1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><path d="m14 7 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+        'trash'           => '<path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'plus'            => '<path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+        'eye'             => '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6" fill="none"/>',
+        'spinner'         => '<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.25"/><path d="M20.5 12a8.5 8.5 0 0 0-8.5-8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>',
+        'filter'          => '<path d="M4 5h16M7 12h10M10 19h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+        'sort'            => '<path d="M8 5v14M8 5l-3 3M8 5l3 3M16 19V5M16 19l-3-3M16 19l3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'alert-triangle'  => '<path d="M12 4 2.5 20h19L12 4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="17.3" r="0.9" fill="currentColor"/>',
+        'check'           => '<path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
     ];
 
     $path = $paths[$name] ?? $paths['chevron'];

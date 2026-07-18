@@ -74,13 +74,12 @@ if (!empty($chartPoints)) {
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="dashboard-topline">
-            <div class="dashboard-welcome">
-                <h1>Dashboard</h1>
-                <p>ยินดีต้อนรับ, <?= e($_SESSION['full_name'] ?? $_SESSION['username'] ?? '') ?></p>
-            </div>
-            <span class="date-badge"><?= icon('clock', 16) ?> <?= e($todayThai) ?></span>
-        </div>
+        <?php renderAdminPageHeader(
+            'Dashboard',
+            'ยินดีต้อนรับ, ' . ($_SESSION['full_name'] ?? $_SESSION['username'] ?? ''),
+            [],
+            '<span class="date-badge">' . icon('clock', 16) . ' ' . e($todayThai) . '</span>'
+        ); ?>
 
         <section class="stat-grid">
             <?php foreach ($statCards as $key => $card): ?>
@@ -111,14 +110,13 @@ if (!empty($chartPoints)) {
         </section>
 
         <section class="dashboard-info">
-            <div class="info-box">
-                <h2>กิจกรรมล่าสุด</h2>
+            <?php renderAdminSectionCard('กิจกรรมล่าสุด', function () use ($recentActivity): void { ?>
                 <?php if (!can('activity_log', 'view')): ?>
                     <p>ชื่อผู้ใช้: <strong><?= e($_SESSION['full_name'] ?? '') ?></strong></p>
                     <p>Role: <strong><?= e($_SESSION['role'] ?? '') ?></strong></p>
                     <p>เวลาปัจจุบัน: <strong><?= e(date('d/m/Y H:i:s')) ?></strong></p>
                 <?php elseif (empty($recentActivity)): ?>
-                    <p>ยังไม่มีกิจกรรม</p>
+                    <?php renderAdminEmptyState('ยังไม่มีกิจกรรม', 'log'); ?>
                 <?php else: ?>
                     <ul class="timeline">
                         <?php foreach ($recentActivity as $index => $log): ?>
@@ -132,7 +130,7 @@ if (!empty($chartPoints)) {
                                 <span class="timeline-body">
                                     <span class="timeline-desc"><strong><?= e($log['username'] ?? 'ระบบ') ?></strong> <?= e($log['description']) ?></span>
                                     <span class="timeline-meta">
-                                        <span class="badge badge-muted"><?= e($log['module']) ?></span>
+                                        <?php renderBadge($log['module'], 'muted'); ?>
                                         <?= e($log['created_at']) ?>
                                     </span>
                                 </span>
@@ -140,13 +138,12 @@ if (!empty($chartPoints)) {
                         <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
-            </div>
+            <?php }); ?>
 
             <?php if (can('activity_log', 'view')): ?>
-                <div class="info-box">
-                    <h2>สถิติการใช้งาน (7 วันล่าสุด)</h2>
+                <?php renderAdminSectionCard('สถิติการใช้งาน (7 วันล่าสุด)', function () use ($chartPoints, $chartWidth, $chartHeight, $chartAreaPath, $chartLinePath, $dailyCounts): void { ?>
                     <?php if (empty($chartPoints)): ?>
-                        <p>ยังไม่มีข้อมูลเพียงพอสำหรับแสดงกราฟ</p>
+                        <?php renderAdminEmptyState('ยังไม่มีข้อมูลเพียงพอสำหรับแสดงกราฟ', 'log'); ?>
                     <?php else: ?>
                         <div class="chart-wrapper">
                             <svg viewBox="0 0 <?= $chartWidth ?> <?= $chartHeight + 24 ?>" preserveAspectRatio="none">
@@ -166,14 +163,13 @@ if (!empty($chartPoints)) {
                             </svg>
                         </div>
                     <?php endif; ?>
-                </div>
+                <?php }); ?>
             <?php else: ?>
-                <div class="info-box">
-                    <h2>ผู้ใช้ Login ล่าสุด</h2>
+                <?php renderAdminSectionCard('ผู้ใช้ Login ล่าสุด', function () use ($recentLogins): void { ?>
                     <?php if (empty($recentLogins)): ?>
-                        <p>ยังไม่มีข้อมูลการ Login</p>
+                        <?php renderAdminEmptyState('ยังไม่มีข้อมูลการ Login', 'users'); ?>
                     <?php else: ?>
-                        <table class="simple-table">
+                        <table class="simple-table data-table-zebra">
                             <thead>
                                 <tr>
                                     <th>ชื่อผู้ใช้</th>
@@ -194,7 +190,7 @@ if (!empty($chartPoints)) {
                             </tbody>
                         </table>
                     <?php endif; ?>
-                </div>
+                <?php }); ?>
             <?php endif; ?>
         </section>
     </main>

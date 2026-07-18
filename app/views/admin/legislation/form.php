@@ -25,10 +25,11 @@ $title  = $isEdit ? 'แก้ไขกฎหมาย/ระเบียบ' : 
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1><?= e($title) ?></h1>
-            <a href="<?= e(baseUrl('admin/legislation/index.php')) ?>" class="btn-secondary">กลับไปรายการ</a>
-        </div>
+        <?php renderAdminPageHeader(
+            $title,
+            $isEdit ? 'แก้ไขข้อมูล "' . $legislation['title'] . '"' : 'กรอกข้อมูลเพื่อเพิ่มกฎหมาย/ระเบียบใหม่เข้าสู่ระบบ',
+            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/legislation/index.php'), 'class' => 'btn-secondary']]
+        ); ?>
 
         <?php if ($formError !== null): ?>
             <p class="alert alert-error"><?= e($formError) ?></p>
@@ -36,34 +37,41 @@ $title  = $isEdit ? 'แก้ไขกฎหมาย/ระเบียบ' : 
 
         <form method="post"
               action="<?= e(baseUrl('admin/legislation/form.php' . ($isEdit ? '?id=' . $legislation['ID'] : ''))) ?>"
-              class="data-form">
+              class="data-form admin-form-sectioned">
             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
             <?php if ($isEdit): ?>
                 <input type="hidden" name="id" value="<?= (int) $legislation['ID'] ?>">
             <?php endif; ?>
 
-            <label for="title">หัวข้อ</label>
-            <input type="text" id="title" name="title" maxlength="255" required
-                   value="<?= e((string) ($legislation['title'] ?? '')) ?>">
+            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($legislation): void { ?>
+                <label for="title">หัวข้อ</label>
+                <input type="text" id="title" name="title" maxlength="255" required
+                       value="<?= e((string) ($legislation['title'] ?? '')) ?>">
 
-            <label for="document_number">เลขที่ประกาศ/ระเบียบ</label>
-            <input type="text" id="document_number" name="document_number" maxlength="50"
-                   value="<?= e($legislation['document_number'] ?? '') ?>">
+                <label for="document_number">เลขที่ประกาศ/ระเบียบ</label>
+                <input type="text" id="document_number" name="document_number" maxlength="50"
+                       value="<?= e($legislation['document_number'] ?? '') ?>">
 
-            <label for="detail">รายละเอียด</label>
-            <textarea id="detail" name="detail" rows="6" required><?= e((string) ($legislation['detail'] ?? '')) ?></textarea>
+                <label for="detail">รายละเอียด</label>
+                <textarea id="detail" name="detail" rows="6" required><?= e((string) ($legislation['detail'] ?? '')) ?></textarea>
 
-            <label for="effective_date">วันที่มีผลบังคับใช้</label>
-            <input type="date" id="effective_date" name="effective_date"
-                   value="<?= e($legislation['effective_date'] ?? '') ?>">
+                <label for="effective_date">วันที่มีผลบังคับใช้</label>
+                <input type="date" id="effective_date" name="effective_date"
+                       value="<?= e($legislation['effective_date'] ?? '') ?>">
+            <?php }, 'หัวข้อและเนื้อหาของกฎหมาย/ระเบียบ'); ?>
 
-            <label for="status">สถานะ</label>
-            <select id="status" name="status">
-                <option value="Draft" <?= ($legislation['status'] ?? 'Draft') === 'Draft' ? 'selected' : '' ?>>Draft</option>
-                <option value="Published" <?= ($legislation['status'] ?? '') === 'Published' ? 'selected' : '' ?>>Published</option>
-            </select>
+            <?php renderAdminSectionCard('สถานะ', function () use ($legislation): void { ?>
+                <label for="status">สถานะการเผยแพร่</label>
+                <select id="status" name="status">
+                    <option value="Draft" <?= ($legislation['status'] ?? 'Draft') === 'Draft' ? 'selected' : '' ?>>Draft</option>
+                    <option value="Published" <?= ($legislation['status'] ?? '') === 'Published' ? 'selected' : '' ?>>Published</option>
+                </select>
+            <?php }, 'กำหนดว่ารายการนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
 
-            <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มกฎหมาย/ระเบียบ' ?></button>
+            <div class="admin-form-actions">
+                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มกฎหมาย/ระเบียบ' ?></button>
+                <a href="<?= e(baseUrl('admin/legislation/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+            </div>
         </form>
     </main>
 </div>

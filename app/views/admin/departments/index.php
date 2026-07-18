@@ -45,13 +45,17 @@ $columns = [
     'status'     => 'สถานะ',
     'created_at' => 'วันที่สร้าง',
 ];
+
+// Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2)
+$adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
+$currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/departments/index.php');
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>จัดการแผนก - <?= e(APP_NAME) ?></title>
+<title><?= e($currentMenuItem['title']) ?> - <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/admin.css')) ?>">
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/crud.css')) ?>">
 </head>
@@ -62,12 +66,11 @@ $columns = [
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1>จัดการแผนก</h1>
-            <?php if (can('departments', 'create')): ?>
-                <a href="<?= e(baseUrl('admin/departments/form.php')) ?>" class="btn-primary">+ เพิ่มแผนก</a>
-            <?php endif; ?>
-        </div>
+        <?php renderAdminPageHeader(
+            $currentMenuItem['title'],
+            $currentMenuItem['description'],
+            can('departments', 'create') ? [['label' => '+ เพิ่มแผนก', 'url' => baseUrl('admin/departments/form.php')]] : []
+        ); ?>
 
         <?php if ($successMessage !== null): ?>
             <p class="alert alert-success"><?= e($successMessage) ?></p>
@@ -77,7 +80,10 @@ $columns = [
         <?php endif; ?>
 
         <form method="get" action="<?= e(baseUrl('admin/departments/index.php')) ?>" class="filter-bar">
-            <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหารหัสหรือชื่อแผนก">
+            <div class="search-input-icon">
+                <?= icon('search', 16) ?>
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหารหัสหรือชื่อแผนก" aria-label="ค้นหารหัสหรือชื่อแผนก">
+            </div>
 
             <select name="status">
                 <option value="">สถานะทั้งหมด</option>
@@ -94,47 +100,45 @@ $columns = [
             <button type="submit" class="btn-secondary">ค้นหา</button>
         </form>
 
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <?php foreach ($columns as $col => $label): ?>
-                            <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
-                        <?php endforeach; ?>
-                        <th>คำอธิบาย</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($departments)): ?>
+        <?php if (empty($departments)): ?>
+            <?php renderAdminEmptyState(
+                'ไม่พบข้อมูลแผนก ลองปรับคำค้นหาหรือตัวกรอง',
+                'department',
+                can('departments', 'create') ? ['url' => baseUrl('admin/departments/form.php'), 'label' => '+ เพิ่มแผนก'] : null
+            ); ?>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table class="data-table data-table-zebra">
+                    <thead>
                         <tr>
-                            <td colspan="7" class="empty-row">ไม่พบข้อมูลแผนก</td>
+                            <?php foreach ($columns as $col => $label): ?>
+                                <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
+                            <?php endforeach; ?>
+                            <th>คำอธิบาย</th>
+                            <th>จัดการ</th>
                         </tr>
-                    <?php else: ?>
+                    </thead>
+                    <tbody>
                         <?php foreach ($departments as $dept): ?>
                             <tr>
                                 <td><?= (int) $dept['id'] ?></td>
                                 <td><?= e($dept['code']) ?></td>
                                 <td><?= e($dept['name']) ?></td>
-                                <td>
-                                    <span class="badge badge-<?= $dept['status'] === 'Active' ? 'success' : 'muted' ?>">
-                                        <?= e($dept['status']) ?>
-                                    </span>
-                                </td>
+                                <td><?php renderBadge($dept['status'], $dept['status'] === 'Active' ? 'success' : 'muted'); ?></td>
                                 <td><?= e($dept['created_at']) ?></td>
                                 <td class="truncate"><?= e($dept['description'] ?? '-') ?></td>
                                 <td class="actions">
                                     <?php if (can('departments', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/departments/form.php?id=' . $dept['id'])) ?>" class="btn-link">แก้ไข</a>
+                                        <a href="<?= e(baseUrl('admin/departments/form.php?id=' . $dept['id'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขแผนก <?= e($dept['name']) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('departments', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/departments/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm="ยืนยันการลบแผนก &quot;<?= e($dept['name']) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ยืนยันการลบแผนก &quot;<?= e($dept['name']) ?>&quot; ใช่หรือไม่?">
                                             <input type="hidden" name="id" value="<?= (int) $dept['id'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-link btn-danger">ลบ</button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบแผนก <?= e($dept['name']) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('departments', 'edit') && !can('departments', 'delete')): ?>
@@ -143,26 +147,19 @@ $columns = [
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pagination">
-            <span>ทั้งหมด <?= (int) $total ?> รายการ</span>
-            <div class="pagination-links">
-                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                    <?php
-                    $pageQuery              = $baseQuery;
-                    $pageQuery['sort']      = $sort;
-                    $pageQuery['direction'] = $direction;
-                    $pageQuery['page']      = $p;
-                    ?>
-                    <a href="<?= e(baseUrl('admin/departments/index.php?' . http_build_query($pageQuery))) ?>"
-                       class="<?= $p === $currentPage ? 'active' : '' ?>"><?= $p ?></a>
-                <?php endfor; ?>
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <?php renderAdminPagination($currentPage, $totalPages, $total, function (int $p) use ($baseQuery, $sort, $direction): string {
+                $pageQuery              = $baseQuery;
+                $pageQuery['sort']      = $sort;
+                $pageQuery['direction'] = $direction;
+                $pageQuery['page']      = $p;
+
+                return baseUrl('admin/departments/index.php?' . http_build_query($pageQuery));
+            }); ?>
+        <?php endif; ?>
     </main>
 </div>
 

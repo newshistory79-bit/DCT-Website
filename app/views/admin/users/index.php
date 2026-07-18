@@ -50,13 +50,26 @@ $columns = [
 ];
 
 $currentUserId = (int) ($_SESSION['user_id'] ?? 0);
+
+// Role Badge Variant — Admin=danger (สิทธิ์สูงสุด เตือนสายตา), Editor=info, Staff=muted (Presentation เท่านั้น ไม่กระทบ Permission จริง)
+$roleVariant = static function (string $role): string {
+    return match ($role) {
+        'Admin'  => 'danger',
+        'Editor' => 'info',
+        default  => 'muted',
+    };
+};
+
+// Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2-DS4 Pattern)
+$adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
+$currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/users/index.php');
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>จัดการผู้ใช้งาน - <?= e(APP_NAME) ?></title>
+<title><?= e($currentMenuItem['title']) ?> - <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/admin.css')) ?>">
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/crud.css')) ?>">
 </head>
@@ -67,12 +80,11 @@ $currentUserId = (int) ($_SESSION['user_id'] ?? 0);
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1>จัดการผู้ใช้งาน</h1>
-            <?php if (can('users', 'create')): ?>
-                <a href="<?= e(baseUrl('admin/users/form.php')) ?>" class="btn-primary">+ เพิ่มผู้ใช้งาน</a>
-            <?php endif; ?>
-        </div>
+        <?php renderAdminPageHeader(
+            $currentMenuItem['title'],
+            $currentMenuItem['description'],
+            can('users', 'create') ? [['label' => '+ เพิ่มผู้ใช้งาน', 'url' => baseUrl('admin/users/form.php')]] : []
+        ); ?>
 
         <?php if ($successMessage !== null): ?>
             <p class="alert alert-success"><?= e($successMessage) ?></p>
@@ -82,7 +94,10 @@ $currentUserId = (int) ($_SESSION['user_id'] ?? 0);
         <?php endif; ?>
 
         <form method="get" action="<?= e(baseUrl('admin/users/index.php')) ?>" class="filter-bar">
-            <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาชื่อผู้ใช้, ชื่อ-นามสกุล หรืออีเมล">
+            <div class="search-input-icon">
+                <?= icon('search', 16) ?>
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาชื่อผู้ใช้, ชื่อ-นามสกุล หรืออีเมล" aria-label="ค้นหาผู้ใช้งาน">
+            </div>
 
             <select name="role">
                 <option value="">สิทธิ์ทั้งหมด</option>
@@ -106,76 +121,68 @@ $currentUserId = (int) ($_SESSION['user_id'] ?? 0);
             <button type="submit" class="btn-secondary">ค้นหา</button>
         </form>
 
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <?php foreach ($columns as $col => $label): ?>
-                            <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
-                        <?php endforeach; ?>
-                        <th>อีเมล</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($users)): ?>
+        <?php if (empty($users)): ?>
+            <?php renderAdminEmptyState(
+                'ไม่พบข้อมูลผู้ใช้งาน ลองปรับคำค้นหาหรือตัวกรอง',
+                'users',
+                can('users', 'create') ? ['url' => baseUrl('admin/users/form.php'), 'label' => '+ เพิ่มผู้ใช้งาน'] : null
+            ); ?>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table class="data-table data-table-zebra">
+                    <thead>
                         <tr>
-                            <td colspan="8" class="empty-row">ไม่พบข้อมูลผู้ใช้งาน</td>
+                            <?php foreach ($columns as $col => $label): ?>
+                                <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
+                            <?php endforeach; ?>
+                            <th>อีเมล</th>
+                            <th>จัดการ</th>
                         </tr>
-                    <?php else: ?>
+                    </thead>
+                    <tbody>
                         <?php foreach ($users as $u): ?>
+                            <?php $canDeleteThisUser = can('users', 'delete') && (int) $u['id'] !== $currentUserId; ?>
                             <tr>
                                 <td><?= (int) $u['id'] ?></td>
                                 <td><?= e($u['username']) ?></td>
                                 <td><?= e($u['full_name']) ?></td>
-                                <td><?= e($u['role']) ?></td>
-                                <td>
-                                    <span class="badge badge-<?= $u['status'] === 'Active' ? 'success' : 'muted' ?>">
-                                        <?= e($u['status']) ?>
-                                    </span>
-                                </td>
+                                <td><?php renderBadge($u['role'], $roleVariant($u['role'])); ?></td>
+                                <td><?php renderBadge($u['status'], $u['status'] === 'Active' ? 'success' : 'muted'); ?></td>
                                 <td><?= e($u['created_at']) ?></td>
                                 <td><?= e($u['email'] ?? '-') ?></td>
                                 <td class="actions">
                                     <?php if (can('users', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/users/form.php?id=' . $u['id'])) ?>" class="btn-link">แก้ไข</a>
+                                        <a href="<?= e(baseUrl('admin/users/form.php?id=' . $u['id'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขผู้ใช้ <?= e($u['username']) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
-                                    <?php if (can('users', 'delete') && (int) $u['id'] !== $currentUserId): ?>
+                                    <?php if ($canDeleteThisUser): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/users/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm="ยืนยันการลบผู้ใช้ &quot;<?= e($u['username']) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ยืนยันการลบผู้ใช้ &quot;<?= e($u['username']) ?>&quot; ใช่หรือไม่?">
                                             <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-link btn-danger">ลบ</button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบผู้ใช้ <?= e($u['username']) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
-                                    <?php if (!can('users', 'edit') && !(can('users', 'delete') && (int) $u['id'] !== $currentUserId)): ?>
+                                    <?php if (!can('users', 'edit') && !$canDeleteThisUser): ?>
                                         <span class="text-muted">-</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pagination">
-            <span>ทั้งหมด <?= (int) $total ?> รายการ</span>
-            <div class="pagination-links">
-                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                    <?php
-                    $pageQuery              = $baseQuery;
-                    $pageQuery['sort']      = $sort;
-                    $pageQuery['direction'] = $direction;
-                    $pageQuery['page']      = $p;
-                    ?>
-                    <a href="<?= e(baseUrl('admin/users/index.php?' . http_build_query($pageQuery))) ?>"
-                       class="<?= $p === $currentPage ? 'active' : '' ?>"><?= $p ?></a>
-                <?php endfor; ?>
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <?php renderAdminPagination($currentPage, $totalPages, $total, function (int $p) use ($baseQuery, $sort, $direction): string {
+                $pageQuery              = $baseQuery;
+                $pageQuery['sort']      = $sort;
+                $pageQuery['direction'] = $direction;
+                $pageQuery['page']      = $p;
+
+                return baseUrl('admin/users/index.php?' . http_build_query($pageQuery));
+            }); ?>
+        <?php endif; ?>
     </main>
 </div>
 

@@ -25,10 +25,11 @@ $title  = $isEdit ? 'แก้ไขข้อมูลพนักงาน' : '
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1><?= e($title) ?></h1>
-            <a href="<?= e(baseUrl('admin/employees/index.php')) ?>" class="btn-secondary">กลับไปรายการ</a>
-        </div>
+        <?php renderAdminPageHeader(
+            $title,
+            $isEdit ? 'แก้ไขข้อมูลของ "' . trim(($employee['Fname'] ?? '') . ' ' . ($employee['Lname'] ?? '')) . '"' : 'กรอกข้อมูลเพื่อเพิ่มพนักงานใหม่เข้าสู่ระบบ',
+            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/employees/index.php'), 'class' => 'btn-secondary']]
+        ); ?>
 
         <?php if ($formError !== null): ?>
             <p class="alert alert-error"><?= e($formError) ?></p>
@@ -36,57 +37,64 @@ $title  = $isEdit ? 'แก้ไขข้อมูลพนักงาน' : '
 
         <form method="post"
               action="<?= e(baseUrl('admin/employees/form.php' . ($isEdit ? '?id=' . $employee['ID'] : ''))) ?>"
-              class="data-form"
+              class="data-form admin-form-sectioned"
               enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
             <?php if ($isEdit): ?>
                 <input type="hidden" name="id" value="<?= (int) $employee['ID'] ?>">
             <?php endif; ?>
 
-            <label for="fname">ชื่อ</label>
-            <input type="text" id="fname" name="fname" maxlength="255" required
-                   value="<?= e($employee['Fname'] ?? '') ?>">
+            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($employee): void { ?>
+                <label for="fname">ชื่อ</label>
+                <input type="text" id="fname" name="fname" maxlength="255" required
+                       value="<?= e($employee['Fname'] ?? '') ?>">
 
-            <label for="lname">นามสกุล</label>
-            <input type="text" id="lname" name="lname" maxlength="255" required
-                   value="<?= e($employee['Lname'] ?? '') ?>">
+                <label for="lname">นามสกุล</label>
+                <input type="text" id="lname" name="lname" maxlength="255" required
+                       value="<?= e($employee['Lname'] ?? '') ?>">
 
-            <label for="birth_date">วันเกิด</label>
-            <input type="date" id="birth_date" name="birth_date"
-                   value="<?= e($employee['birth_date'] ?? '') ?>">
+                <label for="birth_date">วันเกิด</label>
+                <input type="date" id="birth_date" name="birth_date"
+                       value="<?= e($employee['birth_date'] ?? '') ?>">
 
-            <label for="gender">เพศ</label>
-            <select id="gender" name="gender">
-                <option value="Male" <?= ($employee['gender'] ?? 'Male') === 'Male' ? 'selected' : '' ?>>ชาย</option>
-                <option value="Female" <?= ($employee['gender'] ?? '') === 'Female' ? 'selected' : '' ?>>หญิง</option>
-                <option value="Other" <?= ($employee['gender'] ?? '') === 'Other' ? 'selected' : '' ?>>อื่นๆ</option>
-            </select>
+                <label for="gender">เพศ</label>
+                <select id="gender" name="gender">
+                    <option value="Male" <?= ($employee['gender'] ?? 'Male') === 'Male' ? 'selected' : '' ?>>ชาย</option>
+                    <option value="Female" <?= ($employee['gender'] ?? '') === 'Female' ? 'selected' : '' ?>>หญิง</option>
+                    <option value="Other" <?= ($employee['gender'] ?? '') === 'Other' ? 'selected' : '' ?>>อื่นๆ</option>
+                </select>
 
-            <label for="phone">เบอร์โทรศัพท์</label>
-            <input type="text" id="phone" name="phone" maxlength="20"
-                   value="<?= e($employee['phone'] ?? '') ?>">
+                <label for="phone">เบอร์โทรศัพท์</label>
+                <input type="text" id="phone" name="phone" maxlength="20"
+                       value="<?= e($employee['phone'] ?? '') ?>">
 
-            <label for="email">อีเมล</label>
-            <input type="email" id="email" name="email" maxlength="100"
-                   value="<?= e($employee['email'] ?? '') ?>">
+                <label for="email">อีเมล</label>
+                <input type="email" id="email" name="email" maxlength="100"
+                       value="<?= e($employee['email'] ?? '') ?>">
 
-            <label for="position">ตำแหน่ง</label>
-            <input type="text" id="position" name="position" maxlength="100"
-                   value="<?= e($employee['position'] ?? '') ?>">
+                <label for="position">ตำแหน่ง</label>
+                <input type="text" id="position" name="position" maxlength="100"
+                       value="<?= e($employee['position'] ?? '') ?>">
 
-            <label for="address">ที่อยู่</label>
-            <textarea id="address" name="address" rows="3"><?= e($employee['address'] ?? '') ?></textarea>
+                <label for="address">ที่อยู่</label>
+                <textarea id="address" name="address" rows="3"><?= e($employee['address'] ?? '') ?></textarea>
+            <?php }, 'ข้อมูลส่วนตัวและช่องทางติดต่อของพนักงาน'); ?>
 
-            <label for="image">รูปภาพ</label>
-            <?php if ($isEdit && !empty($employee['image'])): ?>
-                <div class="current-image">
-                    <img src="<?= e(uploadUrl('employees/' . $employee['image'])) ?>" alt="">
-                </div>
-            <?php endif; ?>
-            <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
-            <small>อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB</small>
+            <?php renderAdminSectionCard('รูปภาพ', function () use ($employee, $isEdit): void { ?>
+                <?php if ($isEdit && !empty($employee['image'])): ?>
+                    <div class="current-image">
+                        <img src="<?= e(uploadUrl('employees/' . $employee['image'])) ?>" alt="">
+                    </div>
+                <?php endif; ?>
+                <label for="image">รูปภาพพนักงาน</label>
+                <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
+                <small>อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB</small>
+            <?php }, 'รูปโปรไฟล์ของพนักงาน (ไม่บังคับ)'); ?>
 
-            <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มพนักงาน' ?></button>
+            <div class="admin-form-actions">
+                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มพนักงาน' ?></button>
+                <a href="<?= e(baseUrl('admin/employees/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+            </div>
         </form>
     </main>
 </div>

@@ -45,13 +45,17 @@ $columns = [
     'status'        => 'สถานะ',
     'created_at'    => 'วันที่สร้าง',
 ];
+
+// Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2/DS3 Pattern)
+$adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
+$currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/news/index.php');
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>จัดการข่าว - <?= e(APP_NAME) ?></title>
+<title><?= e($currentMenuItem['title']) ?> - <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/admin.css')) ?>">
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/crud.css')) ?>">
 </head>
@@ -62,12 +66,11 @@ $columns = [
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1>จัดการข่าว</h1>
-            <?php if (can('news', 'create')): ?>
-                <a href="<?= e(baseUrl('admin/news/form.php')) ?>" class="btn-primary">+ เพิ่มข่าว</a>
-            <?php endif; ?>
-        </div>
+        <?php renderAdminPageHeader(
+            $currentMenuItem['title'],
+            $currentMenuItem['description'],
+            can('news', 'create') ? [['label' => '+ เพิ่มข่าว', 'url' => baseUrl('admin/news/form.php')]] : []
+        ); ?>
 
         <?php if ($successMessage !== null): ?>
             <p class="alert alert-success"><?= e($successMessage) ?></p>
@@ -77,7 +80,10 @@ $columns = [
         <?php endif; ?>
 
         <form method="get" action="<?= e(baseUrl('admin/news/index.php')) ?>" class="filter-bar">
-            <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาหัวข้อข่าวหรือรายละเอียด">
+            <div class="search-input-icon">
+                <?= icon('search', 16) ?>
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาหัวข้อข่าวหรือรายละเอียด" aria-label="ค้นหาข่าว">
+            </div>
 
             <select name="status">
                 <option value="">สถานะทั้งหมด</option>
@@ -94,25 +100,28 @@ $columns = [
             <button type="submit" class="btn-secondary">ค้นหา</button>
         </form>
 
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>รูป</th>
-                        <?php foreach ($columns as $col => $label): ?>
-                            <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
-                        <?php endforeach; ?>
-                        <th>รายละเอียด</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($newsItems)): ?>
+        <?php if (empty($newsItems)): ?>
+            <?php renderAdminEmptyState(
+                'ไม่พบข้อมูลข่าว ลองปรับคำค้นหาหรือตัวกรอง',
+                'news',
+                can('news', 'create') ? ['url' => baseUrl('admin/news/form.php'), 'label' => '+ เพิ่มข่าว'] : null
+            ); ?>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table class="data-table data-table-zebra">
+                    <thead>
                         <tr>
-                            <td colspan="8" class="empty-row">ไม่พบข้อมูลข่าว</td>
+                            <th>รูป</th>
+                            <?php foreach ($columns as $col => $label): ?>
+                                <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
+                            <?php endforeach; ?>
+                            <th>รายละเอียด</th>
+                            <th>จัดการ</th>
                         </tr>
-                    <?php else: ?>
+                    </thead>
+                    <tbody>
                         <?php foreach ($newsItems as $item): ?>
+                            <?php $itemTitle = mb_strimwidth((string) $item['title'], 0, 40, '...'); ?>
                             <tr>
                                 <td>
                                     <?php if (!empty($item['image'])): ?>
@@ -124,25 +133,21 @@ $columns = [
                                 <td><?= (int) $item['ID'] ?></td>
                                 <td><?= e((string) $item['title']) ?></td>
                                 <td><?= e($item['activity_date'] ?? '-') ?></td>
-                                <td>
-                                    <span class="badge badge-<?= $item['status'] === 'Published' ? 'success' : 'muted' ?>">
-                                        <?= e($item['status']) ?>
-                                    </span>
-                                </td>
+                                <td><?php renderBadge($item['status'], $item['status'] === 'Published' ? 'success' : 'muted'); ?></td>
                                 <td><?= e($item['created_at']) ?></td>
                                 <td class="truncate"><?= e(mb_strimwidth((string) $item['detail'], 0, 60, '...')) ?></td>
                                 <td class="actions">
                                     <?php if (can('news', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/news/form.php?id=' . $item['ID'])) ?>" class="btn-link">แก้ไข</a>
+                                        <a href="<?= e(baseUrl('admin/news/form.php?id=' . $item['ID'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขข่าว <?= e($itemTitle) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('news', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/news/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm="ยืนยันการลบข่าว &quot;<?= e(mb_strimwidth((string) $item['title'], 0, 40, '...')) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ยืนยันการลบข่าว &quot;<?= e($itemTitle) ?>&quot; ใช่หรือไม่?">
                                             <input type="hidden" name="id" value="<?= (int) $item['ID'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-link btn-danger">ลบ</button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบข่าว <?= e($itemTitle) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('news', 'edit') && !can('news', 'delete')): ?>
@@ -151,26 +156,19 @@ $columns = [
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pagination">
-            <span>ทั้งหมด <?= (int) $total ?> รายการ</span>
-            <div class="pagination-links">
-                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                    <?php
-                    $pageQuery              = $baseQuery;
-                    $pageQuery['sort']      = $sort;
-                    $pageQuery['direction'] = $direction;
-                    $pageQuery['page']      = $p;
-                    ?>
-                    <a href="<?= e(baseUrl('admin/news/index.php?' . http_build_query($pageQuery))) ?>"
-                       class="<?= $p === $currentPage ? 'active' : '' ?>"><?= $p ?></a>
-                <?php endfor; ?>
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <?php renderAdminPagination($currentPage, $totalPages, $total, function (int $p) use ($baseQuery, $sort, $direction): string {
+                $pageQuery              = $baseQuery;
+                $pageQuery['sort']      = $sort;
+                $pageQuery['direction'] = $direction;
+                $pageQuery['page']      = $p;
+
+                return baseUrl('admin/news/index.php?' . http_build_query($pageQuery));
+            }); ?>
+        <?php endif; ?>
     </main>
 </div>
 

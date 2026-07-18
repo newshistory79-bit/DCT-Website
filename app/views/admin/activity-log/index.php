@@ -49,13 +49,27 @@ $columns = [
     'module'     => 'โมดูล',
     'action'     => 'การกระทำ',
 ];
+
+// Action Badge Variant (Presentation เท่านั้น ไม่กระทบ Logic การบันทึก Log จริง)
+$actionVariant = static function (string $action): string {
+    return match ($action) {
+        'create', 'login' => 'success',
+        'update'           => 'info',
+        'delete', 'login_failed' => 'danger',
+        default            => 'muted',
+    };
+};
+
+// Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2-DS4 Pattern)
+$adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
+$currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/activity-log/index.php');
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ประวัติการใช้งานระบบ - <?= e(APP_NAME) ?></title>
+<title><?= e($currentMenuItem['title']) ?> - <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/admin.css')) ?>">
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/crud.css')) ?>">
 </head>
@@ -66,12 +80,13 @@ $columns = [
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1>ประวัติการใช้งานระบบ (Activity Log)</h1>
-        </div>
+        <?php renderAdminPageHeader($currentMenuItem['title'], $currentMenuItem['description']); ?>
 
         <form method="get" action="<?= e(baseUrl('admin/activity-log/index.php')) ?>" class="filter-bar">
-            <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาผู้ใช้งานหรือรายละเอียด">
+            <div class="search-input-icon">
+                <?= icon('search', 16) ?>
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาผู้ใช้งานหรือรายละเอียด" aria-label="ค้นหาประวัติการใช้งาน">
+            </div>
 
             <select name="module">
                 <option value="">โมดูลทั้งหมด</option>
@@ -87,8 +102,8 @@ $columns = [
                 <?php endforeach; ?>
             </select>
 
-            <input type="date" name="date_from" value="<?= e($dateFrom) ?>" title="จากวันที่">
-            <input type="date" name="date_to" value="<?= e($dateTo) ?>" title="ถึงวันที่">
+            <input type="date" name="date_from" value="<?= e($dateFrom) ?>" title="จากวันที่" aria-label="จากวันที่">
+            <input type="date" name="date_to" value="<?= e($dateTo) ?>" title="ถึงวันที่" aria-label="ถึงวันที่">
 
             <select name="per_page">
                 <?php foreach ($perPageOptions as $option): ?>
@@ -99,55 +114,46 @@ $columns = [
             <button type="submit" class="btn-secondary">ค้นหา</button>
         </form>
 
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <?php foreach ($columns as $col => $label): ?>
-                            <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
-                        <?php endforeach; ?>
-                        <th>สิทธิ์</th>
-                        <th>รายละเอียด</th>
-                        <th>IP Address</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($logs)): ?>
+        <?php if (empty($logs)): ?>
+            <?php renderAdminEmptyState('ไม่พบประวัติการใช้งานตามเงื่อนไขที่เลือก', 'log'); ?>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table class="data-table data-table-zebra">
+                    <thead>
                         <tr>
-                            <td colspan="7" class="empty-row">ไม่พบประวัติการใช้งาน</td>
+                            <?php foreach ($columns as $col => $label): ?>
+                                <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
+                            <?php endforeach; ?>
+                            <th>สิทธิ์</th>
+                            <th>รายละเอียด</th>
+                            <th>IP Address</th>
                         </tr>
-                    <?php else: ?>
+                    </thead>
+                    <tbody>
                         <?php foreach ($logs as $log): ?>
                             <tr>
                                 <td><?= e($log['created_at']) ?></td>
                                 <td><?= e($log['username']) ?></td>
                                 <td><?= e($log['module']) ?></td>
-                                <td><?= e($log['action']) ?></td>
+                                <td><?php renderBadge($log['action'], $actionVariant($log['action'])); ?></td>
                                 <td><?= e($log['role']) ?></td>
-                                <td><?= e($log['description']) ?></td>
+                                <td class="truncate"><?= e($log['description']) ?></td>
                                 <td><?= e($log['ip_address'] ?? '-') ?></td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pagination">
-            <span>ทั้งหมด <?= (int) $total ?> รายการ</span>
-            <div class="pagination-links">
-                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                    <?php
-                    $pageQuery              = $baseQuery;
-                    $pageQuery['sort']      = $sort;
-                    $pageQuery['direction'] = $direction;
-                    $pageQuery['page']      = $p;
-                    ?>
-                    <a href="<?= e(baseUrl('admin/activity-log/index.php?' . http_build_query($pageQuery))) ?>"
-                       class="<?= $p === $currentPage ? 'active' : '' ?>"><?= $p ?></a>
-                <?php endfor; ?>
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <?php renderAdminPagination($currentPage, $totalPages, $total, function (int $p) use ($baseQuery, $sort, $direction): string {
+                $pageQuery              = $baseQuery;
+                $pageQuery['sort']      = $sort;
+                $pageQuery['direction'] = $direction;
+                $pageQuery['page']      = $p;
+
+                return baseUrl('admin/activity-log/index.php?' . http_build_query($pageQuery));
+            }); ?>
+        <?php endif; ?>
     </main>
 </div>
 

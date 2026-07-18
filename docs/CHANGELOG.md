@@ -250,4 +250,54 @@ Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไ
 ### Database
 - ไม่มีการแก้ไขฐานข้อมูล / ไม่มี Migration ใหม่ตลอดทั้ง Stage 2
 
+Status : Committed (`6bec1a9`)
+
+## Admin Panel Design System v2 (Stage DS1–DS5)
+
+ยกระดับ Admin Panel ทั้งระบบสู่มาตรฐาน "Modern Government CMS" (แรงบันดาลใจจาก GitHub/Vercel/Supabase/Clerk/Linear/Notion/shadcn — ไม่ Copy UI ตรงๆ) โดยคง Business Logic/Permission/Route/Controller/Model/Database/Authentication ไว้ **100%** — เป็น Retrofit เฉพาะชั้น View/CSS/JS เท่านั้น ไม่แตะ Controller/Model/Database แม้แต่บรรทัดเดียวตลอดทั้ง 5 Stage แบ่งทำทีละ Stage หยุดรออนุมัติทุกครั้งตาม Workflow เดียวกับ Phase 13/Public Stage 2
+
+### Added
+- `app/config/admin_menu.php` — Single Source of Truth ของเมนู Sidebar และ Breadcrumb (label/url/enabled/roles/icon/group/title/description ต่อรายการ) ใช้แทน Array เดิมที่เคย Hardcode ใน `admin_sidebar.php`
+- `app/helpers/admin_components.php` — Shared Component Layer ฝั่ง Admin (ตั้งชื่อฟังก์ชันขึ้นต้นด้วย `renderAdmin*`/`findAdmin*` ทั้งหมดเพื่อไม่ชนกับ `public_components.php`): `renderAdminBreadcrumb()`, `renderAdminPageHeader()`, `renderAdminSectionCard()`, `renderBadge()`, `renderAdminPagination()`, `renderAdminEmptyState()`, `renderModal()`, `renderConfirmDialog()`, `renderSkeletonRows()`, `findAdminMenuItemByUrl()`, `findActiveAdminMenuItem()`
+- `app/helpers/icons.php` — เพิ่มไอคอนใหม่ 9 รายการ (edit/trash/plus/eye/spinner/filter/sort/alert-triangle/check) ต่อท้ายไฟล์เดิม ไม่แก้ไอคอนเดิม
+- `public/assets/js/admin.js` — เพิ่ม `initModal()`, `initConfirmDialog()` (Progressive Enhancement ผ่าน `data-confirm-modal`, ไม่ยุ่งกับ `data-confirm`/Handler เดิมที่ยังใช้งานได้ปกติ), `initToast()`, `initFormLoadingState()` เรียกทั้งหมดจาก `DOMContentLoaded` จุดเดียวเดิม
+- `public/assets/css/admin.css`, `public/assets/css/crud.css` — เพิ่ม Layer ใหม่ต่อท้ายไฟล์แบบ Additive เท่านั้น (Design Token/Focus Style/Page Header/Section Card/Badge/Pagination/Empty State/Modal/Confirm Dialog/Toast/Skeleton/`.btn-icon`/`.btn-ghost`) — **ไม่มีการแก้ไขหรือลบ Rule Block เดิมแม้แต่จุดเดียวตลอดทั้ง 4 Stage**
+
+### Changed — Retrofit ทีละโมดูล (DS2–DS4)
+- Dashboard, Departments, Employees (DS2), News, Legislation, Activities (DS3), Gallery, Documents, Users, Activity Log (DS4) — ทุกหน้า List ใช้ `renderAdminPageHeader()` + `.search-input-icon` + `renderBadge()` สำหรับ Status + `.btn-icon` Action Button + `data-confirm-modal` (แทน `window.confirm()`) + `renderAdminPagination()` + `renderAdminEmptyState()` ร่วมกันทั้งหมด, ทุกหน้า Form ใช้ `renderAdminSectionCard()` แบ่ง Section (ข้อมูลทั่วไป/สถานะ/ไฟล์-รูปภาพ) แทน Layout เดิม
+- `app/includes/admin_header.php` — เพิ่ม Breadcrumb อัตโนมัติจาก `admin_menu.php`
+- `app/includes/admin_sidebar.php` — เปลี่ยนมาอ่านเมนูจาก `admin_menu.php` แทน Array Literal เดิม (Logic Active-Highlight/Role-Filter เดิมไม่ถูกแตะ)
+- `app/includes/admin_footer.php` — เพิ่ม `renderConfirmDialog()` (Render ครั้งเดียวทั้งระบบ)
+- `app/core/bootstrap.php` — เพิ่ม `require_once` โหลด `admin_components.php` (Additive บรรทัดเดียว)
+- Documents: ลบ Closure `$formatFileSize` ที่ซ้ำกับ `formatFileSize()` ใน `functions.php` (Phase 13/Stage 2 เพิ่มไว้แล้ว) เปลี่ยนมาเรียก Global Function แทน (DRY Cleanup)
+
+### Fixed
+- **Sticky Table Header**: `position:sticky` บน `<th>` ร่วมกับ `border-collapse:collapse` ทำให้แถวข้อมูลแรกมองไม่เห็น (ยืนยันด้วย `getBoundingClientRect()` + Screenshot จริง) ลองแก้ด้วย `border-collapse:separate` แล้วไม่หาย — **ตัดสินใจถอด Sticky Header ออกจาก View จริง** (คง CSS ไว้พร้อม Comment "Known Issue" ห้ามใช้จนกว่าจะมีวิธีทดสอบผ่านทุก Browser)
+- **Form Field เรียงตัวผิด**: `.admin-section-card-body` ไม่มี `display:flex;flex-direction:column` ทำให้ Label/Input ไหลติดกัน — เพิ่ม Rule ใหม่แก้ (DS2)
+- **Horizontal Overflow ระดับหน้า (News, ตาราง 8 คอลัมน์)**: `.admin-content` (Flex Item) ไม่มี `min-width` ทำให้ Browser ไม่ยอมบีบเล็กกว่าความกว้างเนื้อหาจริง (Flexbox Overflow บั๊กมาตรฐาน) — เพิ่ม `.admin-content { min-width: 0; }` (DS3)
+- **Horizontal Overflow บนมือถือ (Activity Log)**: คอลัมน์ "รายละเอียด" ไม่มี Class `.truncate` (จุดเดียวที่ตกหล่นจากทุกโมดูล) ทำให้ตารางกว้างผิดปกติ ประกอบกับ `min-width:0` อย่างเดียวไม่พอสำหรับกรณีนี้ — เพิ่ม `.truncate` ที่คอลัมน์ดังกล่าว และเพิ่ม `.admin-content { overflow-x: hidden; }` เป็นชั้นป้องกันเสริม (DS4) ยืนยันด้วย `window.scrollTo(9999,0)` + อ่าน `scrollX` กลับ (ไม่ใช่เทียบ `scrollWidth` เฉยๆ เพราะ `overflow-x:hidden` ไม่เปลี่ยนค่า `scrollWidth`)
+- **Inline Style หลงเหลือ**: `departments/form.php` มี `style="text-transform:uppercase"` — ย้ายเป็น Class `.input-uppercase` ใน `crud.css` (DS4)
+- **Component Name ชนกัน**: `renderEmptyState()` ใหม่ชนกับฟังก์ชันชื่อเดียวกันใน `functions.php` (Public) ทำให้ Fatal Error "Cannot redeclare" ล่มทั้งเว็บไซต์ — เปลี่ยนชื่อเป็น `renderAdminEmptyState()` และตรวจสอบไม่ให้ชื่อฟังก์ชันใหม่ชนกับของเดิมอีกทุกจุด (DS1)
+
+### Security
+- Escape ผ่าน `e()` ทุกจุดที่ Interpolate ข้อมูลจาก Database เข้า `renderAdminPageHeader()`/`data-confirm-modal` (รวมกรณี Concatenate String ก่อนส่งเข้าฟังก์ชัน — ยืนยันว่า `e()` ทำงานกับ String รวมทั้งก้อนก่อน Output จริง ไม่มีช่องโหว่ XSS)
+- CSRF Token ครบทุกฟอร์ม POST (Create/Edit/Delete) เดิมไม่ถูกแตะ, Self-Delete Protection ของ Users คงเดิม
+- Permission (`can()`) Gate ทุกปุ่ม Action เดิมไม่ถูกแตะ
+
+### Testing
+- `php -l` PASS ทุกไฟล์ (28 ไฟล์ที่สร้าง/แก้ไขตลอด Stage DS1–DS5), CSS Brace Balanced ทั้ง `admin.css` (130/130) และ `crud.css` (102/102)
+- Regression PASS: Public 18 หน้า + Admin 21 จุด (List/Form/Search/Filter/Pagination/Empty State/Login-Logout/Permission) ผ่าน HTTP จริง (Login จริงผ่าน PHP cURL), Full CRUD Cycle (Create → Edit → Soft Delete) ทดสอบจริงกับ Departments ยืนยัน Field Name/CSRF/Redirect ไม่เสีย
+- Security PASS: ตรวจ Escape/CSRF/Permission/Path Traversal/Self-Delete Protection ทั้งระบบ ไม่พบช่องโหว่ใหม่จากการ Retrofit
+- Accessibility PASS: `role="dialog"`/`role="alertdialog"` + `aria-modal`/`aria-labelledby`/`aria-describedby` บน Modal/Confirm Dialog, Focus Trap + Escape + Restore Focus ครบ, Breadcrumb Semantic, `aria-label` บนปุ่ม Icon-only ครบทุกโมดูล, Global `:focus-visible`
+- Responsive PASS: ทดสอบ 375px จริงผ่าน Headless Chrome + CDP (Users/Documents/Activities/Gallery/Employees/Departments Form) ยืนยัน `document.documentElement.scrollWidth === clientWidth` และ `window.scrollTo(9999,0)` แล้ว `scrollX` คงเป็น 0 ทุกหน้า (ไม่มี Horizontal Scroll)
+- Performance PASS: ไม่มี Inline `style=`/`<script>` หลงเหลือ, DOMContentLoaded Listener จุดเดียวใน `admin.js`, ไม่มี N+1 Query (Controller เดิมไม่ถูกแตะ), CSS Selector ที่ซ้ำกันทุกจุด (`.admin-content` ×3, `.quick-action-btn` ×2, `.admin-topbar` ×2, `.btn-link` ×2, `.alert` ×2, `.admin-section-card-body` ×2) ตรวจแล้วเป็น Property คนละชุดจริง (Additive Layer ตามหลักการที่ตั้งไว้ ไม่ใช่ Duplicate โดยไม่ตั้งใจ)
+- ข้อมูลทดสอบทั้งหมด (Department ทดลอง 1 แถว) ลบออกจากฐานข้อมูลหลังทดสอบเสร็จ ยืนยันจำนวนกลับสู่ Baseline เดิม (9 แถว)
+
+### Known Issue (คงไว้ตามเดิม ไม่ใช่ Regression จากงานนี้)
+- `.data-table-sticky` (Sticky Table Header) มี CSS พร้อมใช้แต่ยังมีบั๊กแถวแรกมองไม่เห็น — ไม่ถูกใช้งานจริงใน View ใดๆ จนกว่าจะพบวิธีแก้ที่ผ่านการทดสอบทุก Browser
+- URL ที่ไม่มีไฟล์จริงเลย (`.htaccess` Catch-all Rewrite) ยังคงพฤติกรรมเดิมจาก Stage 1 (นอกขอบเขต Admin Panel Design System v2)
+
+### Database
+- ไม่มีการแก้ไขฐานข้อมูล / ไม่มี Migration ใหม่ตลอดทั้ง Stage DS1–DS5
+
 Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไม่ Commit/Push ตามคำสั่ง)

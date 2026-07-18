@@ -13,6 +13,10 @@ if (can('activity_log', 'view')) {
 
 $currentFullName = (string) ($_SESSION['full_name'] ?? '');
 $avatarInitial    = mb_strtoupper(mb_substr($currentFullName !== '' ? $currentFullName : (string) ($_SESSION['username'] ?? 'A'), 0, 1));
+
+// Breadcrumb อัตโนมัติจาก Single Source of Truth เดียวกับ Sidebar (app/config/admin_menu.php) — ห้าม Hardcode
+$adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
+$adminCurrentPath = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
 ?>
 <header class="admin-topbar">
     <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-label="เปิด/ปิดเมนู">
@@ -23,6 +27,8 @@ $avatarInitial    = mb_strtoupper(mb_substr($currentFullName !== '' ? $currentFu
         <span class="brand-logo">DTC</span>
         <span class="brand-name"><?= e(APP_NAME) ?></span>
     </div>
+
+    <?php renderAdminBreadcrumb($adminMenuItems, $adminCurrentPath); ?>
 
     <div class="topbar-actions">
         <?php if (can('activity_log', 'view')): ?>

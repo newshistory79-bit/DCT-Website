@@ -46,13 +46,17 @@ $columns = [
     'status'          => 'สถานะ',
     'created_at'      => 'วันที่สร้าง',
 ];
+
+// Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2/DS3 Pattern)
+$adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
+$currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/legislation/index.php');
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>จัดการกฎหมาย/ระเบียบ - <?= e(APP_NAME) ?></title>
+<title><?= e($currentMenuItem['title']) ?> - <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/admin.css')) ?>">
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/crud.css')) ?>">
 </head>
@@ -63,12 +67,11 @@ $columns = [
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1>จัดการกฎหมาย/ระเบียบ</h1>
-            <?php if (can('legislation', 'create')): ?>
-                <a href="<?= e(baseUrl('admin/legislation/form.php')) ?>" class="btn-primary">+ เพิ่มกฎหมาย/ระเบียบ</a>
-            <?php endif; ?>
-        </div>
+        <?php renderAdminPageHeader(
+            $currentMenuItem['title'],
+            $currentMenuItem['description'],
+            can('legislation', 'create') ? [['label' => '+ เพิ่มกฎหมาย/ระเบียบ', 'url' => baseUrl('admin/legislation/form.php')]] : []
+        ); ?>
 
         <?php if ($successMessage !== null): ?>
             <p class="alert alert-success"><?= e($successMessage) ?></p>
@@ -78,7 +81,10 @@ $columns = [
         <?php endif; ?>
 
         <form method="get" action="<?= e(baseUrl('admin/legislation/index.php')) ?>" class="filter-bar">
-            <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาหัวข้อ, เลขที่ประกาศ หรือรายละเอียด">
+            <div class="search-input-icon">
+                <?= icon('search', 16) ?>
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาหัวข้อ, เลขที่ประกาศ หรือรายละเอียด" aria-label="ค้นหากฎหมาย/ระเบียบ">
+            </div>
 
             <select name="status">
                 <option value="">สถานะทั้งหมด</option>
@@ -95,48 +101,47 @@ $columns = [
             <button type="submit" class="btn-secondary">ค้นหา</button>
         </form>
 
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <?php foreach ($columns as $col => $label): ?>
-                            <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
-                        <?php endforeach; ?>
-                        <th>รายละเอียด</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($legislationItems)): ?>
+        <?php if (empty($legislationItems)): ?>
+            <?php renderAdminEmptyState(
+                'ไม่พบข้อมูลกฎหมาย/ระเบียบ ลองปรับคำค้นหาหรือตัวกรอง',
+                'news',
+                can('legislation', 'create') ? ['url' => baseUrl('admin/legislation/form.php'), 'label' => '+ เพิ่มกฎหมาย/ระเบียบ'] : null
+            ); ?>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table class="data-table data-table-zebra">
+                    <thead>
                         <tr>
-                            <td colspan="8" class="empty-row">ไม่พบข้อมูลกฎหมาย/ระเบียบ</td>
+                            <?php foreach ($columns as $col => $label): ?>
+                                <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
+                            <?php endforeach; ?>
+                            <th>รายละเอียด</th>
+                            <th>จัดการ</th>
                         </tr>
-                    <?php else: ?>
+                    </thead>
+                    <tbody>
                         <?php foreach ($legislationItems as $item): ?>
+                            <?php $itemTitle = mb_strimwidth((string) $item['title'], 0, 40, '...'); ?>
                             <tr>
                                 <td><?= (int) $item['ID'] ?></td>
                                 <td><?= e((string) $item['title']) ?></td>
                                 <td><?= e($item['document_number'] ?? '-') ?></td>
                                 <td><?= e($item['effective_date'] ?? '-') ?></td>
-                                <td>
-                                    <span class="badge badge-<?= $item['status'] === 'Published' ? 'success' : 'muted' ?>">
-                                        <?= e($item['status']) ?>
-                                    </span>
-                                </td>
+                                <td><?php renderBadge($item['status'], $item['status'] === 'Published' ? 'success' : 'muted'); ?></td>
                                 <td><?= e($item['created_at']) ?></td>
                                 <td class="truncate"><?= e(mb_strimwidth((string) $item['detail'], 0, 60, '...')) ?></td>
                                 <td class="actions">
                                     <?php if (can('legislation', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/legislation/form.php?id=' . $item['ID'])) ?>" class="btn-link">แก้ไข</a>
+                                        <a href="<?= e(baseUrl('admin/legislation/form.php?id=' . $item['ID'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไข <?= e($itemTitle) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('legislation', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/legislation/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm="ยืนยันการลบ &quot;<?= e(mb_strimwidth((string) $item['title'], 0, 40, '...')) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ยืนยันการลบ &quot;<?= e($itemTitle) ?>&quot; ใช่หรือไม่?">
                                             <input type="hidden" name="id" value="<?= (int) $item['ID'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-link btn-danger">ลบ</button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบ <?= e($itemTitle) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('legislation', 'edit') && !can('legislation', 'delete')): ?>
@@ -145,26 +150,19 @@ $columns = [
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pagination">
-            <span>ทั้งหมด <?= (int) $total ?> รายการ</span>
-            <div class="pagination-links">
-                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                    <?php
-                    $pageQuery              = $baseQuery;
-                    $pageQuery['sort']      = $sort;
-                    $pageQuery['direction'] = $direction;
-                    $pageQuery['page']      = $p;
-                    ?>
-                    <a href="<?= e(baseUrl('admin/legislation/index.php?' . http_build_query($pageQuery))) ?>"
-                       class="<?= $p === $currentPage ? 'active' : '' ?>"><?= $p ?></a>
-                <?php endfor; ?>
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <?php renderAdminPagination($currentPage, $totalPages, $total, function (int $p) use ($baseQuery, $sort, $direction): string {
+                $pageQuery              = $baseQuery;
+                $pageQuery['sort']      = $sort;
+                $pageQuery['direction'] = $direction;
+                $pageQuery['page']      = $p;
+
+                return baseUrl('admin/legislation/index.php?' . http_build_query($pageQuery));
+            }); ?>
+        <?php endif; ?>
     </main>
 </div>
 

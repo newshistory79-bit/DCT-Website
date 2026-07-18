@@ -339,3 +339,381 @@
         max-width: 100%;
     }
 }
+
+/* ============================================================
+   Design System v2 — Stage DS1 (Additive Layer)
+   ห้ามลบ/แก้ไข Selector เดิมด้านบน — Section นี้เพิ่ม Class ใหม่เท่านั้น
+   ============================================================ */
+
+/* Badge Variant ใหม่ (.badge-success/.badge-muted เดิมยังอยู่ครบ) */
+.badge-warning {
+    background: var(--color-warning-bg);
+    color: #92400e;
+}
+
+.badge-danger {
+    background: var(--color-danger-bg);
+    color: #b42318;
+}
+
+.badge-info {
+    background: var(--color-accent-light);
+    color: var(--color-primary);
+}
+
+/* Button Variant ใหม่ (.btn-primary/.btn-secondary/.btn-link เดิมยังอยู่ครบ) */
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-ghost:hover {
+    background: var(--color-bg);
+    border-color: var(--color-accent);
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: var(--color-bg);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.btn-icon.btn-danger:hover {
+    background: var(--color-danger-bg);
+    color: #b42318;
+    border-color: #f8d1cc;
+}
+
+/* Section Card (ใหม่ — Filter Card/Table Card/Form Card) */
+.admin-section-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.admin-section-card-head {
+    padding: 18px 20px 0;
+}
+
+.admin-section-card-head h2 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--color-primary);
+}
+
+.admin-section-card-head p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.admin-section-card-body {
+    padding: 20px;
+}
+
+/* Empty State ฝั่ง Admin (ใหม่ — .empty-row เดิมในตารางยังใช้งานได้ตามปกติ) */
+.admin-empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--color-text-muted);
+}
+
+.admin-empty-state-icon {
+    display: inline-flex;
+    margin-bottom: 12px;
+    opacity: 0.4;
+}
+
+.admin-empty-state p {
+    margin: 0 0 16px;
+}
+
+/* Modal / Confirm Dialog (ใหม่) */
+.admin-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 24, 40, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    padding: 20px;
+}
+
+.admin-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.admin-modal[hidden] {
+    display: none;
+}
+
+.admin-modal-dialog {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.admin-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.admin-modal-head h2 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.admin-modal-close:hover {
+    background: var(--color-bg);
+}
+
+.admin-modal-body {
+    padding: 20px;
+    font-size: 14px;
+    color: var(--color-text);
+}
+
+.admin-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--color-border);
+}
+
+/* Toast — เสริม .alert เดิม (เพิ่มปุ่มปิด + Auto-fade ผ่าน JS เท่านั้น ถ้าไม่มี JS .alert ยังอ่านได้ปกติ) */
+.alert {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.alert-dismiss {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.alert-dismiss:hover {
+    opacity: 1;
+}
+
+.alert.is-dismissing {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Skeleton Loading (ใหม่) */
+.admin-skeleton-bar {
+    display: block;
+    height: 14px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--color-bg) 25%, #eef1f5 37%, var(--color-bg) 63%);
+    background-size: 400% 100%;
+    animation: admin-skeleton-shimmer 1.4s ease infinite;
+}
+
+@keyframes admin-skeleton-shimmer {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+}
+
+button.is-loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+/* Search Box แบบมี Icon ในตัว (Opt-in Class ใหม่ สำหรับ Retrofit ในอนาคต — .filter-bar input เดิมไม่กระทบ) */
+.search-input-icon {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-input-icon svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    pointer-events: none;
+}
+
+.search-input-icon input[type="text"] {
+    width: 100%;
+    padding-left: 36px;
+}
+
+/* Custom File Upload (Opt-in Class ใหม่ — ไม่กระทบ input[type=file] เดิมภายใน .data-form) */
+.file-upload-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px;
+    border: 1.5px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.file-upload-dropzone:hover,
+.file-upload-dropzone.is-dragover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
+}
+
+/* Table Opt-in: Sticky Header / Zebra Row (Class ใหม่ — .data-table เดิมที่ยังไม่ใส่ Class นี้ไม่กระทบ) */
+/* *** KNOWN ISSUE (Stage DS2) — ยังไม่แก้สำเร็จ ห้ามใช้ .data-table-sticky ใน View จนกว่าจะแก้ไขแล้วยืนยันด้วย
+   Screenshot จริง ***
+   ทดสอบพบว่า position:sticky บน <th> ทำให้แถวข้อมูลแถวแรกของ tbody มองไม่เห็น (Layout/DOM ถูกต้อง ยืนยันด้วย
+   getBoundingClientRect() ว่าตำแหน่ง/จำนวนแถวถูกต้องครบ 9 แถว แต่ Paint ไม่แสดงแถวแรกให้เห็นจริงในหน้าจอ)
+   ลองแก้ด้วย border-collapse:separate แล้วยังไม่หาย จึงถอดออกจาก Departments/Employees index.php ทั้งคู่แล้ว
+   ในระหว่างที่ยังไม่มี View ใดเรียกใช้ Class นี้ จึงไม่กระทบผู้ใช้งานจริง */
+.data-table-sticky {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.data-table-sticky thead th {
+    position: sticky;
+    top: 62px;
+    z-index: 1;
+}
+
+.data-table-zebra tbody tr:nth-child(even) {
+    background: var(--color-bg);
+}
+
+@media (max-width: 600px) {
+    .admin-modal-dialog {
+        max-width: 100%;
+    }
+}
+
+/* ============================================================
+   Design System v2 — Stage DS2 (Retrofit: Dashboard/Departments/Employees)
+   ============================================================ */
+
+/* Form Card Layout — ใช้ร่วมกับ .data-form เดิม (Input/Label/Select/Textarea ยังใช้ .data-form ... Style เดิม
+   ผ่าน Descendant Selector เพราะ Section Card ยังคงอยู่ภายใน <form class="data-form admin-form-sectioned">)
+   .admin-form-sectioned ปิด Background/Shadow/Padding กล่องเดี่ยวเดิม ให้ Section Card ควบคุมกรอบเองแทน */
+.data-form.admin-form-sectioned {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    max-width: 640px;
+    gap: 16px;
+}
+
+/* Bug ที่พบระหว่าง Retrofit: renderAdminSectionCard() Body (.admin-section-card-body จาก DS1) เป็น <div>
+   ธรรมดา ไม่มี display:flex;flex-direction:column เหมือน .data-form เดิม ทำให้ label/input ภายในไหลแบบ
+   Inline ชิดกันจนอ่านยาก (label/input ของเดิมพึ่งพา .data-form โดยตรงเป็น Flex Container เสมอ) แก้โดยเพิ่ม
+   Layout นี้ให้ Body ของ Section Card ทุกจุด (Field เดี่ยวๆ อื่น เช่น Dashboard Timeline/Table ไม่ได้รับผลกระทบ
+   เพราะมี Child เดียว ไม่มีอะไรให้ "เรียง" ผิดที่) */
+.admin-section-card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+/* Action Column แบบ Icon Button (ใช้ .btn-icon เดิมจาก DS1) */
+.data-table .actions {
+    gap: 6px;
+}
+
+@media (max-width: 600px) {
+    .data-table-sticky thead th {
+        position: static;
+    }
+}
+
+/* ============================================================
+   Design System v2 — Stage DS4 (Retrofit: Gallery/Documents/Users/Activity Log
+   + Cross-module Audit Fixes)
+   ============================================================ */
+
+/* Utility Class ใหม่ — แทนที่ Inline Style style="text-transform:uppercase" ที่พบใน departments/form.php
+   ระหว่างตรวจสอบ Audit (ช่องรหัสแผนกบังคับพิมพ์ตัวใหญ่) */
+.input-uppercase {
+    text-transform: uppercase;
+}

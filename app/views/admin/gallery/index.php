@@ -44,13 +44,17 @@ $columns = [
     'status'     => 'สถานะ',
     'created_at' => 'วันที่สร้าง',
 ];
+
+// Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2-DS4 Pattern)
+$adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
+$currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/gallery/index.php');
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>จัดการคลังภาพ - <?= e(APP_NAME) ?></title>
+<title><?= e($currentMenuItem['title']) ?> - <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/admin.css')) ?>">
 <link rel="stylesheet" href="<?= e(baseUrl('assets/css/crud.css')) ?>">
 </head>
@@ -61,12 +65,11 @@ $columns = [
     <?php require APP_PATH . '/includes/admin_sidebar.php'; ?>
 
     <main class="admin-content">
-        <div class="page-heading">
-            <h1>จัดการคลังภาพ</h1>
-            <?php if (can('gallery', 'create')): ?>
-                <a href="<?= e(baseUrl('admin/gallery/form.php')) ?>" class="btn-primary">+ เพิ่มภาพ</a>
-            <?php endif; ?>
-        </div>
+        <?php renderAdminPageHeader(
+            $currentMenuItem['title'],
+            $currentMenuItem['description'],
+            can('gallery', 'create') ? [['label' => '+ เพิ่มภาพ', 'url' => baseUrl('admin/gallery/form.php')]] : []
+        ); ?>
 
         <?php if ($successMessage !== null): ?>
             <p class="alert alert-success"><?= e($successMessage) ?></p>
@@ -76,7 +79,10 @@ $columns = [
         <?php endif; ?>
 
         <form method="get" action="<?= e(baseUrl('admin/gallery/index.php')) ?>" class="filter-bar">
-            <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาชื่อภาพหรือคำอธิบาย">
+            <div class="search-input-icon">
+                <?= icon('search', 16) ?>
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาชื่อภาพหรือคำอธิบาย" aria-label="ค้นหาภาพ">
+            </div>
 
             <select name="status">
                 <option value="">สถานะทั้งหมด</option>
@@ -93,25 +99,28 @@ $columns = [
             <button type="submit" class="btn-secondary">ค้นหา</button>
         </form>
 
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>รูป</th>
-                        <?php foreach ($columns as $col => $label): ?>
-                            <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
-                        <?php endforeach; ?>
-                        <th>คำอธิบาย</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($galleryItems)): ?>
+        <?php if (empty($galleryItems)): ?>
+            <?php renderAdminEmptyState(
+                'ไม่พบข้อมูลภาพ ลองปรับคำค้นหาหรือตัวกรอง',
+                'image',
+                can('gallery', 'create') ? ['url' => baseUrl('admin/gallery/form.php'), 'label' => '+ เพิ่มภาพ'] : null
+            ); ?>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table class="data-table data-table-zebra">
+                    <thead>
                         <tr>
-                            <td colspan="7" class="empty-row">ไม่พบข้อมูลภาพ</td>
+                            <th>รูป</th>
+                            <?php foreach ($columns as $col => $label): ?>
+                                <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
+                            <?php endforeach; ?>
+                            <th>คำอธิบาย</th>
+                            <th>จัดการ</th>
                         </tr>
-                    <?php else: ?>
+                    </thead>
+                    <tbody>
                         <?php foreach ($galleryItems as $galleryItem): ?>
+                            <?php $galleryTitle = mb_strimwidth((string) $galleryItem['title'], 0, 40, '...'); ?>
                             <tr>
                                 <td>
                                     <?php if (!empty($galleryItem['image'])): ?>
@@ -122,25 +131,21 @@ $columns = [
                                 </td>
                                 <td><?= (int) $galleryItem['id'] ?></td>
                                 <td><?= e((string) $galleryItem['title']) ?></td>
-                                <td>
-                                    <span class="badge badge-<?= $galleryItem['status'] === 'Published' ? 'success' : 'muted' ?>">
-                                        <?= e($galleryItem['status']) ?>
-                                    </span>
-                                </td>
+                                <td><?php renderBadge($galleryItem['status'], $galleryItem['status'] === 'Published' ? 'success' : 'muted'); ?></td>
                                 <td><?= e($galleryItem['created_at']) ?></td>
                                 <td class="truncate"><?= e(mb_strimwidth((string) ($galleryItem['description'] ?? '-'), 0, 60, '...')) ?></td>
                                 <td class="actions">
                                     <?php if (can('gallery', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/gallery/form.php?id=' . $galleryItem['id'])) ?>" class="btn-link">แก้ไข</a>
+                                        <a href="<?= e(baseUrl('admin/gallery/form.php?id=' . $galleryItem['id'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขภาพ <?= e($galleryTitle) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('gallery', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/gallery/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm="ยืนยันการลบภาพ &quot;<?= e(mb_strimwidth((string) $galleryItem['title'], 0, 40, '...')) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ยืนยันการลบภาพ &quot;<?= e($galleryTitle) ?>&quot; ใช่หรือไม่?">
                                             <input type="hidden" name="id" value="<?= (int) $galleryItem['id'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-link btn-danger">ลบ</button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบภาพ <?= e($galleryTitle) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('gallery', 'edit') && !can('gallery', 'delete')): ?>
@@ -149,26 +154,19 @@ $columns = [
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pagination">
-            <span>ทั้งหมด <?= (int) $total ?> รายการ</span>
-            <div class="pagination-links">
-                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-                    <?php
-                    $pageQuery              = $baseQuery;
-                    $pageQuery['sort']      = $sort;
-                    $pageQuery['direction'] = $direction;
-                    $pageQuery['page']      = $p;
-                    ?>
-                    <a href="<?= e(baseUrl('admin/gallery/index.php?' . http_build_query($pageQuery))) ?>"
-                       class="<?= $p === $currentPage ? 'active' : '' ?>"><?= $p ?></a>
-                <?php endfor; ?>
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <?php renderAdminPagination($currentPage, $totalPages, $total, function (int $p) use ($baseQuery, $sort, $direction): string {
+                $pageQuery              = $baseQuery;
+                $pageQuery['sort']      = $sort;
+                $pageQuery['direction'] = $direction;
+                $pageQuery['page']      = $p;
+
+                return baseUrl('admin/gallery/index.php?' . http_build_query($pageQuery));
+            }); ?>
+        <?php endif; ?>
     </main>
 </div>
 

@@ -19,6 +19,7 @@ require_once APP_PATH . '/core/Autoloader.php';
 require_once APP_PATH . '/helpers/functions.php';
 require_once APP_PATH . '/helpers/icons.php';
 require_once APP_PATH . '/helpers/public_components.php';
+require_once APP_PATH . '/helpers/admin_components.php';
 
 // ตั้งค่า Error Logging ไปยัง logs/error.log
 ini_set('log_errors', '1');
