@@ -52,13 +52,15 @@ $title  = $isEdit ? 'แก้ไขกฎหมาย/ระเบียบ' : 
                 <input type="text" id="document_number" name="document_number" maxlength="50"
                        value="<?= e($legislation['document_number'] ?? '') ?>">
 
-                <label for="detail">รายละเอียด</label>
-                <textarea id="detail" name="detail" rows="6" required><?= e((string) ($legislation['detail'] ?? '')) ?></textarea>
-
                 <label for="effective_date">วันที่มีผลบังคับใช้</label>
                 <input type="date" id="effective_date" name="effective_date"
                        value="<?= e($legislation['effective_date'] ?? '') ?>">
-            <?php }, 'หัวข้อและเนื้อหาของกฎหมาย/ระเบียบ'); ?>
+            <?php }, 'หัวข้อและเลขที่ของกฎหมาย/ระเบียบ'); ?>
+
+            <?php renderAdminSectionCard('เนื้อหา', function () use ($legislation): void { ?>
+                <label for="detail">รายละเอียด</label>
+                <textarea id="detail" name="detail" rows="6" required><?= e((string) ($legislation['detail'] ?? '')) ?></textarea>
+            <?php }, 'เนื้อหาฉบับเต็มของกฎหมาย/ระเบียบ'); ?>
 
             <?php renderAdminSectionCard('สถานะ', function () use ($legislation): void { ?>
                 <label for="status">สถานะการเผยแพร่</label>
@@ -68,10 +70,12 @@ $title  = $isEdit ? 'แก้ไขกฎหมาย/ระเบียบ' : 
                 </select>
             <?php }, 'กำหนดว่ารายการนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
 
-            <div class="admin-form-actions">
-                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มกฎหมาย/ระเบียบ' ?></button>
-                <a href="<?= e(baseUrl('admin/legislation/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
-            </div>
+            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มกฎหมาย/ระเบียบ' ?></button>
+                    <a href="<?= e(baseUrl('admin/legislation/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                </div>
+            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
         </form>
     </main>
 </div>

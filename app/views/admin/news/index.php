@@ -69,7 +69,8 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/news/index.php
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('news', 'create') ? [['label' => '+ เพิ่มข่าว', 'url' => baseUrl('admin/news/form.php')]] : []
+            can('news', 'create') ? [['label' => '+ เพิ่มข่าว', 'url' => baseUrl('admin/news/form.php')]] : [],
+            '<span class="stat-icon stat-icon-blue">' . icon('news', 22) . '</span>'
         ); ?>
 
         <?php if ($successMessage !== null): ?>

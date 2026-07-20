@@ -2,8 +2,8 @@
 
 **Project:** TCSP Administration System (Department of Technology and Communication of Savannakhet Province)
 **Architecture:** PHP MVC (Native PHP 8+) + PDO + MariaDB 10.4.x
-**Current Phase:** Public Website Stage 2 (Content Modules 2.1–2.7 + Final Quality Review) Completed ✅
-**Next Phase:** รอผู้ใช้อนุมัติ Commit/Push Public Website Stage 2 จากนั้นเลือกกลับไปทำ Admin Panel Redesign Module 2 (Employees) ที่ค้างไว้ หรือ Task ถัดไปตามคำสั่งผู้ใช้
+**Current Phase:** Admin Panel Design System v3 (Stage UI-1–UI-6, Final Quality Review) Completed ✅
+**Next Phase:** รอผู้ใช้อนุมัติ Commit/Push Admin Panel Design System v2 (DS1–DS5) + v3 (UI-1–UI-6) จากนั้นดำเนินการตาม Task ถัดไปที่ผู้ใช้กำหนด
 
 ---
 
@@ -598,10 +598,57 @@ Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไ
 
 ---
 
-## Next Task
+## Admin Panel Design System v3 (Stage UI-1–UI-6) ✅ Completed
 
-รอคำสั่งอนุมัติ Commit/Push Admin Panel Design System v2 (Stage DS1–DS5) จากผู้ใช้ จากนั้นดำเนินการตาม Task ถัดไปที่ผู้ใช้กำหนด
+ต่อยอดจาก Design System v2 (DS1–DS5) ตาม Mockup ใหม่ (`design/Dashboard.png`) ยกระดับ Admin Panel ให้ใกล้เคียง Modern Government CMS Dashboard มากขึ้น (Hero Header, Stat Card แนวนอน, Quick Action Card, Segmented Control ฯลฯ) เงื่อนไขเหมือนเดิมทุกประการ: ห้ามแก้ Database/Model/Controller/Business Logic/Auth/Permission/Route/Public Website, ห้ามใช้ Framework, Incremental Refactor เท่านั้น, ต้อง Reuse Component เดิมก่อนสร้างใหม่ทุกครั้ง, หยุดรออนุมัติทุก Stage
+
+### Stage UI-1 — Design System (Global Components)
+
+เพิ่ม Layer ใหม่ต่อท้าย `admin.css`/`crud.css` แบบ Additive (ไม่แก้ Rule เดิม): Token สีใหม่ (Teal/Pink), `.admin-hero` (Hero Header Component ยังไม่ถูกเรียกใช้), `.quick-action-card`, `.segmented-control`, `.btn-success`/`.btn-danger`/`.btn-outline`/`.btn-fab`, Ripple แบบ CSS, `.glass-card` (Opt-in) — เพิ่ม `renderAdminHero()`, `renderAdminSegmentedControl()` ใน `admin_components.php` (Foundation เท่านั้น), เพิ่มไอคอน `bell`/`moon`/`trend-up`/`trend-down`, เพิ่ม `initSegmentedControl()` ใน `admin.js` — แก้ Topbar (`admin_header.php`) เพิ่มช่องค้นหา + ปุ่ม Dark Mode (ทั้งคู่ `disabled` เพราะยังไม่มี Backend รองรับจริง ตามที่ผู้ใช้ตอบใน AskUserQuestion)
+
+**บั๊กที่พบและแก้ไข**: ปุ่มกระดิ่งแจ้งเตือนใช้ `icon('log')` (รูปเอกสาร) แทนที่จะเป็นรูประฆัง — เพิ่มไอคอน `bell` จริงและสลับให้ถูกต้อง
+
+### Stage UI-2 — Dashboard Redesign
+
+Retrofit `dashboard.php` เต็มรูปแบบด้วย Component จาก UI-1 (ไม่แก้ `DashboardController`/`DashboardModel` แม้แต่บรรทัดเดียว — ข้อมูลเดิมทั้งหมด): `renderAdminHero()` (Greeting ตามช่วงเวลา/ชื่อ/Role Badge/วันที่-เวลาแบบไทย), Stat Card แนวนอน 7 สีไม่ซ้ำ (เพิ่ม Token Indigo เป็นสีที่ 7), Quick Action Card, Timeline แบบ Scrollable, Segmented Control 7/30/90 วันที่การ์ด Analytics (30/90 แสดง Empty State เพราะ Controller คำนวณให้แค่ 7 วัน — ตกลงกับผู้ใช้แล้วว่ายังไม่เชื่อม Backend ใน Stage นี้), Summary Card คำนวณจาก `$dailyCounts` ที่มีอยู่แล้วในระดับ View (Total/Peak/Average) — ขยาย `renderAdminSectionCard()` เพิ่ม Optional Parameter `$headExtra` (Backward Compatible)
+
+**การตัดสินใจสำคัญ**: Trend/Percentage บน Stat Card ไม่มีข้อมูลเปรียบเทียบจริงในระบบ (Model ให้แค่ยอดปัจจุบัน) จึงแสดงเป็นสถานะกลาง "ยังไม่มีข้อมูลเปรียบเทียบ" (สีเทา) แทนการมั่วตัวเลขปลอม
+
+### Stage UI-3 — Departments, Employees
+
+ตรวจโค้ดเดิมพบว่าหน้า List ทั้งสองผ่านครบตาม Checklist อยู่แล้วจาก DS2 (ไม่แก้) — เพิ่มเฉพาะ Section "การดำเนินการ" ห่อปุ่ม Save/Cancel ในฟอร์มทั้งสอง (Reuse `renderAdminSectionCard()`) และ Position Badge ในตาราง Employees (Reuse `renderBadge()`) — **ข้าม Section "สถานะ" ของ Employees** เพราะตาราง `employee` ไม่มีคอลัมน์ Status จริง (สร้าง Field ปลอมขัดกับเงื่อนไขห้ามแก้ Database)
+
+### Stage UI-4 — News, Activities, Legislation
+
+แยก Section "เนื้อหา" ออกจาก "ข้อมูลทั่วไป" เดิมในฟอร์มทั้ง 3 โมดูล + เพิ่ม Section "การดำเนินการ" (Reuse `renderAdminSectionCard()` เดิมทั้งหมด) เพิ่ม Accent Icon Chip ที่ Page Header ของ List (Reuse `.stat-icon-{blue/orange/indigo}` จาก Dashboard ผ่าน Parameter `$extra` เดิมของ `renderAdminPageHeader()`) — **ข้าม Section "รูปภาพ" ของ Legislation** เพราะตารางไม่มีคอลัมน์รูปภาพจริง
+
+### Stage UI-5 — Gallery, Documents, Users, Activity Log
+
+ตรวจโค้ดเดิมทั้ง 7 ไฟล์ (List/Form ของ 4 โมดูล) พบว่าผ่านครบทุกข้อกำหนดอยู่แล้ว (Page Header/Search/Filter/Badge/Pagination/Empty State/Action Button/Role Badge/Action Type Badge ทุกจุดใช้ `renderBadge()` อยู่แล้ว ไม่มี Badge Component ใหม่) — **ไม่มีการแก้โค้ดแม้แต่บรรทัดเดียว** ตามเงื่อนไข "หากไม่พบ Bug ห้ามแก้โค้ด"
+
+### Stage UI-6 — Final Quality Review
+
+ตรวจซ้ำทั้ง 5 Stage ครบ 10 หัวข้อ ไม่พบ Bug ใหม่ จึงไม่มีการแก้โค้ดเพิ่มเติมในรอบนี้ (นอกจาก Documentation)
+
+- **Full Code Audit**: ตรวจ TODO/FIXME/DEBUG/`console.log`/`var_dump`/`print_r`/`dd()`/`exit`/`die` ทั่ว `app/` และ `public/assets` — ไม่พบเลย
+- **Duplicate Audit**: ไม่พบฟังก์ชัน PHP/JS ซ้ำชื่อ (ตรวจทั้ง `app/helpers/*.php` และ `admin.js`) — พบ Selector CSS ที่ปรากฏซ้ำ 13 จุดใน `admin.css`/`crud.css` ตรวจทีละคู่ยืนยันเป็น Additive Layer ตามหลักการเดิม (คนละ Property หรือ Override ที่ตั้งใจและมีผลถูกต้องตามทดสอบจริง เช่น `.stat-card` เปลี่ยน `flex-direction` จาก column→row) ไม่ใช่ Duplicate โดยไม่ตั้งใจ — พบ Pattern ซ้ำระดับ Markup/PHP ที่มีมาก่อน Stage นี้ (Closure `$sortUrl`/`$sortIndicator` ซ้ำทุกโมดูล List, Filter Bar Markup คล้ายกันทุกโมดูล) บันทึกเป็น Technical Debt ที่มีอยู่แล้ว ไม่ใช่สิ่งที่เกิดจากงานนี้ ไม่แก้ตามเงื่อนไข "ไม่ใช่ Bug จริง"
+- **Regression**: Login จริงผ่าน PHP cURL ทดสอบ 19 หน้า (Dashboard + 10 โมดูล List/Form + Change Password) → 200 ไม่มี Error/Warning/Notice จุดใดเลย, ทดสอบ Full CRUD Cycle จริง (Create → Search → Delete) กับ Departments ยืนยัน Business Logic/CSRF/Redirect/Activity Log ไม่เสียหลัง Retrofit ทั้ง 5 Stage, ทดสอบ Logout ยืนยัน Session ถูกทำลายจริง (Redirect กลับ Login)
+- **Security**: ยืนยัน Escape Output ผ่าน `e()` ครบทุกจุดที่ Interpolate ตัวแปร (ไม่พบ Raw Variable ที่ไม่ผ่าน `e()`/Cast `(int)`/Boolean-ternary), CSRF Token ครบทุกฟอร์ม POST (17 ไฟล์), Self-Delete Protection ของ Users ยืนยันด้วย Live Test จริง (ปุ่มลบหายไปจากแถวของตัวเอง)
+- **Accessibility**: `disabled` (ไม่ใช่แค่ Visual) บน Control ที่ยังไม่ทำงานจริง (Search Box/Dark Mode Toggle), Focus-visible/ARIA เดิมจาก DS1–DS5 ไม่ถูกกระทบ
+- **Responsive**: ตรวจ CSS ใหม่ทั้งหมดจาก UI-1–UI-4 ไม่พบ Fixed-width ที่ไม่มี Media Query รองรับ
+- **Performance**: DOMContentLoaded จุดเดียวใน `admin.js`, ไม่มี Inline `style=`/`<script>`, พบ Component ที่ตั้งใจสร้างไว้ล่วงหน้ายังไม่ถูกเรียกใช้จริง (`.btn-fab`, `.btn-success`, `.glass-card`, `.stat-trend-up/down`, `trend-down` icon) — เป็น Foundation ที่ตั้งใจไว้ตั้งแต่ UI-1 (Pattern เดียวกับ `renderModal()`/`renderSkeletonRows()` จาก DS1 ที่ยังไม่ถูกใช้เช่นกัน) ไม่ใช่ Dead Code จาก Feature ที่ถูกลบ
+- **Git Review**: `git status` สะอาด ไม่มีไฟล์ Temp/Backup/Debug หลงเหลือในโปรเจกต์
+
+Testing: `php -l` PASS ทุกไฟล์ที่แก้ตลอด Stage UI-1–UI-5
+
+Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไม่ Commit/Push ตามคำสั่ง)
 
 ---
 
-**Last Updated:** 2026-07-18 — Public Website Stage 2 (Content Modules 2.1–2.7) + Final Quality Review Completed
+## Next Task
+
+รอคำสั่งอนุมัติ Commit/Push Admin Panel Design System v2 (Stage DS1–DS5) และ v3 (Stage UI-1–UI-6) จากผู้ใช้ จากนั้นดำเนินการตาม Task ถัดไปที่ผู้ใช้กำหนด
+
+---
+
+**Last Updated:** 2026-07-21 — Admin Panel Design System v3 (Stage UI-1–UI-6) Completed

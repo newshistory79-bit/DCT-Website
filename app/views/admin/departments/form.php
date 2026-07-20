@@ -70,10 +70,12 @@ $title  = $isEdit ? 'แก้ไขแผนก' : 'เพิ่มแผนก
                 </select>
             <?php }, 'กำหนดว่าแผนกนี้เปิดใช้งานอยู่หรือไม่'); ?>
 
-            <div class="admin-form-actions">
-                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มแผนก' ?></button>
-                <a href="<?= e(baseUrl('admin/departments/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
-            </div>
+            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มแผนก' ?></button>
+                    <a href="<?= e(baseUrl('admin/departments/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                </div>
+            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
         </form>
     </main>
 </div>

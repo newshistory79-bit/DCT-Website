@@ -457,7 +457,8 @@ a {
     opacity: 1;
 }
 
-/* Placeholder Graphic ธีมเทคโนโลยี (Grid Line + Gradient Blob) แทนภาพถ่ายจริง */
+/* Placeholder Graphic ธีมเทคโนโลยี (Grid Line + Gradient Blob) แทนภาพถ่ายจริง
+   แต่ละสไลด์ใช้ Hue ต่างกันชัดเจน (เดิมทุกสไลด์เป็นน้ำเงินเข้มโทนเดียวกันหมด สังเกตไม่ออกว่าเลื่อน) */
 .hero-slide-bg-1 {
     background-image:
         radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.14) 0%, transparent 45%),
@@ -469,28 +470,28 @@ a {
     background-image:
         radial-gradient(circle at 80% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 45%),
         radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        linear-gradient(120deg, #08214f 0%, #12409c 55%, #1a56db 100%);
+        linear-gradient(120deg, #063a45 0%, #0e7c86 55%, #14b8a6 100%);
 }
 
 .hero-slide-bg-3 {
     background-image:
         radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.14) 0%, transparent 45%),
         radial-gradient(circle at 75% 20%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
-        linear-gradient(120deg, #12295a 0%, #2c5cb0 50%, #1a3d7c 100%);
+        linear-gradient(120deg, #241b5e 0%, #4c3fb4 50%, #6d28d9 100%);
 }
 
 .hero-slide-bg-4 {
     background-image:
         radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.14) 0%, transparent 45%),
         radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        linear-gradient(120deg, #0d2a63 0%, #1a56db 55%, #2c5cb0 100%);
+        linear-gradient(120deg, #04352b 0%, #0d9488 55%, #10b981 100%);
 }
 
 .hero-slide-bg-5 {
     background-image:
         radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 45%),
         radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
-        linear-gradient(120deg, #08214f 0%, #1a3d7c 50%, #12409c 100%);
+        linear-gradient(120deg, #1e1b4b 0%, #4338ca 50%, #6366f1 100%);
 }
 
 .hero-grid-overlay {

@@ -301,3 +301,48 @@ Status : Committed (`6bec1a9`)
 - ไม่มีการแก้ไขฐานข้อมูล / ไม่มี Migration ใหม่ตลอดทั้ง Stage DS1–DS5
 
 Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไม่ Commit/Push ตามคำสั่ง)
+
+## Admin Panel Design System v3 (Stage UI-1–UI-6)
+
+ต่อยอดจาก v2 (DS1–DS5) ตาม Mockup ใหม่ (`design/Dashboard.png`) เงื่อนไขเดิมทุกประการ (ห้ามแก้ Database/Model/Controller/Business Logic/Auth/Permission/Route/Public Website, Incremental Refactor เท่านั้น, Reuse Component ก่อนสร้างใหม่เสมอ, หยุดรออนุมัติทุก Stage)
+
+### Added
+- `.admin-hero`, `renderAdminHero()` — Hero Header Component (Stage UI-1, Wire เข้า Dashboard จริงใน UI-2)
+- `.quick-action-card`, `.segmented-control`, `renderAdminSegmentedControl()`, `initSegmentedControl()` (admin.js) — Segmented Control ทั่วไป (ใช้ครั้งแรกกับปุ่ม 7/30/90 วันของ Analytics)
+- `.btn-success`, `.btn-danger` (Solid), `.btn-outline`, `.btn-fab`, Ripple แบบ CSS ล้วน, `.glass-card` (Opt-in)
+- Token สี `--color-teal`, `--color-pink`, `--color-indigo` (Accent สีที่ 5-7 ของ Stat Card/Module)
+- ไอคอน `bell`, `moon`, `trend-up`, `trend-down`
+- Topbar: ช่องค้นหา + ปุ่ม Dark Mode Toggle (ทั้งคู่ `disabled` — ยังไม่มี Backend/Theme System จริงรองรับ)
+- `renderAdminSectionCard()` — เพิ่ม Optional Parameter `$headExtra` (Backward Compatible, Default `''`)
+
+### Changed
+- `app/views/admin/dashboard.php` — Retrofit เต็มรูปแบบ: Hero Header (Greeting ตามเวลา/Role Badge/วันที่-เวลา), Stat Card แนวนอน 7 สีไม่ซ้ำ, Quick Action Card, Timeline Scrollable, Analytics Card + Segmented Control, Summary Card (คำนวณจาก `$dailyCounts` เดิมในระดับ View)
+- `app/views/admin/departments/form.php`, `employees/form.php` — เพิ่ม Section "การดำเนินการ" ห่อปุ่ม Save/Cancel
+- `app/views/admin/employees/index.php` — Position Badge (Reuse `renderBadge()`)
+- `app/views/admin/news/form.php`, `activities/form.php`, `legislation/form.php` — แยก Section "เนื้อหา" จาก "ข้อมูลทั่วไป" + เพิ่ม Section "การดำเนินการ"
+- `app/views/admin/news/index.php`, `activities/index.php`, `legislation/index.php` — Accent Icon Chip ที่ Page Header (Reuse `.stat-icon-*` ผ่าน Parameter `$extra` เดิม)
+- `app/includes/admin_header.php` — เพิ่ม Search Box + Dark Mode Toggle, แก้ไอคอนกระดิ่งแจ้งเตือน
+
+### Fixed
+- ปุ่มกระดิ่งแจ้งเตือนใน Topbar ใช้ `icon('log')` (รูปเอกสาร) แทนรูประฆังมาตลอด — เพิ่มไอคอน `bell` จริงและสลับให้ถูกต้อง (Stage UI-1)
+
+### Not Changed (ตรวจแล้วผ่านอยู่แล้ว — Stage UI-5)
+- Gallery, Documents, Users, Activity Log (List + Form ทั้ง 7 ไฟล์) — ใช้ Component ครบตามข้อกำหนดอยู่แล้วจากการ Retrofit DS2–DS4 ไม่มีการแก้โค้ด
+
+### Known Deliberate Gaps (Database ไม่รองรับ ไม่สร้างข้อมูล/UI ปลอมทดแทน)
+- Employees ไม่มี Section "สถานะ" — ตาราง `employee` ไม่มีคอลัมน์ Status จริง
+- Legislation ไม่มี Section "รูปภาพ" — ตาราง `legislation` ไม่มีคอลัมน์รูปภาพจริง
+- Stat Card บน Dashboard แสดง Trend เป็นสถานะกลาง "ยังไม่มีข้อมูลเปรียบเทียบ" — `DashboardModel::getModuleCounts()` ไม่มีข้อมูลเปรียบเทียบย้อนหลังจริง
+- Segmented Control 30/90 วันของ Analytics แสดง Empty State — `ActivityLogModel::getDailyCounts()` คำนวณให้แค่ 7 วัน (ตกลงกับผู้ใช้แล้วว่ายังไม่เชื่อม Backend ใน v3)
+
+### Security
+- Escape Output ผ่าน `e()` ครบทุกจุดที่เพิ่มใหม่ (Hero/Segmented Control/Accent Chip)
+- CSRF Token เดิมไม่ถูกแตะทุกฟอร์ม, Self-Delete Protection ของ Users ยืนยันด้วย Live Test ยังทำงานถูกต้อง
+
+### Testing
+- `php -l` PASS ทุกไฟล์ที่สร้าง/แก้ไขตลอด Stage UI-1–UI-5
+- Regression PASS: Login จริงผ่าน PHP cURL ครบ 19 หน้า (Dashboard + 10 โมดูล List/Form + Change Password), Full CRUD Cycle จริง (Create → Search → Delete) กับ Departments, Logout ยืนยัน Session ถูกทำลาย — ไม่พบ PHP Warning/Notice/Fatal Error จุดใด
+- Duplicate Audit: Selector CSS ที่ปรากฏซ้ำ 13 จุดตรวจแล้วเป็น Additive Layer ตามหลักการเดิม (คนละ Property หรือ Override ที่ตั้งใจ) ไม่ใช่ Bug
+- ไม่พบ Bug ใหม่ในรอบ Final Quality Review (Stage UI-6) จึงไม่มีการแก้โค้ดเพิ่มเติมนอกจาก Documentation
+
+Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไม่ Commit/Push ตามคำสั่ง)

@@ -69,7 +69,8 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/activities/ind
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('activities', 'create') ? [['label' => '+ เพิ่มกิจกรรม', 'url' => baseUrl('admin/activities/form.php')]] : []
+            can('activities', 'create') ? [['label' => '+ เพิ่มกิจกรรม', 'url' => baseUrl('admin/activities/form.php')]] : [],
+            '<span class="stat-icon stat-icon-orange">' . icon('activity', 22) . '</span>'
         ); ?>
 
         <?php if ($successMessage !== null): ?>

@@ -91,10 +91,12 @@ $title  = $isEdit ? 'แก้ไขข้อมูลพนักงาน' : '
                 <small>อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB</small>
             <?php }, 'รูปโปรไฟล์ของพนักงาน (ไม่บังคับ)'); ?>
 
-            <div class="admin-form-actions">
-                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มพนักงาน' ?></button>
-                <a href="<?= e(baseUrl('admin/employees/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
-            </div>
+            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มพนักงาน' ?></button>
+                    <a href="<?= e(baseUrl('admin/employees/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                </div>
+            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
         </form>
     </main>
 </div>

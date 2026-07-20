@@ -138,7 +138,13 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/employees/inde
                                 <td><?= (int) $emp['ID'] ?></td>
                                 <td><?= e($emp['Fname'] ?? '') ?></td>
                                 <td><?= e($emp['Lname'] ?? '') ?></td>
-                                <td><?= e($emp['position'] ?? '-') ?></td>
+                                <td>
+                                    <?php if (empty($emp['position'])): ?>
+                                        <span class="text-muted">-</span>
+                                    <?php else: ?>
+                                        <?php renderBadge($emp['position'], 'info'); ?>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?= e($emp['birth_date'] ?? '-') ?></td>
                                 <td><?= e($emp['created_at']) ?></td>
                                 <td><?= e($genderLabels[$emp['gender']] ?? $emp['gender']) ?></td>

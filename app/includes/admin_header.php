@@ -30,11 +30,20 @@ $adminCurrentPath = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''),
 
     <?php renderAdminBreadcrumb($adminMenuItems, $adminCurrentPath); ?>
 
+    <div class="topbar-search">
+        <?= icon('search', 16) ?>
+        <input type="text" placeholder="ค้นหา..." aria-label="ค้นหา" disabled title="ฟีเจอร์นี้จะเปิดใช้งานเร็วๆ นี้">
+    </div>
+
     <div class="topbar-actions">
+        <button type="button" class="icon-btn" id="themeToggle" aria-label="สลับธีมมืด/สว่าง" disabled title="ฟีเจอร์นี้จะเปิดใช้งานเร็วๆ นี้">
+            <?= icon('moon', 18) ?>
+        </button>
+
         <?php if (can('activity_log', 'view')): ?>
             <div class="topbar-dropdown" id="notifDropdown">
                 <button type="button" class="icon-btn" id="notifToggle" aria-label="การแจ้งเตือน" aria-expanded="false">
-                    <?= icon('log', 20) ?>
+                    <?= icon('bell', 20) ?>
                     <?php if (!empty($headerNotifications)): ?>
                         <span class="notif-dot"></span>
                     <?php endif; ?>

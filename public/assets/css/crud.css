@@ -25,7 +25,7 @@
     border-radius: var(--radius-sm);
     text-decoration: none;
     cursor: pointer;
-    border: none;
+    border: 1px solid transparent;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
@@ -696,6 +696,14 @@ button.is-loading {
     margin-top: 4px;
 }
 
+/* .data-form button (ด้านบน) ใส่ margin-top/align-self ไว้สำหรับฟอร์มเดิมที่มีปุ่มเดียว
+   ทำให้ปุ่ม submit ที่อยู่ใน .admin-form-actions เลื่อนลงไม่ตรงกับ .btn-ghost ข้างๆ (ซึ่งเป็น <a> ไม่ใช่ button
+   เลยไม่โดนกฎนั้น) ต้อง Reset ทับที่นี่ */
+.admin-form-actions button {
+    margin-top: 0;
+    align-self: center;
+}
+
 /* Action Column แบบ Icon Button (ใช้ .btn-icon เดิมจาก DS1) */
 .data-table .actions {
     gap: 6px;
@@ -716,4 +724,200 @@ button.is-loading {
    ระหว่างตรวจสอบ Audit (ช่องรหัสแผนกบังคับพิมพ์ตัวใหญ่) */
 .input-uppercase {
     text-transform: uppercase;
+}
+
+/* ============================================================
+   Design System v3 — Stage UI-1 (Additive Layer)
+   ห้ามลบ/แก้ไข Selector เดิมด้านบน — Section นี้เพิ่ม Class ใหม่/เสริม Property เดิมเท่านั้น
+   ============================================================ */
+
+/* Card Family — Radius รวมเป็นค่าเดียวกันทั้งระบบ (18-20px) ตาม Master Prompt v3
+   (เสริม Property เดียว ของเดิมที่เหลือไม่เปลี่ยน — .stat-card/.info-box/.quick-action-btn เป็น radius-xl อยู่แล้วจาก DS1) */
+.admin-section-card,
+.table-wrapper,
+.filter-bar,
+.data-form,
+.admin-modal-dialog {
+    border-radius: var(--radius-xl);
+}
+
+/* Glass Card (Opt-in Class ใหม่ — ยังไม่มี View ใดเรียกใช้ รอ Retrofit ในอนาคต) */
+.glass-card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Segmented Control (ใหม่ — Generic Component ใช้ได้ทุกที่ที่ต้องสลับ 2-4 ตัวเลือก
+   ตัวอย่างการใช้งานแรก: ปุ่มเลือกช่วงเวลา 7/30/90 วันของกราฟ Analytics ใน UI-2 — ที่นี่เป็นแค่ CSS/JS กลาง
+   Markup มาตรฐาน: renderAdminSegmentedControl() ใน app/helpers/admin_components.php
+   Behavior: initSegmentedControl() ใน admin.js ยิง CustomEvent "segmented-control:change" เมื่อสลับตัวเลือก */
+.segmented-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    background: var(--color-bg);
+    border-radius: 999px;
+}
+
+.segmented-control button {
+    border: none;
+    background: none;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.segmented-control button:hover {
+    color: var(--color-text);
+}
+
+.segmented-control button.active {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+/* Button Variant เพิ่ม (.btn-primary/.btn-secondary/.btn-ghost/.btn-icon เดิมยังอยู่ครบ) */
+.btn-success,
+.btn-danger {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 10px 18px;
+    color: #fff;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-success {
+    background: var(--color-success);
+}
+
+.btn-success:hover {
+    background: #16a34a;
+}
+
+.btn-danger {
+    background: var(--color-danger);
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-outline {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    padding: 10px 18px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btn-outline:hover {
+    background: var(--color-accent-light);
+}
+
+.btn-fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-fab:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Ripple แบบ CSS ล้วน (ไม่ใช้ JS จับตำแหน่งคลิก) — Pulse เบาๆ ตอนกด ใช้ได้กับปุ่มหลักทุกแบบ */
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-outline,
+.btn-ghost,
+.btn-icon {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-success:active,
+.btn-danger:active,
+.btn-outline:active,
+.btn-ghost:active,
+.btn-icon:active {
+    transform: scale(0.97);
+}
+
+/* ============================================================
+   Design System v3 — Stage UI-2 (Retrofit: Dashboard)
+   ============================================================ */
+
+/* Section Card Head แบบมี Action ชิดขวา (คู่กับ Parameter $headExtra ใหม่ของ renderAdminSectionCard())
+   .admin-section-card-head-text ไม่กระทบ CSS เดิม เพราะ .admin-section-card-head h2/p เดิมเป็น Descendant
+   Selector อยู่แล้ว (ไม่ใช่ Direct Child) จึงยังหา h2/p เจอเหมือนเดิมแม้มี div ห่อเพิ่มเข้ามา */
+.admin-section-card-head-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-section-card-head-extra {
+    flex-shrink: 0;
+}
+
+/* Loading State — เสริม button.is-loading เดิม (Stage DS1) ให้มี Spinner จริงแทน Cursor Wait อย่างเดียว
+   .btn-spinner เป็น <span> เปล่าที่ initFormLoadingState() (admin.js) แทรกก่อนข้อความปุ่มเดิม — วง Spinner
+   วาดด้วย CSS border ล้วน ไม่ใช้ SVG เพื่อไม่ต้องคัดลอก Path ของ icon('spinner') มาซ้ำในไฟล์ JS */
+.btn-spinner {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin-right: 7px;
+    vertical-align: -2px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: admin-spin 0.7s linear infinite;
+}
+
+.btn-secondary .btn-spinner,
+.btn-ghost .btn-spinner,
+.btn-outline .btn-spinner {
+    border-color: rgba(37, 99, 235, 0.25);
+    border-top-color: var(--color-accent);
+}
+
+@keyframes admin-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }

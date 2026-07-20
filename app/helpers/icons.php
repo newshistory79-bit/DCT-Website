@@ -40,6 +40,12 @@ function icon(string $name, int $size = 24): string
         'sort'            => '<path d="M8 5v14M8 5l-3 3M8 5l3 3M16 19V5M16 19l-3-3M16 19l3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
         'alert-triangle'  => '<path d="M12 4 2.5 20h19L12 4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><path d="M12 10v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="17.3" r="0.9" fill="currentColor"/>',
         'check'           => '<path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+
+        // เพิ่มสำหรับ Admin Panel Design System v3 (Stage UI-1) — Entry ใหม่เท่านั้น ไม่แก้ Entry เดิมด้านบน
+        'bell'            => '<path d="M6 10.5a6 6 0 0 1 12 0c0 4 1.5 5.3 1.5 5.8H4.5C4.5 15.8 6 14.5 6 10.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>',
+        'moon'            => '<path d="M20 14.2A8.5 8.5 0 1 1 9.8 4a6.8 6.8 0 0 0 10.2 10.2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>',
+        'trend-up'        => '<path d="M4 16.5 10 10l4 4 6-6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M15 7.5h5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'trend-down'      => '<path d="M4 7.5 10 14l4-4 6 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M15 16.5h5v-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
     ];
 
     $path = $paths[$name] ?? $paths['chevron'];

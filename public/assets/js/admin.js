@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initConfirmDialog();
     initToast();
     initFormLoadingState();
+    initSegmentedControl();
 });
 
 // ปุ่มเดียวกันมีสองพฤติกรรม: จอเล็ก (<=1024px) เลื่อนเมนูเข้า/ออกแบบ Overlay (เดิม)
@@ -316,7 +317,58 @@ function initFormLoadingState() {
             window.setTimeout(function () {
                 submitBtn.disabled = true;
                 submitBtn.classList.add('is-loading');
+
+                var spinner = document.createElement('span');
+                spinner.className = 'btn-spinner';
+                spinner.setAttribute('aria-hidden', 'true');
+                submitBtn.prepend(spinner);
             }, 0);
         }
+    });
+}
+
+// ============================================================
+// Design System v3 — Stage UI-1 (Module ใหม่ ต่อท้ายไฟล์เดิม)
+// เรียกจาก DOMContentLoaded จุดเดียวด้านบน (ไม่มี Listener ที่สอง เหมือนแบบแผนเดิมของ Stage DS1)
+// ============================================================
+
+// Segmented Control ทั่วไป — สลับ .active ระหว่างปุ่มพี่น้องภายใน [data-segmented] แต่ละกลุ่ม
+// ไม่ผูกกับ Business Logic ใดๆ (เช่นกราฟ Analytics 7/30/90 วันใน UI-2) เพียงยิง CustomEvent ให้หน้าที่ต้องการ
+// ไปดักฟังเอง — Component นี้ใช้ซ้ำได้ทุกที่ที่ต้องสลับ 2-4 ตัวเลือก
+//
+// Panel Toggle (Stage UI-2 เสริม): ถ้าในหน้ามี Element ที่ตรงกับ [data-segmented-panel="<ชื่อกลุ่ม>"]
+// จะสลับ [hidden] ให้เหลือแค่ Panel ที่ data-segmented-value ตรงกับตัวเลือกที่เลือกอยู่ ใช้ได้ทั่วไปกับ
+// Segmented Control กลุ่มไหนก็ได้ที่มี Panel คู่กัน ไม่ใช่ Logic เฉพาะ Dashboard (ไม่มี Data Fetching ใดๆ
+// เป็นแค่ Client-side Show/Hide Static Content ที่ Render มาจาก Server ไว้ล่วงหน้าทั้งหมดแล้ว)
+function initSegmentedControl() {
+    var groups = document.querySelectorAll('[data-segmented]');
+
+    groups.forEach(function (group) {
+        var buttons  = group.querySelectorAll('button');
+        var panels   = document.querySelectorAll('[data-segmented-panel="' + group.getAttribute('data-segmented') + '"]');
+
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                if (btn.classList.contains('active')) {
+                    return;
+                }
+
+                buttons.forEach(function (b) {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+
+                var value = btn.getAttribute('data-value');
+
+                panels.forEach(function (panel) {
+                    panel.hidden = panel.getAttribute('data-segmented-value') !== value;
+                });
+
+                group.dispatchEvent(new CustomEvent('segmented-control:change', {
+                    bubbles: true,
+                    detail: { value: value }
+                }));
+            });
+        });
     });
 }

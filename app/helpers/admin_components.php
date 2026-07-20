@@ -102,15 +102,26 @@ function renderAdminPageHeader(string $title, string $description = '', array $a
 
 // Section Card ทั่วไป (Filter Card/Table Card/Form Card ฯลฯ) — ครอบเนื้อหาผ่าน Callback
 // เพื่อให้ View เดิมยังคุม Markup ภายในได้เต็มที่ (ไม่ต้อง Redesign Logic การ Loop/Query ใดๆ)
-function renderAdminSectionCard(string $title, callable $renderBody, string $description = ''): void
+// $headExtra (Stage UI-2) = HTML String ที่ผู้เรียกสร้างเอง (Trusted Content เท่านั้น เช่น Segmented Control
+// ของการ์ด Analytics - ไม่ใช่ User Input ต้อง Escape เอง) แสดงชิดขวาของหัวการ์ด คู่กับ Title/Description
+// Optional พารามิเตอร์ใหม่ Default '' ไม่กระทบ Call Site เดิมทั้งหมด (Pattern เดียวกับ $extra ของ
+// renderAdminPageHeader() ที่เพิ่มไว้ตั้งแต่ Stage DS4)
+function renderAdminSectionCard(string $title, callable $renderBody, string $description = '', string $headExtra = ''): void
 {
     ?>
     <section class="admin-section-card">
-        <?php if ($title !== ''): ?>
-            <div class="admin-section-card-head">
-                <h2><?= e($title) ?></h2>
-                <?php if ($description !== ''): ?>
-                    <p><?= e($description) ?></p>
+        <?php if ($title !== '' || $headExtra !== ''): ?>
+            <div class="admin-section-card-head<?= $headExtra !== '' ? ' admin-section-card-head-row' : '' ?>">
+                <?php if ($title !== ''): ?>
+                    <div class="admin-section-card-head-text">
+                        <h2><?= e($title) ?></h2>
+                        <?php if ($description !== ''): ?>
+                            <p><?= e($description) ?></p>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ($headExtra !== ''): ?>
+                    <div class="admin-section-card-head-extra"><?= $headExtra ?></div>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
@@ -227,4 +238,43 @@ function renderSkeletonRows(int $columns, int $rows = 5): void
         </tr>
         <?php
     }
+}
+
+// ============================================================
+// Design System v3 — Stage UI-1 — Component ใหม่ (Foundation เท่านั้น
+// ยังไม่ถูกเรียกใช้จาก View ใดใน Stage UI-1 เอง — รอ Retrofit ใน UI-2 เป็นต้นไป Pattern เดียวกับที่ Stage DS1 เคยทำไว้)
+// ============================================================
+
+// Hero Header มาตรฐาน — ใช้แทน renderAdminPageHeader() เฉพาะหน้า Dashboard เมื่อ Retrofit ใน UI-2
+// $dateBadgeHtml: HTML String ที่ผู้เรียกสร้างเอง (Trusted Content เท่านั้น เช่น <span class="date-badge">...
+// - ไม่ใช่ User Input ต้อง Escape เองก่อนส่งเข้ามา) Pattern เดียวกับ $extra ของ renderAdminPageHeader()
+function renderAdminHero(string $greeting, string $name, string $subtitle, string $dateBadgeHtml = ''): void
+{
+    ?>
+    <section class="admin-hero">
+        <span class="admin-hero-illustration"><?= icon('building', 160) ?></span>
+        <div class="admin-hero-content">
+            <p class="admin-hero-greeting"><?= e($greeting) ?></p>
+            <h1 class="admin-hero-name"><?= e($name) ?></h1>
+            <p class="admin-hero-subtitle"><?= e($subtitle) ?></p>
+        </div>
+        <?php if ($dateBadgeHtml !== ''): ?>
+            <div class="admin-hero-aside"><?= $dateBadgeHtml ?></div>
+        <?php endif; ?>
+    </section>
+    <?php
+}
+
+// Segmented Control มาตรฐาน — Markup คู่กับ initSegmentedControl() ใน admin.js (ยิง CustomEvent
+// "segmented-control:change" เมื่อสลับตัวเลือก ไม่ผูก Business Logic ใดๆ ในตัวมันเอง)
+// $options = [value => label], $selected = value ที่ Active อยู่ตอนโหลดหน้า (Server-rendered ไม่ใช่ JS-only)
+function renderAdminSegmentedControl(string $name, array $options, string $selected): void
+{
+    ?>
+    <div class="segmented-control" data-segmented="<?= e($name) ?>">
+        <?php foreach ($options as $value => $label): ?>
+            <button type="button" data-value="<?= e((string) $value) ?>" class="<?= (string) $value === $selected ? 'active' : '' ?>"><?= e($label) ?></button>
+        <?php endforeach; ?>
+    </div>
+    <?php
 }

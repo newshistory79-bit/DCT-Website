@@ -70,7 +70,8 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/legislation/in
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('legislation', 'create') ? [['label' => '+ เพิ่มกฎหมาย/ระเบียบ', 'url' => baseUrl('admin/legislation/form.php')]] : []
+            can('legislation', 'create') ? [['label' => '+ เพิ่มกฎหมาย/ระเบียบ', 'url' => baseUrl('admin/legislation/form.php')]] : [],
+            '<span class="stat-icon stat-icon-indigo">' . icon('news', 22) . '</span>'
         ); ?>
 
         <?php if ($successMessage !== null): ?>

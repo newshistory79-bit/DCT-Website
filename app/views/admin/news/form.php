@@ -49,21 +49,15 @@ $title  = $isEdit ? 'แก้ไขข่าว' : 'เพิ่มข่าว
                 <input type="text" id="title" name="title" required
                        value="<?= e((string) ($news['title'] ?? '')) ?>">
 
-                <label for="detail">รายละเอียด</label>
-                <textarea id="detail" name="detail" rows="6" required><?= e((string) ($news['detail'] ?? '')) ?></textarea>
-
                 <label for="activity_date">วันที่กิจกรรม</label>
                 <input type="date" id="activity_date" name="activity_date"
                        value="<?= e($news['activity_date'] ?? '') ?>">
-            <?php }, 'หัวข้อและเนื้อหาของข่าวประชาสัมพันธ์'); ?>
+            <?php }, 'หัวข้อและวันที่ของข่าวประชาสัมพันธ์'); ?>
 
-            <?php renderAdminSectionCard('สถานะ', function () use ($news): void { ?>
-                <label for="status">สถานะการเผยแพร่</label>
-                <select id="status" name="status">
-                    <option value="Published" <?= ($news['status'] ?? 'Published') === 'Published' ? 'selected' : '' ?>>Published</option>
-                    <option value="Draft" <?= ($news['status'] ?? '') === 'Draft' ? 'selected' : '' ?>>Draft</option>
-                </select>
-            <?php }, 'กำหนดว่าข่าวนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
+            <?php renderAdminSectionCard('เนื้อหา', function () use ($news): void { ?>
+                <label for="detail">รายละเอียด</label>
+                <textarea id="detail" name="detail" rows="6" required><?= e((string) ($news['detail'] ?? '')) ?></textarea>
+            <?php }, 'เนื้อหาฉบับเต็มของข่าวประชาสัมพันธ์'); ?>
 
             <?php renderAdminSectionCard('รูปภาพ', function () use ($news, $isEdit): void { ?>
                 <?php if ($isEdit && !empty($news['image'])): ?>
@@ -76,10 +70,20 @@ $title  = $isEdit ? 'แก้ไขข่าว' : 'เพิ่มข่าว
                 <small>อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB</small>
             <?php }, 'ภาพประกอบข่าว (ไม่บังคับ)'); ?>
 
-            <div class="admin-form-actions">
-                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มข่าว' ?></button>
-                <a href="<?= e(baseUrl('admin/news/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
-            </div>
+            <?php renderAdminSectionCard('สถานะ', function () use ($news): void { ?>
+                <label for="status">สถานะการเผยแพร่</label>
+                <select id="status" name="status">
+                    <option value="Published" <?= ($news['status'] ?? 'Published') === 'Published' ? 'selected' : '' ?>>Published</option>
+                    <option value="Draft" <?= ($news['status'] ?? '') === 'Draft' ? 'selected' : '' ?>>Draft</option>
+                </select>
+            <?php }, 'กำหนดว่าข่าวนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
+
+            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มข่าว' ?></button>
+                    <a href="<?= e(baseUrl('admin/news/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                </div>
+            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
         </form>
     </main>
 </div>

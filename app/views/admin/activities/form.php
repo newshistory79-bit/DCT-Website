@@ -49,9 +49,6 @@ $title  = $isEdit ? 'แก้ไขกิจกรรม' : 'เพิ่มก
                 <input type="text" id="title" name="title" maxlength="255" required
                        value="<?= e((string) ($activity['title'] ?? '')) ?>">
 
-                <label for="description">รายละเอียด</label>
-                <textarea id="description" name="description" rows="4"><?= e((string) ($activity['description'] ?? '')) ?></textarea>
-
                 <label for="activity_date">วันที่จัดกิจกรรม</label>
                 <input type="date" id="activity_date" name="activity_date" required
                        value="<?= e((string) ($activity['activity_date'] ?? '')) ?>">
@@ -61,13 +58,10 @@ $title  = $isEdit ? 'แก้ไขกิจกรรม' : 'เพิ่มก
                        value="<?= e((string) ($activity['location'] ?? '')) ?>">
             <?php }, 'หัวข้อ วันที่ และสถานที่จัดกิจกรรม'); ?>
 
-            <?php renderAdminSectionCard('สถานะ', function () use ($activity): void { ?>
-                <label for="status">สถานะการเผยแพร่</label>
-                <select id="status" name="status">
-                    <option value="Draft" <?= ($activity['status'] ?? 'Draft') === 'Draft' ? 'selected' : '' ?>>Draft</option>
-                    <option value="Published" <?= ($activity['status'] ?? '') === 'Published' ? 'selected' : '' ?>>Published</option>
-                </select>
-            <?php }, 'กำหนดว่ากิจกรรมนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
+            <?php renderAdminSectionCard('เนื้อหา', function () use ($activity): void { ?>
+                <label for="description">รายละเอียด</label>
+                <textarea id="description" name="description" rows="4"><?= e((string) ($activity['description'] ?? '')) ?></textarea>
+            <?php }, 'รายละเอียดฉบับเต็มของกิจกรรม'); ?>
 
             <?php renderAdminSectionCard('รูปภาพ', function () use ($activity, $isEdit): void { ?>
                 <?php if ($isEdit && !empty($activity['image'])): ?>
@@ -83,10 +77,20 @@ $title  = $isEdit ? 'แก้ไขกิจกรรม' : 'เพิ่มก
                 </small>
             <?php }, 'ภาพประกอบกิจกรรม (ไม่บังคับ)'); ?>
 
-            <div class="admin-form-actions">
-                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มกิจกรรม' ?></button>
-                <a href="<?= e(baseUrl('admin/activities/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
-            </div>
+            <?php renderAdminSectionCard('สถานะ', function () use ($activity): void { ?>
+                <label for="status">สถานะการเผยแพร่</label>
+                <select id="status" name="status">
+                    <option value="Draft" <?= ($activity['status'] ?? 'Draft') === 'Draft' ? 'selected' : '' ?>>Draft</option>
+                    <option value="Published" <?= ($activity['status'] ?? '') === 'Published' ? 'selected' : '' ?>>Published</option>
+                </select>
+            <?php }, 'กำหนดว่ากิจกรรมนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
+
+            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มกิจกรรม' ?></button>
+                    <a href="<?= e(baseUrl('admin/activities/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                </div>
+            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
         </form>
     </main>
 </div>

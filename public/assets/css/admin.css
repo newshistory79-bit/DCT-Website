@@ -953,3 +953,348 @@ textarea:focus-visible {
 .admin-content {
     overflow-x: hidden;
 }
+
+/* ============================================================
+   Design System v3 — Stage UI-1 (Additive Layer)
+   ห้ามลบ/แก้ไข Selector เดิมด้านบน — Section นี้เพิ่ม Class ใหม่/เสริม Property เดิมเท่านั้น
+   Reference: design/Dashboard.png — Global Design System เท่านั้น ยังไม่ Retrofit หน้าใด
+   (Dashboard/Departments/ฯลฯ) จนกว่าจะถึง Stage UI-2 เป็นต้นไป
+   ============================================================ */
+:root {
+    --color-teal: #0f766e;
+    --color-teal-bg: #ccfbf1;
+    --color-pink: #be185d;
+    --color-pink-bg: #fce7f3;
+}
+
+/* ------------------------------------------------------------
+   Hero Header (Component เปล่า — ยังไม่ถูกเรียกใช้จนกว่าจะ Retrofit Dashboard ใน UI-2)
+   renderAdminHero() ประกาศไว้ใน app/helpers/admin_components.php
+   ------------------------------------------------------------ */
+.admin-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    background: linear-gradient(120deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-accent) 100%);
+    color: #fff;
+    box-shadow: var(--shadow-md);
+}
+
+.admin-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+
+.admin-hero-illustration {
+    position: absolute;
+    right: 8px;
+    bottom: -18px;
+    opacity: 0.14;
+    pointer-events: none;
+}
+
+.admin-hero-content {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+}
+
+.admin-hero-greeting {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.admin-hero-name {
+    margin: 4px 0 6px;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.admin-hero-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.admin-hero-aside {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.admin-hero .date-badge {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    box-shadow: none;
+}
+
+@media (max-width: 600px) {
+    .admin-hero {
+        padding: 22px 20px;
+    }
+
+    .admin-hero-name {
+        font-size: 21px;
+    }
+}
+
+/* ------------------------------------------------------------
+   Sidebar — Active Icon Chip + Logout Pill Button (เสริม Property ของ Selector เดิม ไม่กระทบ Markup)
+   ------------------------------------------------------------ */
+.admin-sidebar li a.active .menu-icon {
+    width: 26px;
+    height: 26px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+}
+
+.menu-logout a {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-sm);
+    justify-content: center;
+}
+
+/* ------------------------------------------------------------
+   Stat Card v2 — Accent สีเพิ่ม (Teal/Pink) + Trend Indicator (Component เปล่า รอ UI-2 คำนวณ % จริง)
+   ------------------------------------------------------------ */
+.stat-icon-teal {
+    background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+    color: var(--color-teal);
+}
+
+.stat-icon-pink {
+    background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+    color: var(--color-pink);
+}
+
+.stat-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+.stat-trend-up {
+    color: var(--color-success);
+}
+
+.stat-trend-down {
+    color: var(--color-danger);
+}
+
+.stat-trend-flat {
+    color: var(--color-text-muted);
+}
+
+/* ------------------------------------------------------------
+   Quick Action Card v2 (แนวนอน: ไอคอน/ข้อความ/ลูกศร) — ใช้คู่กับ .quick-action-btn เดิม (ยังไม่ถูกลบ/แทนที่)
+   ------------------------------------------------------------ */
+.quick-action-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-accent-light);
+}
+
+.quick-action-card-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+}
+
+.quick-action-card-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.quick-action-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.quick-action-card-desc {
+    font-size: 12.5px;
+    color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.quick-action-card-arrow {
+    flex-shrink: 0;
+    display: inline-flex;
+    color: var(--color-text-muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.quick-action-card:hover .quick-action-card-arrow {
+    transform: translateX(3px);
+    color: var(--color-accent);
+}
+
+/* ------------------------------------------------------------
+   Topbar — Search Box (Decorative เท่านั้น ยังไม่มี Global Search Backend — ดู admin_header.php)
+   ------------------------------------------------------------ */
+.topbar-search {
+    position: relative;
+    flex: 1;
+    max-width: 360px;
+    min-width: 0;
+}
+
+.topbar-search svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+}
+
+.topbar-search input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 9px 14px 9px 36px;
+    font-size: 13.5px;
+    font-family: inherit;
+    color: #fff;
+}
+
+.topbar-search input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.topbar-search input:disabled {
+    cursor: not-allowed;
+    opacity: 0.85;
+}
+
+.icon-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.icon-btn:disabled:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 900px) {
+    .topbar-search {
+        display: none;
+    }
+}
+
+/* ============================================================
+   Design System v3 — Stage UI-2 (Retrofit: Dashboard)
+   ============================================================ */
+
+/* 7th Accent (News/Employees/Departments/Activities/Documents/Gallery/Legislation ต้องการสีต่างกันครบ 7
+   สี — DS1 มี blue/green/purple/orange, UI-1 เพิ่ม teal/pink ครบ 6, ขาดอีก 1 สีสำหรับ Legislation) */
+:root {
+    --color-indigo: #4338ca;
+    --color-indigo-bg: #e0e7ff;
+}
+
+.stat-icon-indigo {
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    color: var(--color-indigo);
+}
+
+/* Hero Aside — เรียง Badge Role/วันที่/เวลาซ้อนกันแนวตั้ง (Reuse .date-badge เดิมซ้ำ 2-3 อัน ไม่สร้าง Class ใหม่) */
+.admin-hero-aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+/* Activity Timeline — ทำให้ Scroll ได้เมื่อรายการยาว (Data/Markup ภายในไม่เปลี่ยน) */
+.timeline-scroll {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+/* Summary Cards ใต้กราฟ Analytics — Reuse .stat-card เดิมทั้งหมด แค่ Grid ใหม่ที่มี Column แคบกว่า .stat-grid */
+.summary-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+/* Quick Action Card v2 (จาก UI-1) กว้างกว่า .quick-action-btn เดิม — เสริม Property เดียวของ .quick-actions
+   เดิม (ไม่มีหน้าอื่นใช้ Class นี้นอกจาก Dashboard จึงปลอดภัย) */
+.quick-actions {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* ============================================================
+   Design System v3 — Stage UI-4 (Retrofit: News/Activities/Legislation)
+   ============================================================ */
+
+/* Page Header Actions — เพิ่ม align-items:center (ของเดิมไม่เคยกำหนดมาก่อน Default เป็น stretch) เพื่อให้
+   Accent Icon Chip ใหม่ (Reuse .stat-icon/.stat-icon-* เดิมผ่าน Parameter $extra ของ renderAdminPageHeader())
+   เรียงกึ่งกลางแนวตั้งพอดีกับปุ่ม "+เพิ่ม..." ข้างๆ ในทุกหน้า List ที่ใช้ Component นี้ ไม่ใช่แค่ 3 โมดูลนี้ */
+.admin-page-header-actions {
+    align-items: center;
+}
+
+/* Stat Card — จัดไอคอน+ข้อความแนวนอน (ใกล้ Mockup มากกว่าเดิมที่วางซ้อนแนวตั้ง) .stat-card ไม่มีหน้าอื่นใช้
+   นอกจาก Dashboard จึงปรับ Layout ได้อย่างปลอดภัย (เสริม Property ทับของเดิม ไม่ลบ Selector) */
+.stat-card {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.stat-card .stat-text {
+    flex: 1;
+    min-width: 120px;
+}
+
+.stat-card .stat-link {
+    flex-basis: 100%;
+}

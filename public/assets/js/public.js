@@ -61,7 +61,7 @@ function initHeroSlider() {
         return;
     }
 
-    var slides = slider.querySelectorAll('.hero-slide');
+    var slides = slider.querySelectorAll('.hero-slide-bg');
     var dots = slider.querySelectorAll('.hero-dot');
 
     if (slides.length <= 1) {
