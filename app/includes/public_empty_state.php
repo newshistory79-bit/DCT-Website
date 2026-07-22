@@ -6,6 +6,6 @@ declare(strict_types=1);
 ?>
 <div class="empty-state">
     <?= icon($iconName, 48) ?>
-    <p>ยังไม่มีข้อมูลในขณะนี้</p>
-    <a href="<?= e(baseUrl('')) ?>" class="btn btn-primary empty-state-action">กลับหน้าหลัก</a>
+    <p>ຍັງບໍ່ມີຂໍ້ມູນໃນຂະນະນີ້</p>
+    <a href="<?= e(baseUrl('')) ?>" class="btn btn-primary empty-state-action">ກັບຄືນຫນ້າຫຼັກ</a>
 </div>

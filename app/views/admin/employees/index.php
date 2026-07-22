@@ -40,14 +40,14 @@ $sortIndicator = function (string $column) use ($sort, $direction): string {
 
 $columns = [
     'id'         => 'ID',
-    'fname'      => 'ชื่อ',
-    'lname'      => 'นามสกุล',
-    'position'   => 'ตำแหน่ง',
-    'birth_date' => 'วันเกิด',
-    'created_at' => 'วันที่สร้าง',
+    'fname'      => 'ຊື່',
+    'lname'      => 'ນາມສະກຸນ',
+    'position'   => 'ຕຳແໜ່ງ',
+    'birth_date' => 'ວັນເກີດ',
+    'created_at' => 'ວັນທີສ້າງ',
 ];
 
-$genderLabels = ['Male' => 'ชาย', 'Female' => 'หญิง', 'Other' => 'อื่นๆ'];
+$genderLabels = ['Male' => 'ຊາຍ', 'Female' => 'ຍິງ', 'Other' => 'ອື່ນໆ'];
 
 // Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2)
 $adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
@@ -72,7 +72,7 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/employees/inde
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('employees', 'create') ? [['label' => '+ เพิ่มพนักงาน', 'url' => baseUrl('admin/employees/form.php')]] : []
+            can('employees', 'create') ? [['label' => '+ ເພີ່ມພະນັກງານ', 'url' => baseUrl('admin/employees/form.php')]] : []
         ); ?>
 
         <?php if ($successMessage !== null): ?>
@@ -85,43 +85,43 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/employees/inde
         <form method="get" action="<?= e(baseUrl('admin/employees/index.php')) ?>" class="filter-bar">
             <div class="search-input-icon">
                 <?= icon('search', 16) ?>
-                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาชื่อ, นามสกุล, อีเมล, เบอร์โทร, ตำแหน่ง" aria-label="ค้นหาพนักงาน">
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາຊື່, ນາມສະກຸນ, ອີເມວ, ເບີໂທ, ຕຳແໜ່ງ" aria-label="ຄົ້ນຫາພະນັກງານ">
             </div>
 
             <select name="gender">
-                <option value="">เพศทั้งหมด</option>
-                <option value="Male" <?= $gender === 'Male' ? 'selected' : '' ?>>ชาย</option>
-                <option value="Female" <?= $gender === 'Female' ? 'selected' : '' ?>>หญิง</option>
-                <option value="Other" <?= $gender === 'Other' ? 'selected' : '' ?>>อื่นๆ</option>
+                <option value="">ເພດທັງໝົດ</option>
+                <option value="Male" <?= $gender === 'Male' ? 'selected' : '' ?>>ຊາຍ</option>
+                <option value="Female" <?= $gender === 'Female' ? 'selected' : '' ?>>ຍິງ</option>
+                <option value="Other" <?= $gender === 'Other' ? 'selected' : '' ?>>ອື່ນໆ</option>
             </select>
 
             <select name="per_page">
                 <?php foreach ($perPageOptions as $option): ?>
-                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> รายการ/หน้า</option>
+                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> ລາຍການ/ໜ້າ</option>
                 <?php endforeach; ?>
             </select>
 
-            <button type="submit" class="btn-secondary">ค้นหา</button>
+            <button type="submit" class="btn-secondary">ຄົ້ນຫາ</button>
         </form>
 
         <?php if (empty($employees)): ?>
             <?php renderAdminEmptyState(
-                'ไม่พบข้อมูลพนักงาน ลองปรับคำค้นหาหรือตัวกรอง',
+                'ບໍ່ພົບຂໍ້ມູນພະນັກງານ ລອງປັບຄຳຄົ້ນຫາຫລືຕົວກອງ',
                 'employee',
-                can('employees', 'create') ? ['url' => baseUrl('admin/employees/form.php'), 'label' => '+ เพิ่มพนักงาน'] : null
+                can('employees', 'create') ? ['url' => baseUrl('admin/employees/form.php'), 'label' => '+ ເພີ່ມພະນັກງານ'] : null
             ); ?>
         <?php else: ?>
             <div class="table-wrapper">
                 <table class="data-table data-table-zebra">
                     <thead>
                         <tr>
-                            <th>รูป</th>
+                            <th>ຮູບ</th>
                             <?php foreach ($columns as $col => $label): ?>
                                 <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
                             <?php endforeach; ?>
-                            <th>เพศ</th>
-                            <th>ติดต่อ</th>
-                            <th>จัดการ</th>
+                            <th>ເພດ</th>
+                            <th>ຕິດຕໍ່</th>
+                            <th>ຈັດການ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -154,16 +154,16 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/employees/inde
                                 </td>
                                 <td class="actions">
                                     <?php if (can('employees', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/employees/form.php?id=' . $emp['ID'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขพนักงาน <?= e($empFullName) ?>"><?= icon('edit', 16) ?></a>
+                                        <a href="<?= e(baseUrl('admin/employees/form.php?id=' . $emp['ID'])) ?>" class="btn-icon" title="ແກ້ໄຂ" aria-label="ແກ້ໄຂພະນັກງານ <?= e($empFullName) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('employees', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/employees/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm-modal="ยืนยันการลบพนักงาน &quot;<?= e($empFullName) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ຢືນຢັນການລຶບພະນັກງານ &quot;<?= e($empFullName) ?>&quot; ແທ້ບໍ?">
                                             <input type="hidden" name="id" value="<?= (int) $emp['ID'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบพนักงาน <?= e($empFullName) ?>"><?= icon('trash', 16) ?></button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ລຶບ" aria-label="ລຶບພະນັກງານ <?= e($empFullName) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('employees', 'edit') && !can('employees', 'delete')): ?>

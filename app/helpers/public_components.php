@@ -43,20 +43,24 @@ function renderPageHeader(string $title, string $subtitle = ''): void
 
 // การ์ดมาตรฐาน ใช้ร่วมกันทุกโมดูล — Controller ต้อง Map ข้อมูลของตัวเองให้เข้ารูปนี้ก่อนเรียก
 // $card = [
-//   'url'       => string (ลิงก์ปลายทาง),
-//   'image'     => ?string (URL รูปเต็ม ผ่าน uploadUrl() แล้ว, null = ไม่มีรูป),
-//   'icon'      => string (ชื่อ Icon สำรองเมื่อไม่มีรูป ผ่าน icon() Helper),
-//   'dateBadge' => ?array ['day'=>, 'month'=>, 'year'=>] (null = ไม่แสดง Badge วันที่),
-//   'title'     => string,
-//   'excerpt'   => ?string,
+//   'url'             => string (ลิงก์ปลายทาง),
+//   'image'           => ?string (URL รูปเต็ม ผ่าน uploadUrl() แล้ว, null = ไม่มีรูป),
+//   'icon'            => string (ชื่อ Icon สำรองเมื่อไม่มีรูป ผ่าน icon() Helper),
+//   'dateBadge'       => ?array ['day'=>, 'month'=>, 'year'=>] (null = ไม่แสดง Badge วันที่),
+//   'dateBadgeInline' => ?string (ทางเลือกแทน dateBadge — วันที่บรรทัดเดียว เช่น "18.07.2026", ใช้แทนกันได้)
+//   'badge'           => ?array ['label'=>string, 'variant'=>string] (มุมขวาบนของรูป เช่น ตำแหน่งพนักงาน, null = ไม่แสดง)
+//   'title'           => string,
+//   'excerpt'         => ?string,
 // ]
 function renderCard(array $card): void
 {
-    $image       = $card['image'] ?? null;
-    $dateBadge   = $card['dateBadge'] ?? null;
-    $excerpt     = $card['excerpt'] ?? null;
-    $attrs       = $card['attrs'] ?? [];
-    $actionLabel = $card['actionLabel'] ?? 'อ่านต่อ';
+    $image           = $card['image'] ?? null;
+    $dateBadge       = $card['dateBadge'] ?? null;
+    $dateBadgeInline = $card['dateBadgeInline'] ?? null;
+    $badge           = $card['badge'] ?? null;
+    $excerpt         = $card['excerpt'] ?? null;
+    $attrs           = $card['attrs'] ?? [];
+    $actionLabel     = $card['actionLabel'] ?? 'อ่านต่อ';
 
     $attrsHtml = '';
     foreach ($attrs as $attrName => $attrValue) {
@@ -65,12 +69,18 @@ function renderCard(array $card): void
     ?>
     <a href="<?= e($card['url']) ?>" class="card"<?= $attrsHtml ?>>
         <div class="card-thumb">
-            <?php if ($dateBadge !== null): ?>
+            <?php if ($dateBadgeInline !== null): ?>
+                <span class="card-date-badge card-date-badge-inline"><?= e($dateBadgeInline) ?></span>
+            <?php elseif ($dateBadge !== null): ?>
                 <span class="card-date-badge">
                     <span class="day"><?= e($dateBadge['day']) ?></span>
                     <span class="month"><?= e($dateBadge['month']) ?></span>
                     <span class="year"><?= e($dateBadge['year']) ?></span>
                 </span>
+            <?php endif; ?>
+
+            <?php if ($badge !== null): ?>
+                <span class="card-badge card-badge-<?= e($badge['variant']) ?>"><?= e($badge['label']) ?></span>
             <?php endif; ?>
 
             <?php if ($image !== null): ?>
@@ -88,6 +98,44 @@ function renderCard(array $card): void
         </div>
     </a>
     <?php
+}
+
+// Badge สีตามคำสำคัญในตำแหน่งพนักงาน (Employees List/Detail — Public Redesign Stage 2)
+// Presentation ล้วน อ่านจาก 'position' ที่ Controller ส่งมาอยู่แล้วเท่านั้น (ไม่ Query เพิ่ม ไม่ใช่ Business Logic ใหม่)
+// คืนค่า null หากไม่มีตำแหน่ง (View ต้องเช็คก่อนส่งเข้า renderCard()/ใช้แสดงเอง)
+function employeePositionBadge(string $position): ?array
+{
+    $position = trim($position);
+
+    if ($position === '') {
+        return null;
+    }
+
+    // เรียงจากคำเฉพาะเจาะจงไปคำกว้าง เจอคำไหนก่อนใช้คำนั้น (ตรวจแบบ Substring ไม่สนตัวพิมพ์เล็ก-ใหญ่)
+    $keywordVariants = [
+        'network'        => 'purple',
+        'developer'      => 'orange',
+        'engineer'       => 'blue',
+        'support'        => 'green',
+        'account'        => 'teal',
+        'human resource' => 'pink',
+        'hr'             => 'pink',
+        'admin'          => 'yellow',
+        'manager'        => 'indigo',
+        'director'       => 'indigo',
+        'head'           => 'indigo',
+        'officer'        => 'brown',
+    ];
+
+    $lower = mb_strtolower($position);
+
+    foreach ($keywordVariants as $keyword => $variant) {
+        if (str_contains($lower, $keyword)) {
+            return ['label' => $position, 'variant' => $variant];
+        }
+    }
+
+    return ['label' => $position, 'variant' => 'gray'];
 }
 
 // Pagination มาตรฐาน — $baseUrl ไม่ต้องมี Query String (ฟังก์ชันเติม ?page=N ให้เอง)
@@ -156,12 +204,12 @@ function renderPrevNextNav(?array $prev, ?array $next): void
         return;
     }
     ?>
-    <nav class="prev-next-nav" aria-label="รายการก่อนหน้าและถัดไป">
+    <nav class="prev-next-nav" aria-label="ລາຍການກ່ອນໜ້າ ແລະ ຖັດໄປ">
         <?php if ($prev !== null): ?>
             <a href="<?= e($prev['url']) ?>" class="prev-next-link prev-next-prev">
                 <span class="prev-next-icon icon-flip"><?= icon('arrow', 16) ?></span>
                 <span>
-                    <span class="prev-next-label">ก่อนหน้า</span>
+                    <span class="prev-next-label">ກ່ອນໜ້າ</span>
                     <span class="prev-next-title"><?= e($prev['title']) ?></span>
                 </span>
             </a>
@@ -172,7 +220,7 @@ function renderPrevNextNav(?array $prev, ?array $next): void
         <?php if ($next !== null): ?>
             <a href="<?= e($next['url']) ?>" class="prev-next-link prev-next-next">
                 <span>
-                    <span class="prev-next-label">ถัดไป</span>
+                    <span class="prev-next-label">ຖັດໄປ</span>
                     <span class="prev-next-title"><?= e($next['title']) ?></span>
                 </span>
                 <span class="prev-next-icon"><?= icon('arrow', 16) ?></span>
@@ -243,10 +291,10 @@ function renderDocumentCard(array $doc): void
 
             <?php if ($downloadUrl !== null): ?>
                 <a href="<?= e($downloadUrl) ?>" class="btn btn-primary btn-sm btn-block" download="<?= e($doc['downloadName']) ?>">
-                    <?= icon('download', 14) ?> ดาวน์โหลด
+                    <?= icon('download', 14) ?> ດາວໂຫລດ
                 </a>
             <?php else: ?>
-                <span class="doc-missing"><?= icon('close', 14) ?> ไฟล์ไม่พร้อมให้บริการ</span>
+                <span class="doc-missing"><?= icon('close', 14) ?> ໄຟລ໌ບໍ່ພ້ອມໃຫ້ບໍລິການ</span>
             <?php endif; ?>
         </div>
     </div>

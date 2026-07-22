@@ -4,15 +4,16 @@
     <div class="container">
         <?php renderBreadcrumb($breadcrumb); ?>
 
-        <?php renderPageHeader('บุคลากร', 'รายชื่อบุคลากรของ ' . APP_NAME); ?>
+        <?php renderPageHeader('ພະນັກງານ', 'ລາຍຊື່ພະນັກງານຂອງ ' . APP_NAME); ?>
 
         <?php if (empty($employeeItems)): ?>
             <?php renderEmptyState('employee'); ?>
         <?php else: ?>
-            <div class="card-grid">
-                <?php foreach ($employeeItems as $item): ?>
-                    <?php renderCard($item); ?>
-                <?php endforeach; ?>
+            <div class="card-grid card-grid-employees">
+                <?php foreach ($employeeItems as $item):
+                    $item['badge'] = employeePositionBadge((string) ($item['excerpt'] ?? ''));
+                    renderCard($item);
+                endforeach; ?>
             </div>
 
             <?php renderPagination($currentPage, $totalPages, baseUrl('employees/index.php')); ?>

@@ -7,7 +7,7 @@ declare(strict_types=1);
 /** @var string|null $formError */
 
 $isEdit = $news !== null;
-$title  = $isEdit ? 'แก้ไขข่าว' : 'เพิ่มข่าว';
+$title  = $isEdit ? 'ແກ້ໄຂຂ່າວ' : 'ເພີ່ມຂ່າວສານ';
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -27,8 +27,8 @@ $title  = $isEdit ? 'แก้ไขข่าว' : 'เพิ่มข่าว
     <main class="admin-content">
         <?php renderAdminPageHeader(
             $title,
-            $isEdit ? 'แก้ไขข้อมูลข่าว "' . $news['title'] . '"' : 'กรอกข้อมูลเพื่อเพิ่มข่าวใหม่เข้าสู่ระบบ',
-            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/news/index.php'), 'class' => 'btn-secondary']]
+            $isEdit ? 'ແກ້ໄຂຂໍ້ມູນຂ່າວ "' . $news['title'] . '"' : 'ປ້ອນຂໍ້ມູນເພື່ອເພີ່ມຂ່າວໃໝ່ເຂົ້າສູ່ລະບົບ',
+            [['label' => 'ກັບຄືນລາຍການ', 'url' => baseUrl('admin/news/index.php'), 'class' => 'btn-secondary']]
         ); ?>
 
         <?php if ($formError !== null): ?>
@@ -44,46 +44,46 @@ $title  = $isEdit ? 'แก้ไขข่าว' : 'เพิ่มข่าว
                 <input type="hidden" name="id" value="<?= (int) $news['ID'] ?>">
             <?php endif; ?>
 
-            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($news): void { ?>
-                <label for="title">หัวข้อข่าว</label>
+            <?php renderAdminSectionCard('ຂໍ້ມູນທົ່ວໄປ', function () use ($news): void { ?>
+                <label for="title">ຫົວຂໍ້ຂ່າວ</label>
                 <input type="text" id="title" name="title" required
                        value="<?= e((string) ($news['title'] ?? '')) ?>">
 
-                <label for="activity_date">วันที่กิจกรรม</label>
+                <label for="activity_date">ວັນທີກິດຈະກຳ</label>
                 <input type="date" id="activity_date" name="activity_date"
                        value="<?= e($news['activity_date'] ?? '') ?>">
-            <?php }, 'หัวข้อและวันที่ของข่าวประชาสัมพันธ์'); ?>
+            <?php }, 'ຫົວຂໍ້ ແລະ ວັນທີຂອງຂ່າວສານ'); ?>
 
-            <?php renderAdminSectionCard('เนื้อหา', function () use ($news): void { ?>
-                <label for="detail">รายละเอียด</label>
+            <?php renderAdminSectionCard('ເນື້ອຫາ', function () use ($news): void { ?>
+                <label for="detail">ລາຍລະອຽດ</label>
                 <textarea id="detail" name="detail" rows="6" required><?= e((string) ($news['detail'] ?? '')) ?></textarea>
-            <?php }, 'เนื้อหาฉบับเต็มของข่าวประชาสัมพันธ์'); ?>
+            <?php }, 'ເນື້ອຫາສະບັບເຕັມຂອງຂ່າວສານ'); ?>
 
-            <?php renderAdminSectionCard('รูปภาพ', function () use ($news, $isEdit): void { ?>
+            <?php renderAdminSectionCard('ຮູບພາບ', function () use ($news, $isEdit): void { ?>
                 <?php if ($isEdit && !empty($news['image'])): ?>
                     <div class="current-image">
                         <img src="<?= e(uploadUrl('news/' . $news['image'])) ?>" alt="">
                     </div>
                 <?php endif; ?>
-                <label for="image">รูปภาพประกอบข่าว</label>
+                <label for="image">ຮູບພາບປະກອບຂ່າວ</label>
                 <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
-                <small>อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB</small>
-            <?php }, 'ภาพประกอบข่าว (ไม่บังคับ)'); ?>
+                <small>ອະນຸຍາດສະເພາະໄຟລ໌ jpg, jpeg, png, webp ຂະໜາດບໍ່ເກີນ 2 MB</small>
+            <?php }, 'ຮູບພາບປະກອບຂ່າວ (ບໍ່ບັງຄັບ)'); ?>
 
-            <?php renderAdminSectionCard('สถานะ', function () use ($news): void { ?>
-                <label for="status">สถานะการเผยแพร่</label>
+            <?php renderAdminSectionCard('ສະຖານະ', function () use ($news): void { ?>
+                <label for="status">ສະຖານະການເຜີຍແຜ່</label>
                 <select id="status" name="status">
                     <option value="Published" <?= ($news['status'] ?? 'Published') === 'Published' ? 'selected' : '' ?>>Published</option>
                     <option value="Draft" <?= ($news['status'] ?? '') === 'Draft' ? 'selected' : '' ?>>Draft</option>
                 </select>
-            <?php }, 'กำหนดว่าข่าวนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
+            <?php }, 'ກຳນົດວ່າຂ່າວນີ້ເຜີຍແຜ່ເທິງເວັບໄຊທ໌ແລ້ວຫລືບໍ່'); ?>
 
-            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+            <?php renderAdminSectionCard('ການດຳເນີນການ', function () use ($isEdit): void { ?>
                 <div class="admin-form-actions">
-                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มข่าว' ?></button>
-                    <a href="<?= e(baseUrl('admin/news/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'ບັນທຶກການແກ້ໄຂ' : 'ເພີ່ມຂ່າວສານ' ?></button>
+                    <a href="<?= e(baseUrl('admin/news/index.php')) ?>" class="btn-ghost">ຍົກເລີກ</a>
                 </div>
-            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
+            <?php }, 'ກວດສອບຂໍ້ມູນໃຫ້ຖືກຕ້ອງກ່ອນບັນທຶກ'); ?>
         </form>
     </main>
 </div>

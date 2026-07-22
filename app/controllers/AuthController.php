@@ -27,13 +27,13 @@ class AuthController extends BaseController
         $token    = (string) ($_POST['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('login_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('login_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             $this->redirect('admin/login.php');
             return;
         }
 
         if ($username === '' || $password === '') {
-            $this->setFlashMessage('login_error', 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน');
+            $this->setFlashMessage('login_error', 'ກະລຸນາປ້ອນຊື່ຜູ້ໃຊ້ ແລະ ລະຫັດຜ່ານ');
             $this->redirect('admin/login.php');
             return;
         }
@@ -45,12 +45,12 @@ class AuthController extends BaseController
             ActivityLogger::log(
                 'auth',
                 'login_failed',
-                'เข้าสู่ระบบล้มเหลว (ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง): ' . $username,
+                'ເຂົ້າສູ່ລະບົບລົ້ມເຫລວ (ຊື່ຜູ້ໃຊ້ ຫລື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ): ' . $username,
                 null,
                 $username,
                 '-'
             );
-            $this->setFlashMessage('login_error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+            $this->setFlashMessage('login_error', 'ຊື່ຜູ້ໃຊ້ ຫລື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ');
             $this->redirect('admin/login.php');
             return;
         }
@@ -59,12 +59,12 @@ class AuthController extends BaseController
             ActivityLogger::log(
                 'auth',
                 'login_failed',
-                'เข้าสู่ระบบล้มเหลว (บัญชีถูกระงับการใช้งาน): ' . $user['username'],
+                'ເຂົ້າສູ່ລະບົບລົ້ມເຫລວ (ບັນຊີຖືກລະງັບການນຳໃຊ້): ' . $user['username'],
                 (int) $user['id'],
                 $user['username'],
                 $user['role']
             );
-            $this->setFlashMessage('login_error', 'บัญชีนี้ถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ');
+            $this->setFlashMessage('login_error', 'ບັນຊີນີ້ຖືກລະງັບການນຳໃຊ້ ກະລຸນາຕິດຕໍ່ຜູ້ດູແລລະບົບ');
             $this->redirect('admin/login.php');
             return;
         }
@@ -80,7 +80,7 @@ class AuthController extends BaseController
 
         $userModel->updateLastLogin((int) $user['id']);
 
-        ActivityLogger::log('auth', 'login', 'เข้าสู่ระบบสำเร็จ: ' . $user['username']);
+        ActivityLogger::log('auth', 'login', 'ເຂົ້າສູ່ລະບົບສຳເລັດ: ' . $user['username']);
 
         if ($_SESSION['first_login']) {
             $this->redirect('admin/change-password.php');
@@ -96,7 +96,7 @@ class AuthController extends BaseController
             ActivityLogger::log(
                 'auth',
                 'logout',
-                'ออกจากระบบ: ' . ($_SESSION['username'] ?? ''),
+                'ອອກຈາກລະບົບ: ' . ($_SESSION['username'] ?? ''),
                 (int) $_SESSION['user_id'],
                 $_SESSION['username'] ?? null,
                 $_SESSION['role'] ?? null

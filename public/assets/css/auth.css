@@ -1,3 +1,11 @@
+@font-face {
+    font-family: "Phetsarath OT+Time New Roman";
+    src: url("../fonts/PhetsarathOT-TimesNewRoman.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --color-primary: #1a3d7c;
     --color-primary-dark: #122b59;
@@ -17,7 +25,7 @@ body {
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #eaf1ff 0%, #dbe8ff 55%, #cfe0ff 100%);
-    font-family: "Segoe UI", "Noto Sans Thai", "Noto Sans Lao", Tahoma, sans-serif;
+    font-family: "Phetsarath OT+Time New Roman", "Segoe UI", "Noto Sans Thai", "Noto Sans Lao", Tahoma, sans-serif;
 }
 
 .login-box {
@@ -30,19 +38,12 @@ body {
 }
 
 .login-mark {
-    width: 52px;
-    height: 52px;
+    display: block;
+    width: 84px;
+    height: 84px;
     margin: 0 auto 16px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #ffe9a8 0%, #e8b93f 45%, #b9821f 100%);
-    color: var(--color-primary-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 13px;
-    border: 3px solid #fff;
-    box-shadow: 0 0 0 2px var(--color-primary);
+    object-fit: cover;
 }
 
 .login-box h1 {
@@ -91,6 +92,7 @@ body {
     border-radius: var(--radius-sm);
     background: var(--color-accent);
     color: #fff;
+    font-family: inherit;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;

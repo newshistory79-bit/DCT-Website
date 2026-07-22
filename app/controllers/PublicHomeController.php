@@ -9,7 +9,6 @@ use App\Models\ActivityModel;
 use App\Models\DepartmentModel;
 use App\Models\DocumentModel;
 use App\Models\EmployeeModel;
-use App\Models\LegislationModel;
 use App\Models\NewsModel;
 
 class PublicHomeController extends BaseController
@@ -30,7 +29,7 @@ class PublicHomeController extends BaseController
 
         $this->render('public/home', [
             'pageTitle'       => '',
-            'metaDescription' => 'เว็บไซต์ทางการของ ' . APP_NAME . ' — ข่าวสาร แผนก บุคลากร กฎหมาย เอกสารดาวน์โหลด และกิจกรรมของหน่วยงาน',
+            'metaDescription' => 'เว็บไซต์ทางการของ ' . APP_NAME . ' — ข่าวสาร แผนก บุคลากร เอกสารดาวน์โหลด และกิจกรรมของหน่วยงาน',
             'metaKeywords'    => APP_NAME . ', เทคโนโลยีดิจิทัล, ข่าวประชาสัมพันธ์, กิจกรรม, สะหวันนะเขต, DTC Savannakhet',
             'ogType'          => 'website',
             'activeNav'       => 'home',
@@ -49,15 +48,13 @@ class PublicHomeController extends BaseController
         $employeesTotal   = (new EmployeeModel())->paginate([], 'id', 'asc', 1, 1)['total'];
         $activitiesTotal  = (new ActivityModel())->paginate(['status' => 'Published'], 'id', 'asc', 1, 1)['total'];
         $documentsTotal   = (new DocumentModel())->paginate(['status' => 'Published'], 'id', 'asc', 1, 1)['total'];
-        $legislationTotal = (new LegislationModel())->paginate(['status' => 'Published'], 'id', 'asc', 1, 1)['total'];
 
         return [
-            ['icon' => 'news', 'value' => $newsTotal, 'label' => 'ข่าวประชาสัมพันธ์รายการ'],
-            ['icon' => 'department', 'value' => $departmentsTotal, 'label' => 'แผนกหน่วยงาน'],
-            ['icon' => 'employee', 'value' => $employeesTotal, 'label' => 'บุคลากรคน'],
-            ['icon' => 'activity', 'value' => $activitiesTotal, 'label' => 'กิจกรรมโครงการ'],
-            ['icon' => 'download', 'value' => $documentsTotal, 'label' => 'เอกสารเผยแพร่รายการ'],
-            ['icon' => 'news', 'value' => $legislationTotal, 'label' => 'กฎหมาย/ระเบียบฉบับ'],
+            ['icon' => 'news', 'value' => $newsTotal, 'label' => 'ລາຍການຂ່າວສານ'],
+            ['icon' => 'department', 'value' => $departmentsTotal, 'label' => 'ພະແນກ'],
+            ['icon' => 'employee', 'value' => $employeesTotal, 'label' => 'ພະນັກງານ'],
+            ['icon' => 'activity', 'value' => $activitiesTotal, 'label' => 'ກິດຈະກຳໂຄງການ'],
+            ['icon' => 'download', 'value' => $documentsTotal, 'label' => 'ເອກະສານເຜີຍແຜ່'],
         ];
     }
 }

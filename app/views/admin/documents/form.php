@@ -7,7 +7,7 @@ declare(strict_types=1);
 /** @var string|null $formError */
 
 $isEdit = $document !== null;
-$title  = $isEdit ? 'แก้ไขเอกสาร' : 'เพิ่มเอกสาร';
+$title  = $isEdit ? 'ແກ້ໄຂເອກະສານ' : 'ເພີ່ມເອກະສານ';
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -27,8 +27,8 @@ $title  = $isEdit ? 'แก้ไขเอกสาร' : 'เพิ่มเอ
     <main class="admin-content">
         <?php renderAdminPageHeader(
             $title,
-            $isEdit ? 'แก้ไขข้อมูลเอกสาร "' . $document['title'] . '"' : 'กรอกข้อมูลเพื่อเพิ่มเอกสารใหม่เข้าสู่ระบบ',
-            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/documents/index.php'), 'class' => 'btn-secondary']]
+            $isEdit ? 'ແກ້ໄຂຂໍ້ມູນເອກະສານ "' . $document['title'] . '"' : 'ປ້ອນຂໍ້ມູນເພື່ອເພີ່ມເອກະສານໃໝ່ເຂົ້າສູ່ລະບົບ',
+            [['label' => 'ກັບຄືນລາຍການ', 'url' => baseUrl('admin/documents/index.php'), 'class' => 'btn-secondary']]
         ); ?>
 
         <?php if ($formError !== null): ?>
@@ -44,40 +44,40 @@ $title  = $isEdit ? 'แก้ไขเอกสาร' : 'เพิ่มเอ
                 <input type="hidden" name="id" value="<?= (int) $document['id'] ?>">
             <?php endif; ?>
 
-            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($document): void { ?>
-                <label for="title">ชื่อเอกสาร</label>
+            <?php renderAdminSectionCard('ຂໍ້ມູນທົ່ວໄປ', function () use ($document): void { ?>
+                <label for="title">ຊື່ເອກະສານ</label>
                 <input type="text" id="title" name="title" maxlength="255" required
                        value="<?= e((string) ($document['title'] ?? '')) ?>">
 
-                <label for="description">รายละเอียด</label>
+                <label for="description">ລາຍລະອຽດ</label>
                 <textarea id="description" name="description" rows="4"><?= e((string) ($document['description'] ?? '')) ?></textarea>
-            <?php }, 'ชื่อและรายละเอียดของเอกสาร'); ?>
+            <?php }, 'ຊື່ ແລະ ລາຍລະອຽດຂອງເອກະສານ'); ?>
 
-            <?php renderAdminSectionCard('สถานะ', function () use ($document): void { ?>
-                <label for="status">สถานะการเผยแพร่</label>
+            <?php renderAdminSectionCard('ສະຖານະ', function () use ($document): void { ?>
+                <label for="status">ສະຖານະການເຜີຍແຜ່</label>
                 <select id="status" name="status">
                     <option value="Draft" <?= ($document['status'] ?? 'Draft') === 'Draft' ? 'selected' : '' ?>>Draft</option>
                     <option value="Published" <?= ($document['status'] ?? '') === 'Published' ? 'selected' : '' ?>>Published</option>
                 </select>
-            <?php }, 'กำหนดว่าเอกสารนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
+            <?php }, 'ກຳນົດວ່າເອກະສານນີ້ເຜີຍແຜ່ເທິງເວັບໄຊທ໌ແລ້ວຫລືບໍ່'); ?>
 
-            <?php renderAdminSectionCard('ไฟล์เอกสาร', function () use ($document, $isEdit): void { ?>
+            <?php renderAdminSectionCard('ໄຟລ໌ເອກະສານ', function () use ($document, $isEdit): void { ?>
                 <?php if ($isEdit && !empty($document['original_file_name'])): ?>
                     <div class="current-image">
-                        ไฟล์ปัจจุบัน: <a href="<?= e(uploadUrl('documents/' . $document['file_name'])) ?>" target="_blank" rel="noopener"><?= e($document['original_file_name']) ?></a>
+                        ໄຟລ໌ປັດຈຸບັນ: <a href="<?= e(uploadUrl('documents/' . $document['file_name'])) ?>" target="_blank" rel="noopener"><?= e($document['original_file_name']) ?></a>
                     </div>
                 <?php endif; ?>
-                <label for="file">ไฟล์เอกสาร</label>
+                <label for="file">ໄຟລ໌ເອກະສານ</label>
                 <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" <?= $isEdit ? '' : 'required' ?>>
                 <small>
-                    อนุญาตเฉพาะไฟล์ pdf, doc, docx, xls, xlsx, ppt, pptx ขนาดไม่เกิน 10 MB
-                    <?php if ($isEdit): ?>(ไม่จำเป็นต้องเลือกไฟล์ใหม่หากต้องการคงไฟล์เดิม)<?php endif; ?>
+                    ອະນຸຍາດສະເພາະໄຟລ໌ pdf, doc, docx, xls, xlsx, ppt, pptx ຂະໜາດບໍ່ເກີນ 10 MB
+                    <?php if ($isEdit): ?>(ບໍ່ຈຳເປັນຕ້ອງເລືອກໄຟລ໌ໃໝ່ຫາກຕ້ອງການຄົງໄຟລ໌ເດີມ)<?php endif; ?>
                 </small>
-            <?php }, $isEdit ? 'เปลี่ยนไฟล์เอกสาร (ไม่บังคับ)' : 'แนบไฟล์เอกสาร (บังคับ)'); ?>
+            <?php }, $isEdit ? 'ປ່ຽນໄຟລ໌ເອກະສານ (ບໍ່ບັງຄັບ)' : 'ແນບໄຟລ໌ເອກະສານ (ບັງຄັບ)'); ?>
 
             <div class="admin-form-actions">
-                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มเอกสาร' ?></button>
-                <a href="<?= e(baseUrl('admin/documents/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                <button type="submit" class="btn-primary"><?= $isEdit ? 'ບັນທຶກການແກ້ໄຂ' : 'ເພີ່ມເອກະສານ' ?></button>
+                <a href="<?= e(baseUrl('admin/documents/index.php')) ?>" class="btn-ghost">ຍົກເລີກ</a>
             </div>
         </form>
     </main>

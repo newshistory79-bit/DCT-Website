@@ -7,7 +7,7 @@ declare(strict_types=1);
 /** @var string|null $formError */
 
 $isEdit = $employee !== null;
-$title  = $isEdit ? 'แก้ไขข้อมูลพนักงาน' : 'เพิ่มพนักงาน';
+$title  = $isEdit ? 'ແກ້ໄຂຂໍ້ມູນພະນັກງານ' : 'ເພີ່ມພະນັກງານ';
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -27,8 +27,8 @@ $title  = $isEdit ? 'แก้ไขข้อมูลพนักงาน' : '
     <main class="admin-content">
         <?php renderAdminPageHeader(
             $title,
-            $isEdit ? 'แก้ไขข้อมูลของ "' . trim(($employee['Fname'] ?? '') . ' ' . ($employee['Lname'] ?? '')) . '"' : 'กรอกข้อมูลเพื่อเพิ่มพนักงานใหม่เข้าสู่ระบบ',
-            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/employees/index.php'), 'class' => 'btn-secondary']]
+            $isEdit ? 'ແກ້ໄຂຂໍ້ມູນຂອງ "' . trim(($employee['Fname'] ?? '') . ' ' . ($employee['Lname'] ?? '')) . '"' : 'ປ້ອນຂໍ້ມູນເພື່ອເພີ່ມພະນັກງານໃໝ່ເຂົ້າສູ່ລະບົບ',
+            [['label' => 'ກັບຄືນລາຍການ', 'url' => baseUrl('admin/employees/index.php'), 'class' => 'btn-secondary']]
         ); ?>
 
         <?php if ($formError !== null): ?>
@@ -44,59 +44,59 @@ $title  = $isEdit ? 'แก้ไขข้อมูลพนักงาน' : '
                 <input type="hidden" name="id" value="<?= (int) $employee['ID'] ?>">
             <?php endif; ?>
 
-            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($employee): void { ?>
-                <label for="fname">ชื่อ</label>
+            <?php renderAdminSectionCard('ຂໍ້ມູນທົ່ວໄປ', function () use ($employee): void { ?>
+                <label for="fname">ຊື່</label>
                 <input type="text" id="fname" name="fname" maxlength="255" required
                        value="<?= e($employee['Fname'] ?? '') ?>">
 
-                <label for="lname">นามสกุล</label>
+                <label for="lname">ນາມສະກຸນ</label>
                 <input type="text" id="lname" name="lname" maxlength="255" required
                        value="<?= e($employee['Lname'] ?? '') ?>">
 
-                <label for="birth_date">วันเกิด</label>
+                <label for="birth_date">ວັນເກີດ</label>
                 <input type="date" id="birth_date" name="birth_date"
                        value="<?= e($employee['birth_date'] ?? '') ?>">
 
-                <label for="gender">เพศ</label>
+                <label for="gender">ເພດ</label>
                 <select id="gender" name="gender">
-                    <option value="Male" <?= ($employee['gender'] ?? 'Male') === 'Male' ? 'selected' : '' ?>>ชาย</option>
-                    <option value="Female" <?= ($employee['gender'] ?? '') === 'Female' ? 'selected' : '' ?>>หญิง</option>
-                    <option value="Other" <?= ($employee['gender'] ?? '') === 'Other' ? 'selected' : '' ?>>อื่นๆ</option>
+                    <option value="Male" <?= ($employee['gender'] ?? 'Male') === 'Male' ? 'selected' : '' ?>>ຊາຍ</option>
+                    <option value="Female" <?= ($employee['gender'] ?? '') === 'Female' ? 'selected' : '' ?>>ຍິງ</option>
+                    <option value="Other" <?= ($employee['gender'] ?? '') === 'Other' ? 'selected' : '' ?>>ອື່ນໆ</option>
                 </select>
 
-                <label for="phone">เบอร์โทรศัพท์</label>
+                <label for="phone">ເບີໂທລະສັບ</label>
                 <input type="text" id="phone" name="phone" maxlength="20"
                        value="<?= e($employee['phone'] ?? '') ?>">
 
-                <label for="email">อีเมล</label>
+                <label for="email">ອີເມວ</label>
                 <input type="email" id="email" name="email" maxlength="100"
                        value="<?= e($employee['email'] ?? '') ?>">
 
-                <label for="position">ตำแหน่ง</label>
+                <label for="position">ຕຳແໜ່ງ</label>
                 <input type="text" id="position" name="position" maxlength="100"
                        value="<?= e($employee['position'] ?? '') ?>">
 
-                <label for="address">ที่อยู่</label>
+                <label for="address">ທີ່ຢູ່</label>
                 <textarea id="address" name="address" rows="3"><?= e($employee['address'] ?? '') ?></textarea>
-            <?php }, 'ข้อมูลส่วนตัวและช่องทางติดต่อของพนักงาน'); ?>
+            <?php }, 'ຂໍ້ມູນສ່ວນຕົວ ແລະ ຊ່ອງທາງຕິດຕໍ່ຂອງພະນັກງານ'); ?>
 
-            <?php renderAdminSectionCard('รูปภาพ', function () use ($employee, $isEdit): void { ?>
+            <?php renderAdminSectionCard('ຮູບພາບ', function () use ($employee, $isEdit): void { ?>
                 <?php if ($isEdit && !empty($employee['image'])): ?>
                     <div class="current-image">
                         <img src="<?= e(uploadUrl('employees/' . $employee['image'])) ?>" alt="">
                     </div>
                 <?php endif; ?>
-                <label for="image">รูปภาพพนักงาน</label>
-                <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
-                <small>อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB</small>
-            <?php }, 'รูปโปรไฟล์ของพนักงาน (ไม่บังคับ)'); ?>
+                <label for="image">ຮູບພາບພະນັກງານ</label>
+                <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp,.jfif">
+                <small>ອະນຸຍາດສະເພາະໄຟລ໌ jpg, jpeg, png, webp, jfif ຂະໜາດບໍ່ເກີນ 2 MB</small>
+            <?php }, 'ຮູບໂປຣໄຟລ໌ຂອງພະນັກງານ (ບໍ່ບັງຄັບ)'); ?>
 
-            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+            <?php renderAdminSectionCard('ການດຳເນີນການ', function () use ($isEdit): void { ?>
                 <div class="admin-form-actions">
-                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มพนักงาน' ?></button>
-                    <a href="<?= e(baseUrl('admin/employees/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'ບັນທຶກການແກ້ໄຂ' : 'ເພີ່ມພະນັກງານ' ?></button>
+                    <a href="<?= e(baseUrl('admin/employees/index.php')) ?>" class="btn-ghost">ຍົກເລີກ</a>
                 </div>
-            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
+            <?php }, 'ກວດສອບຂໍ້ມູນໃຫ້ຖືກຕ້ອງກ່ອນບັນທຶກ'); ?>
         </form>
     </main>
 </div>

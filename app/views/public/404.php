@@ -4,10 +4,10 @@
     <div class="container">
         <div class="empty-state">
             <?= icon('search', 48) ?>
-            <p>ไม่พบหน้าที่คุณต้องการ</p>
+            <p>ບໍ່ພົບໜ້າທີ່ທ່ານຕ້ອງການ</p>
             <div class="empty-state-actions">
-                <a href="<?= e(baseUrl('')) ?>" class="btn btn-primary">กลับหน้าหลัก</a>
-                <a href="<?= e(baseUrl('')) ?>" class="btn btn-outline js-back-link" data-fallback="<?= e(baseUrl('')) ?>">กลับหน้าก่อนหน้า</a>
+                <a href="<?= e(baseUrl('')) ?>" class="btn btn-primary">ກັບຄືນຫນ້າຫຼັກ</a>
+                <a href="<?= e(baseUrl('')) ?>" class="btn btn-outline js-back-link" data-fallback="<?= e(baseUrl('')) ?>">ກັບຄືນໜ້າກ່ອນໜ້າ</a>
             </div>
         </div>
     </div>

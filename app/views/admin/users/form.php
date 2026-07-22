@@ -7,7 +7,7 @@ declare(strict_types=1);
 /** @var string|null $formError */
 
 $isEdit = $user !== null;
-$title  = $isEdit ? 'แก้ไขผู้ใช้งาน' : 'เพิ่มผู้ใช้งาน';
+$title  = $isEdit ? 'ແກ້ໄຂຜູ້ໃຊ້ງານ' : 'ເພີ່ມຜູ້ໃຊ້ງານ';
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -27,8 +27,8 @@ $title  = $isEdit ? 'แก้ไขผู้ใช้งาน' : 'เพิ่
     <main class="admin-content">
         <?php renderAdminPageHeader(
             $title,
-            $isEdit ? 'แก้ไขข้อมูลผู้ใช้ "' . $user['username'] . '"' : 'กรอกข้อมูลเพื่อเพิ่มผู้ใช้งานใหม่เข้าสู่ระบบ',
-            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/users/index.php'), 'class' => 'btn-secondary']]
+            $isEdit ? 'ແກ້ໄຂຂໍ້ມູນຜູ້ໃຊ້ "' . $user['username'] . '"' : 'ປ້ອນຂໍ້ມູນເພື່ອເພີ່ມຜູ້ໃຊ້ງານໃໝ່ເຂົ້າສູ່ລະບົບ',
+            [['label' => 'ກັບຄືນລາຍການ', 'url' => baseUrl('admin/users/index.php'), 'class' => 'btn-secondary']]
         ); ?>
 
         <?php if ($formError !== null): ?>
@@ -43,44 +43,44 @@ $title  = $isEdit ? 'แก้ไขผู้ใช้งาน' : 'เพิ่
                 <input type="hidden" name="id" value="<?= (int) $user['id'] ?>">
             <?php endif; ?>
 
-            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($user): void { ?>
-                <label for="username">ชื่อผู้ใช้</label>
+            <?php renderAdminSectionCard('ຂໍ້ມູນທົ່ວໄປ', function () use ($user): void { ?>
+                <label for="username">ຊື່ຜູ້ໃຊ້</label>
                 <input type="text" id="username" name="username" maxlength="50" required
                        value="<?= e($user['username'] ?? '') ?>">
 
-                <label for="full_name">ชื่อ-นามสกุล</label>
+                <label for="full_name">ຊື່-ນາມສະກຸນ</label>
                 <input type="text" id="full_name" name="full_name" maxlength="255" required
                        value="<?= e($user['full_name'] ?? '') ?>">
 
-                <label for="email">อีเมล</label>
+                <label for="email">ອີເມວ</label>
                 <input type="email" id="email" name="email" maxlength="100"
                        value="<?= e($user['email'] ?? '') ?>">
-            <?php }, 'ข้อมูลบัญชีและช่องทางติดต่อ'); ?>
+            <?php }, 'ຂໍ້ມູນບັນຊີ ແລະ ຊ່ອງທາງຕິດຕໍ່'); ?>
 
-            <?php renderAdminSectionCard('รหัสผ่าน', function () use ($isEdit): void { ?>
-                <label for="password">รหัสผ่าน<?= $isEdit ? ' (เว้นว่างหากไม่ต้องการเปลี่ยน)' : '' ?></label>
+            <?php renderAdminSectionCard('ລະຫັດຜ່ານ', function () use ($isEdit): void { ?>
+                <label for="password">ລະຫັດຜ່ານ<?= $isEdit ? ' (ເວັ້ນວ່າງຫາກບໍ່ຕ້ອງການປ່ຽນ)' : '' ?></label>
                 <input type="password" id="password" name="password" minlength="8" <?= $isEdit ? '' : 'required' ?>>
-                <small>อย่างน้อย 8 ตัวอักษร</small>
-            <?php }, $isEdit ? 'เปลี่ยนรหัสผ่าน (ไม่บังคับ)' : 'กำหนดรหัสผ่านเข้าสู่ระบบ'); ?>
+                <small>ຢ່າງໜ້ອຍ 8 ໂຕອັກສອນ</small>
+            <?php }, $isEdit ? 'ປ່ຽນລະຫັດຜ່ານ (ບໍ່ບັງຄັບ)' : 'ກຳນົດລະຫັດຜ່ານເຂົ້າສູ່ລະບົບ'); ?>
 
-            <?php renderAdminSectionCard('สิทธิ์และสถานะ', function () use ($user): void { ?>
-                <label for="role">สิทธิ์</label>
+            <?php renderAdminSectionCard('ສິດທິ ແລະ ສະຖານະ', function () use ($user): void { ?>
+                <label for="role">ສິດທິ</label>
                 <select id="role" name="role">
                     <option value="Admin" <?= ($user['role'] ?? '') === 'Admin' ? 'selected' : '' ?>>Admin</option>
                     <option value="Editor" <?= ($user['role'] ?? '') === 'Editor' ? 'selected' : '' ?>>Editor</option>
                     <option value="Staff" <?= ($user['role'] ?? 'Staff') === 'Staff' ? 'selected' : '' ?>>Staff</option>
                 </select>
 
-                <label for="status">สถานะ</label>
+                <label for="status">ສະຖານະ</label>
                 <select id="status" name="status">
                     <option value="Active" <?= ($user['status'] ?? 'Active') === 'Active' ? 'selected' : '' ?>>Active</option>
                     <option value="Inactive" <?= ($user['status'] ?? '') === 'Inactive' ? 'selected' : '' ?>>Inactive</option>
                 </select>
-            <?php }, 'กำหนดระดับสิทธิ์การใช้งานและสถานะบัญชี'); ?>
+            <?php }, 'ກຳນົດລະດັບສິດທິການນຳໃຊ້ ແລະ ສະຖານະບັນຊີ'); ?>
 
             <div class="admin-form-actions">
-                <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มผู้ใช้งาน' ?></button>
-                <a href="<?= e(baseUrl('admin/users/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                <button type="submit" class="btn-primary"><?= $isEdit ? 'ບັນທຶກການແກ້ໄຂ' : 'ເພີ່ມຜູ້ໃຊ້ງານ' ?></button>
+                <a href="<?= e(baseUrl('admin/users/index.php')) ?>" class="btn-ghost">ຍົກເລີກ</a>
             </div>
         </form>
     </main>

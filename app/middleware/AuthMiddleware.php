@@ -31,7 +31,7 @@ class AuthMiddleware
 
         if (!in_array($_SESSION['role'] ?? '', $allowedRoles, true)) {
             http_response_code(403);
-            echo 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ (Role: ' . e((string) ($_SESSION['role'] ?? '-')) . ')';
+            echo 'ທ່ານບໍ່ມີສິດເຂົ້າເຖິງໜ້ານີ້ (Role: ' . e((string) ($_SESSION['role'] ?? '-')) . ')';
             exit;
         }
     }
@@ -46,7 +46,7 @@ class AuthMiddleware
 
         if (!\App\Core\Permission::can($role, $module, $action)) {
             http_response_code(403);
-            echo 'คุณไม่มีสิทธิ์ดำเนินการนี้ (Module: ' . e($module) . ', Action: ' . e($action) . ')';
+            echo 'ທ່ານບໍ່ມີສິດດຳເນີນການນີ້ (Module: ' . e($module) . ', Action: ' . e($action) . ')';
             exit;
         }
     }
@@ -58,8 +58,8 @@ class AuthMiddleware
         session_start();
 
         $_SESSION['login_error'] = ($reason === 'session_timeout')
-            ? 'Session หมดอายุ กรุณาเข้าสู่ระบบใหม่อีกครั้ง'
-            : 'กรุณาเข้าสู่ระบบ';
+            ? 'Session ໝົດອາຍຸ ກະລຸນາເຂົ້າສູ່ລະບົບໃໝ່ອີກຄັ້ງ'
+            : 'ກະລຸນາເຂົ້າສູ່ລະບົບ';
 
         redirect('admin/login.php');
     }

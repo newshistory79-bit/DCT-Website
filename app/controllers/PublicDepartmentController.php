@@ -31,14 +31,14 @@ class PublicDepartmentController extends BaseController
         );
 
         $this->render('public/departments/index', [
-            'pageTitle'       => 'แผนก',
-            'metaDescription' => 'รวมแผนกและหน่วยงานภายใน ' . APP_NAME,
-            'metaKeywords'    => 'แผนก, หน่วยงาน, โครงสร้างองค์กร, ' . APP_NAME,
+            'pageTitle'       => 'ພະແນກ',
+            'metaDescription' => 'ລວມພະແນກຕ່າງໆພາຍໃນ ' . APP_NAME,
+            'metaKeywords'    => 'ພະແນກ, ຫນ່ວຍງານ, ໂຄງສ້າງອົງກອນ, ' . APP_NAME,
             'ogType'          => 'website',
             'activeNav'       => 'departments',
             'breadcrumb'      => [
-                ['label' => 'หน้าแรก', 'url' => baseUrl('')],
-                ['label' => 'แผนก', 'url' => null],
+                ['label' => 'ຫນ້າຫຼັກ', 'url' => baseUrl('')],
+                ['label' => 'ພະແນກ', 'url' => null],
             ],
             'departmentItems' => array_map([$this, 'mapDepartmentToCard'], $result['data']),
             'total'           => $result['total'],
@@ -76,12 +76,12 @@ class PublicDepartmentController extends BaseController
         $this->render('public/departments/detail', [
             'pageTitle'       => $department['name'],
             'metaDescription' => mb_substr((string) ($department['description'] ?? $department['name']), 0, 160),
-            'metaKeywords'    => $department['name'] . ', แผนก, หน่วยงาน, ' . APP_NAME,
+            'metaKeywords'    => $department['name'] . ', ພະແນກ, ຫນ່ວຍງານ, ' . APP_NAME,
             'ogType'          => 'article',
             'activeNav'       => 'departments',
             'breadcrumb'      => [
-                ['label' => 'หน้าแรก', 'url' => baseUrl('')],
-                ['label' => 'แผนก', 'url' => baseUrl('departments/index.php')],
+                ['label' => 'ຫນ້າຫຼັກ', 'url' => baseUrl('')],
+                ['label' => 'ພະແນກ', 'url' => baseUrl('departments/index.php')],
                 ['label' => $department['name'], 'url' => null],
             ],
             'department'      => $department,
@@ -112,11 +112,12 @@ class PublicDepartmentController extends BaseController
         $excerpt     = mb_substr($description, 0, 90) . (mb_strlen($description) > 90 ? '…' : '');
 
         return [
-            'url'     => baseUrl('departments/detail.php?id=' . $item['id']),
-            'image'   => null,
-            'icon'    => 'department',
-            'title'   => $item['name'],
-            'excerpt' => $excerpt,
+            'url'         => baseUrl('departments/detail.php?id=' . $item['id']),
+            'image'       => null,
+            'icon'        => 'department',
+            'title'       => $item['name'],
+            'excerpt'     => $excerpt,
+            'actionLabel' => 'ອ່ານຕໍ່',
         ];
     }
 }

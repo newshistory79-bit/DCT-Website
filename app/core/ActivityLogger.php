@@ -29,7 +29,7 @@ class ActivityLogger
 
             $stmt->execute([
                 'user_id'     => $userId ?? ($_SESSION['user_id'] ?? null),
-                'username'    => $username ?? ($_SESSION['username'] ?? 'ไม่ทราบผู้ใช้'),
+                'username'    => $username ?? ($_SESSION['username'] ?? 'ບໍ່ຮູ້ຈັກຜູ້ໃຊ້'),
                 'role'        => $role ?? ($_SESSION['role'] ?? '-'),
                 'module'      => $module,
                 'action'      => $action,

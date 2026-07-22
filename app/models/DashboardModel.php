@@ -17,8 +17,6 @@ class DashboardModel extends BaseModel
         'departments' => 'departments',
         'activities'  => 'activities',
         'documents'   => 'documents',
-        'gallery'     => 'gallery',
-        'legislation' => 'legislation',
     ];
 
     // ตารางที่ต้องนับเฉพาะแถวที่ยังไม่ถูก Soft Delete (deleted_at IS NULL)

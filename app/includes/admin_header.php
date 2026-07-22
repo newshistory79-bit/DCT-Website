@@ -19,39 +19,34 @@ $adminMenuItems  = require APP_PATH . '/config/admin_menu.php';
 $adminCurrentPath = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
 ?>
 <header class="admin-topbar">
-    <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-label="เปิด/ปิดเมนู">
+    <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-label="ເປີດ/ປິດເມນູ">
         <?= icon('menu', 20) ?>
     </button>
 
     <div class="brand">
-        <span class="brand-logo">DTC</span>
+        <img src="<?= e(baseUrl('assets/images/logo.jpg')) ?>" alt="<?= e(APP_NAME) ?>" class="brand-logo">
         <span class="brand-name"><?= e(APP_NAME) ?></span>
     </div>
 
     <?php renderAdminBreadcrumb($adminMenuItems, $adminCurrentPath); ?>
 
-    <div class="topbar-search">
-        <?= icon('search', 16) ?>
-        <input type="text" placeholder="ค้นหา..." aria-label="ค้นหา" disabled title="ฟีเจอร์นี้จะเปิดใช้งานเร็วๆ นี้">
-    </div>
-
     <div class="topbar-actions">
-        <button type="button" class="icon-btn" id="themeToggle" aria-label="สลับธีมมืด/สว่าง" disabled title="ฟีเจอร์นี้จะเปิดใช้งานเร็วๆ นี้">
+        <button type="button" class="icon-btn" id="themeToggle" aria-label="ສະຫລັບໂໝດມືດ/ແຈ້ງ" disabled title="ຄຸນສົມບັດນີ້ຈະເປີດໃຊ້ງານໄວໆນີ້">
             <?= icon('moon', 18) ?>
         </button>
 
         <?php if (can('activity_log', 'view')): ?>
             <div class="topbar-dropdown" id="notifDropdown">
-                <button type="button" class="icon-btn" id="notifToggle" aria-label="การแจ้งเตือน" aria-expanded="false">
+                <button type="button" class="icon-btn" id="notifToggle" aria-label="ການແຈ້ງເຕືອນ" aria-expanded="false">
                     <?= icon('bell', 20) ?>
                     <?php if (!empty($headerNotifications)): ?>
                         <span class="notif-dot"></span>
                     <?php endif; ?>
                 </button>
                 <div class="dropdown-menu dropdown-menu-wide" id="notifMenu" hidden>
-                    <div class="dropdown-header">กิจกรรมล่าสุด</div>
+                    <div class="dropdown-header">ກິດຈະກຳຫລ້າສຸດ</div>
                     <?php if (empty($headerNotifications)): ?>
-                        <p class="dropdown-empty">ยังไม่มีกิจกรรม</p>
+                        <p class="dropdown-empty">ຍັງບໍ່ມີກິດຈະກຳ</p>
                     <?php else: ?>
                         <ul class="notif-list">
                             <?php foreach ($headerNotifications as $log): ?>
@@ -62,13 +57,13 @@ $adminCurrentPath = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''),
                             <?php endforeach; ?>
                         </ul>
                     <?php endif; ?>
-                    <a href="<?= e(baseUrl('admin/activity-log/index.php')) ?>" class="dropdown-footer-link">ดูกิจกรรมทั้งหมด</a>
+                    <a href="<?= e(baseUrl('admin/activity-log/index.php')) ?>" class="dropdown-footer-link">ເບິ່ງກິດຈະກຳທັງໝົດ</a>
                 </div>
             </div>
         <?php endif; ?>
 
         <div class="topbar-dropdown" id="userDropdown">
-            <button type="button" class="user-menu-toggle" id="userToggle" aria-label="เมนูผู้ใช้" aria-expanded="false">
+            <button type="button" class="user-menu-toggle" id="userToggle" aria-label="ເມນູຜູ້ໃຊ້" aria-expanded="false">
                 <span class="user-avatar"><?= e($avatarInitial) ?></span>
                 <span class="user-info">
                     <span class="user-name"><?= e($currentFullName) ?></span>
@@ -77,8 +72,8 @@ $adminCurrentPath = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''),
                 <?= icon('chevron', 14) ?>
             </button>
             <div class="dropdown-menu" id="userMenuDropdown" hidden>
-                <a href="<?= e(baseUrl('admin/change-password.php')) ?>" class="dropdown-item">เปลี่ยนรหัสผ่าน</a>
-                <a href="<?= e(baseUrl('admin/logout.php')) ?>" class="dropdown-item dropdown-item-danger">ออกจากระบบ</a>
+                <a href="<?= e(baseUrl('admin/change-password.php')) ?>" class="dropdown-item">ປ່ຽນລະຫັດຜ່ານ</a>
+                <a href="<?= e(baseUrl('admin/logout.php')) ?>" class="dropdown-item dropdown-item-danger">ອອກຈາກລະບົບ</a>
             </div>
         </div>
     </div>

@@ -7,7 +7,7 @@ declare(strict_types=1);
 /** @var string|null $formError */
 
 $isEdit = $department !== null;
-$title  = $isEdit ? 'แก้ไขแผนก' : 'เพิ่มแผนก';
+$title  = $isEdit ? 'ແກ້ໄຂພະແນກ' : 'ເພີ່ມພະແນກ';
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -27,8 +27,8 @@ $title  = $isEdit ? 'แก้ไขแผนก' : 'เพิ่มแผนก
     <main class="admin-content">
         <?php renderAdminPageHeader(
             $title,
-            $isEdit ? 'แก้ไขข้อมูลแผนก "' . $department['name'] . '"' : 'กรอกข้อมูลเพื่อเพิ่มแผนกใหม่เข้าสู่ระบบ',
-            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/departments/index.php'), 'class' => 'btn-secondary']]
+            $isEdit ? 'ແກ້ໄຂຂໍ້ມູນພະແນກ "' . $department['name'] . '"' : 'ປ້ອນຂໍ້ມູນເພື່ອເພີ່ມພະແນກໃໝ່ເຂົ້າສູ່ລະບົບ',
+            [['label' => 'ກັບຄືນລາຍການ', 'url' => baseUrl('admin/departments/index.php'), 'class' => 'btn-secondary']]
         ); ?>
 
         <?php if ($formError !== null): ?>
@@ -43,39 +43,39 @@ $title  = $isEdit ? 'แก้ไขแผนก' : 'เพิ่มแผนก
                 <input type="hidden" name="id" value="<?= (int) $department['id'] ?>">
             <?php endif; ?>
 
-            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($department): void { ?>
-                <label for="code">รหัสแผนก</label>
+            <?php renderAdminSectionCard('ຂໍ້ມູນທົ່ວໄປ', function () use ($department): void { ?>
+                <label for="code">ລະຫັດພະແນກ</label>
                 <input type="text" id="code" name="code" maxlength="20" required
                        pattern="[A-Z0-9\-]+" class="input-uppercase"
                        value="<?= e($department['code'] ?? '') ?>">
-                <small>อนุญาตเฉพาะตัวอักษร A-Z, ตัวเลข 0-9 และเครื่องหมาย - เท่านั้น</small>
+                <small>ອະນຸຍາດສະເພາະໂຕອັກສອນ A-Z, ໂຕເລກ 0-9 ແລະ ເຄື່ອງໝາຍ - ເທົ່ານັ້ນ</small>
 
-                <label for="name">ชื่อแผนก</label>
+                <label for="name">ຊື່ພະແນກ</label>
                 <input type="text" id="name" name="name" maxlength="255" required
                        value="<?= e($department['name'] ?? '') ?>">
 
-                <label for="description">คำอธิบาย</label>
+                <label for="description">ຄຳອະທິບາຍ</label>
                 <textarea id="description" name="description" rows="4"><?= e($department['description'] ?? '') ?></textarea>
 
-                <label for="sort_order">ลำดับการแสดงผล</label>
+                <label for="sort_order">ລຳດັບການສະແດງຜົນ</label>
                 <input type="number" id="sort_order" name="sort_order" min="0" step="1"
                        value="<?= (int) ($department['sort_order'] ?? 0) ?>">
-            <?php }, 'ข้อมูลพื้นฐานของแผนก'); ?>
+            <?php }, 'ຂໍ້ມູນພື້ນຖານຂອງພະແນກ'); ?>
 
-            <?php renderAdminSectionCard('สถานะ', function () use ($department): void { ?>
-                <label for="status">สถานะการใช้งาน</label>
+            <?php renderAdminSectionCard('ສະຖານະ', function () use ($department): void { ?>
+                <label for="status">ສະຖານະການນຳໃຊ້</label>
                 <select id="status" name="status">
                     <option value="Active" <?= ($department['status'] ?? 'Active') === 'Active' ? 'selected' : '' ?>>Active</option>
                     <option value="Inactive" <?= ($department['status'] ?? '') === 'Inactive' ? 'selected' : '' ?>>Inactive</option>
                 </select>
-            <?php }, 'กำหนดว่าแผนกนี้เปิดใช้งานอยู่หรือไม่'); ?>
+            <?php }, 'ກຳນົດວ່າພະແນກນີ້ເປີດໃຊ້ງານຢູ່ຫລືບໍ່'); ?>
 
-            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+            <?php renderAdminSectionCard('ການດຳເນີນການ', function () use ($isEdit): void { ?>
                 <div class="admin-form-actions">
-                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มแผนก' ?></button>
-                    <a href="<?= e(baseUrl('admin/departments/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'ບັນທຶກການແກ້ໄຂ' : 'ເພີ່ມພະແນກ' ?></button>
+                    <a href="<?= e(baseUrl('admin/departments/index.php')) ?>" class="btn-ghost">ຍົກເລີກ</a>
                 </div>
-            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
+            <?php }, 'ກວດສອບຂໍ້ມູນໃຫ້ຖືກຕ້ອງກ່ອນບັນທຶກ'); ?>
         </form>
     </main>
 </div>

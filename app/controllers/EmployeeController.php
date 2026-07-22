@@ -15,7 +15,7 @@ class EmployeeController extends BaseController
 {
     private const MODULE            = 'employees';
     private const PER_PAGE_OPTIONS  = [10, 25, 50, 100];
-    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'jfif'];
     private const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const MAX_FILE_SIZE      = 2097152; // 2 MB
 
@@ -80,7 +80,7 @@ class EmployeeController extends BaseController
         $employee = $model->find($id);
 
         if ($employee === null) {
-            $this->setFlashMessage('employee_error', 'ไม่พบข้อมูลพนักงานที่ต้องการแก้ไข');
+            $this->setFlashMessage('employee_error', 'ບໍ່ພົບຂໍ້ມູນພະນັກງານທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/employees/index.php');
             return;
         }
@@ -115,9 +115,9 @@ class EmployeeController extends BaseController
         $model = new EmployeeModel();
         $model->create($data);
 
-        ActivityLogger::log('employees', 'create', 'เพิ่มพนักงาน: ' . $data['fname'] . ' ' . $data['lname']);
+        ActivityLogger::log('employees', 'create', 'ເພີ່ມພະນັກງານ: ' . $data['fname'] . ' ' . $data['lname']);
 
-        $this->setFlashMessage('employee_success', 'เพิ่มข้อมูลพนักงานสำเร็จ');
+        $this->setFlashMessage('employee_success', 'ເພີ່ມຂໍ້ມູນພະນັກງານສຳເລັດ');
         $this->redirect('admin/employees/index.php');
     }
 
@@ -129,7 +129,7 @@ class EmployeeController extends BaseController
         $employee = $model->find($id);
 
         if ($employee === null) {
-            $this->setFlashMessage('employee_error', 'ไม่พบข้อมูลพนักงานที่ต้องการแก้ไข');
+            $this->setFlashMessage('employee_error', 'ບໍ່ພົບຂໍ້ມູນພະນັກງານທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/employees/index.php');
             return;
         }
@@ -163,9 +163,9 @@ class EmployeeController extends BaseController
             UploadHelper::delete(self::uploadDirectory(), $employee['image']);
         }
 
-        ActivityLogger::log('employees', 'update', 'แก้ไขพนักงาน: ' . $data['fname'] . ' ' . $data['lname']);
+        ActivityLogger::log('employees', 'update', 'ແກ້ໄຂພະນັກງານ: ' . $data['fname'] . ' ' . $data['lname']);
 
-        $this->setFlashMessage('employee_success', 'แก้ไขข้อมูลพนักงานสำเร็จ');
+        $this->setFlashMessage('employee_success', 'ແກ້ໄຂຂໍ້ມູນພະນັກງານສຳເລັດ');
         $this->redirect('admin/employees/index.php');
     }
 
@@ -176,7 +176,7 @@ class EmployeeController extends BaseController
         $token = (string) ($_POST['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('employee_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('employee_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             $this->redirect('admin/employees/index.php');
             return;
         }
@@ -185,7 +185,7 @@ class EmployeeController extends BaseController
         $employee = $model->find($id);
 
         if ($employee === null) {
-            $this->setFlashMessage('employee_error', 'ไม่พบข้อมูลพนักงานที่ต้องการลบ');
+            $this->setFlashMessage('employee_error', 'ບໍ່ພົບຂໍ້ມູນພະນັກງານທີ່ຕ້ອງການລຶບ');
             $this->redirect('admin/employees/index.php');
             return;
         }
@@ -193,9 +193,9 @@ class EmployeeController extends BaseController
         // Soft Delete เท่านั้น - ไม่ลบไฟล์รูปจริง เพื่อรักษาประวัติข้อมูลตามที่อนุมัติ
         $model->softDelete($id);
 
-        ActivityLogger::log('employees', 'delete', 'ลบพนักงาน: ' . $employee['Fname'] . ' ' . $employee['Lname']);
+        ActivityLogger::log('employees', 'delete', 'ລຶບພະນັກງານ: ' . $employee['Fname'] . ' ' . $employee['Lname']);
 
-        $this->setFlashMessage('employee_success', 'ลบข้อมูลพนักงานสำเร็จ');
+        $this->setFlashMessage('employee_success', 'ລຶບຂໍ້ມູນພະນັກງານສຳເລັດ');
         $this->redirect('admin/employees/index.php');
     }
 
@@ -232,7 +232,7 @@ class EmployeeController extends BaseController
         $token = (string) ($input['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('employee_form_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('employee_form_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             return null;
         }
 
@@ -246,39 +246,39 @@ class EmployeeController extends BaseController
         $address   = trim((string) ($input['address'] ?? ''));
 
         if ($fname === '' || $lname === '') {
-            $this->setFlashMessage('employee_form_error', 'กรุณากรอกชื่อและนามสกุลให้ครบถ้วน');
+            $this->setFlashMessage('employee_form_error', 'ກະລຸນາປ້ອນຊື່ ແລະ ນາມສະກຸນໃຫ້ຄົບຖ້ວນ');
             return null;
         }
 
         if (mb_strlen($fname) > 255 || mb_strlen($lname) > 255) {
-            $this->setFlashMessage('employee_form_error', 'ชื่อหรือนามสกุลต้องไม่เกิน 255 ตัวอักษร');
+            $this->setFlashMessage('employee_form_error', 'ຊື່ຫລືນາມສະກຸນຕ້ອງບໍ່ເກີນ 255 ໂຕອັກສອນ');
             return null;
         }
 
         if (!in_array($gender, ['Male', 'Female', 'Other'], true)) {
-            $this->setFlashMessage('employee_form_error', 'เพศไม่ถูกต้อง ต้องเป็น Male, Female หรือ Other เท่านั้น');
+            $this->setFlashMessage('employee_form_error', 'ເພດບໍ່ຖືກຕ້ອງ ຕ້ອງເປັນ Male, Female ຫລື Other ເທົ່ານັ້ນ');
             return null;
         }
 
         if ($email !== '') {
             if (mb_strlen($email) > 100) {
-                $this->setFlashMessage('employee_form_error', 'อีเมลต้องไม่เกิน 100 ตัวอักษร');
+                $this->setFlashMessage('employee_form_error', 'ອີເມວຕ້ອງບໍ່ເກີນ 100 ໂຕອັກສອນ');
                 return null;
             }
 
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $this->setFlashMessage('employee_form_error', 'รูปแบบอีเมลไม่ถูกต้อง');
+                $this->setFlashMessage('employee_form_error', 'ຮູບແບບອີເມວບໍ່ຖືກຕ້ອງ');
                 return null;
             }
         }
 
         if ($phone !== '' && !preg_match('/^[0-9\-+() ]{6,20}$/', $phone)) {
-            $this->setFlashMessage('employee_form_error', 'รูปแบบเบอร์โทรศัพท์ไม่ถูกต้อง');
+            $this->setFlashMessage('employee_form_error', 'ຮູບແບບເບີໂທລະສັບບໍ່ຖືກຕ້ອງ');
             return null;
         }
 
         if (mb_strlen($position) > 100) {
-            $this->setFlashMessage('employee_form_error', 'ตำแหน่งงานต้องไม่เกิน 100 ตัวอักษร');
+            $this->setFlashMessage('employee_form_error', 'ຕຳແໜ່ງງານຕ້ອງບໍ່ເກີນ 100 ໂຕອັກສອນ');
             return null;
         }
 
@@ -286,7 +286,7 @@ class EmployeeController extends BaseController
             $parsedDate = DateTime::createFromFormat('Y-m-d', $birthDate);
 
             if (!$parsedDate || $parsedDate->format('Y-m-d') !== $birthDate) {
-                $this->setFlashMessage('employee_form_error', 'รูปแบบวันเกิดไม่ถูกต้อง (YYYY-MM-DD)');
+                $this->setFlashMessage('employee_form_error', 'ຮູບແບບວັນເກີດບໍ່ຖືກຕ້ອງ (YYYY-MM-DD)');
                 return null;
             }
         }

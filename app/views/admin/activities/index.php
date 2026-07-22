@@ -40,10 +40,10 @@ $sortIndicator = function (string $column) use ($sort, $direction): string {
 
 $columns = [
     'id'            => 'ID',
-    'title'         => 'หัวข้อกิจกรรม',
-    'activity_date' => 'วันที่จัดกิจกรรม',
-    'status'        => 'สถานะ',
-    'created_at'    => 'วันที่สร้าง',
+    'title'         => 'ຫົວຂໍ້ກິດຈະກຳ',
+    'activity_date' => 'ວັນທີຈັດກິດຈະກຳ',
+    'status'        => 'ສະຖານະ',
+    'created_at'    => 'ວັນທີສ້າງ',
 ];
 
 // Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2/DS3 Pattern)
@@ -69,7 +69,7 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/activities/ind
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('activities', 'create') ? [['label' => '+ เพิ่มกิจกรรม', 'url' => baseUrl('admin/activities/form.php')]] : [],
+            can('activities', 'create') ? [['label' => '+ ເພີ່ມກິດຈະກຳ', 'url' => baseUrl('admin/activities/form.php')]] : [],
             '<span class="stat-icon stat-icon-orange">' . icon('activity', 22) . '</span>'
         ); ?>
 
@@ -83,41 +83,41 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/activities/ind
         <form method="get" action="<?= e(baseUrl('admin/activities/index.php')) ?>" class="filter-bar">
             <div class="search-input-icon">
                 <?= icon('search', 16) ?>
-                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาหัวข้อ รายละเอียด หรือสถานที่จัดกิจกรรม" aria-label="ค้นหากิจกรรม">
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາຫົວຂໍ້ ລາຍລະອຽດ ຫລືສະຖານທີ່ຈັດກິດຈະກຳ" aria-label="ຄົ້ນຫາກິດຈະກຳ">
             </div>
 
             <select name="status">
-                <option value="">สถานะทั้งหมด</option>
+                <option value="">ສະຖານະທັງໝົດ</option>
                 <option value="Published" <?= $status === 'Published' ? 'selected' : '' ?>>Published</option>
                 <option value="Draft" <?= $status === 'Draft' ? 'selected' : '' ?>>Draft</option>
             </select>
 
             <select name="per_page">
                 <?php foreach ($perPageOptions as $option): ?>
-                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> รายการ/หน้า</option>
+                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> ລາຍການ/ໜ້າ</option>
                 <?php endforeach; ?>
             </select>
 
-            <button type="submit" class="btn-secondary">ค้นหา</button>
+            <button type="submit" class="btn-secondary">ຄົ້ນຫາ</button>
         </form>
 
         <?php if (empty($activities)): ?>
             <?php renderAdminEmptyState(
-                'ไม่พบข้อมูลกิจกรรม ลองปรับคำค้นหาหรือตัวกรอง',
+                'ບໍ່ພົບຂໍ້ມູນກິດຈະກຳ ລອງປັບຄຳຄົ້ນຫາຫລືຕົວກອງ',
                 'activity',
-                can('activities', 'create') ? ['url' => baseUrl('admin/activities/form.php'), 'label' => '+ เพิ่มกิจกรรม'] : null
+                can('activities', 'create') ? ['url' => baseUrl('admin/activities/form.php'), 'label' => '+ ເພີ່ມກິດຈະກຳ'] : null
             ); ?>
         <?php else: ?>
             <div class="table-wrapper">
                 <table class="data-table data-table-zebra">
                     <thead>
                         <tr>
-                            <th>รูป</th>
+                            <th>ຮູບ</th>
                             <?php foreach ($columns as $col => $label): ?>
                                 <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
                             <?php endforeach; ?>
-                            <th>สถานที่</th>
-                            <th>จัดการ</th>
+                            <th>ສະຖານທີ່</th>
+                            <th>ຈັດການ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,16 +139,16 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/activities/ind
                                 <td class="truncate"><?= e(mb_strimwidth((string) ($activity['location'] ?? '-'), 0, 40, '...')) ?></td>
                                 <td class="actions">
                                     <?php if (can('activities', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/activities/form.php?id=' . $activity['id'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขกิจกรรม <?= e($activityTitle) ?>"><?= icon('edit', 16) ?></a>
+                                        <a href="<?= e(baseUrl('admin/activities/form.php?id=' . $activity['id'])) ?>" class="btn-icon" title="ແກ້ໄຂ" aria-label="ແກ້ໄຂກິດຈະກຳ <?= e($activityTitle) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('activities', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/activities/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm-modal="ยืนยันการลบกิจกรรม &quot;<?= e($activityTitle) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ຢືນຢັນການລຶບກິດຈະກຳ &quot;<?= e($activityTitle) ?>&quot; ແທ້ບໍ?">
                                             <input type="hidden" name="id" value="<?= (int) $activity['id'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบกิจกรรม <?= e($activityTitle) ?>"><?= icon('trash', 16) ?></button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ລຶບ" aria-label="ລຶບກິດຈະກຳ <?= e($activityTitle) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('activities', 'edit') && !can('activities', 'delete')): ?>

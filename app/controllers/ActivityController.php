@@ -83,7 +83,7 @@ class ActivityController extends BaseController
         $activity = $model->find($id);
 
         if ($activity === null) {
-            $this->setFlashMessage('activity_error', 'ไม่พบกิจกรรมที่ต้องการแก้ไข');
+            $this->setFlashMessage('activity_error', 'ບໍ່ພົບກິດຈະກຳທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/activities/index.php');
             return;
         }
@@ -118,9 +118,9 @@ class ActivityController extends BaseController
         $model = new ActivityModel();
         $model->create($data);
 
-        ActivityLogger::log('activities', 'create', 'เพิ่มกิจกรรม: ' . $data['title']);
+        ActivityLogger::log('activities', 'create', 'ເພີ່ມກິດຈະກຳ: ' . $data['title']);
 
-        $this->setFlashMessage('activity_success', 'เพิ่มกิจกรรมสำเร็จ');
+        $this->setFlashMessage('activity_success', 'ເພີ່ມກິດຈະກຳສຳເລັດ');
         $this->redirect('admin/activities/index.php');
     }
 
@@ -132,7 +132,7 @@ class ActivityController extends BaseController
         $activity = $model->find($id);
 
         if ($activity === null) {
-            $this->setFlashMessage('activity_error', 'ไม่พบกิจกรรมที่ต้องการแก้ไข');
+            $this->setFlashMessage('activity_error', 'ບໍ່ພົບກິດຈະກຳທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/activities/index.php');
             return;
         }
@@ -167,9 +167,9 @@ class ActivityController extends BaseController
             UploadHelper::delete(self::uploadDirectory(), $activity['image']);
         }
 
-        ActivityLogger::log('activities', 'update', 'แก้ไขกิจกรรม: ' . $data['title']);
+        ActivityLogger::log('activities', 'update', 'ແກ້ໄຂກິດຈະກຳ: ' . $data['title']);
 
-        $this->setFlashMessage('activity_success', 'แก้ไขกิจกรรมสำเร็จ');
+        $this->setFlashMessage('activity_success', 'ແກ້ໄຂກິດຈະກຳສຳເລັດ');
         $this->redirect('admin/activities/index.php');
     }
 
@@ -180,7 +180,7 @@ class ActivityController extends BaseController
         $token = (string) ($_POST['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('activity_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('activity_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             $this->redirect('admin/activities/index.php');
             return;
         }
@@ -189,7 +189,7 @@ class ActivityController extends BaseController
         $activity = $model->find($id);
 
         if ($activity === null) {
-            $this->setFlashMessage('activity_error', 'ไม่พบกิจกรรมที่ต้องการลบ');
+            $this->setFlashMessage('activity_error', 'ບໍ່ພົບກິດຈະກຳທີ່ຕ້ອງການລຶບ');
             $this->redirect('admin/activities/index.php');
             return;
         }
@@ -197,9 +197,9 @@ class ActivityController extends BaseController
         // Soft Delete เท่านั้น - ไม่ลบไฟล์รูปจริง เพื่อรักษาประวัติข้อมูลตามที่อนุมัติ
         $model->softDelete($id);
 
-        ActivityLogger::log('activities', 'delete', 'ลบกิจกรรม: ' . $activity['title']);
+        ActivityLogger::log('activities', 'delete', 'ລຶບກິດຈະກຳ: ' . $activity['title']);
 
-        $this->setFlashMessage('activity_success', 'ลบกิจกรรมสำเร็จ');
+        $this->setFlashMessage('activity_success', 'ລຶບກິດຈະກຳສຳເລັດ');
         $this->redirect('admin/activities/index.php');
     }
 
@@ -236,7 +236,7 @@ class ActivityController extends BaseController
         $token = (string) ($input['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('activity_form_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('activity_form_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             return null;
         }
 
@@ -247,34 +247,34 @@ class ActivityController extends BaseController
         $status       = (string) ($input['status'] ?? '');
 
         if ($title === '') {
-            $this->setFlashMessage('activity_form_error', 'กรุณากรอกหัวข้อกิจกรรม');
+            $this->setFlashMessage('activity_form_error', 'ກະລຸນາປ້ອນຫົວຂໍ້ກິດຈະກຳ');
             return null;
         }
 
         if (mb_strlen($title) > 255) {
-            $this->setFlashMessage('activity_form_error', 'หัวข้อกิจกรรมต้องไม่เกิน 255 ตัวอักษร');
+            $this->setFlashMessage('activity_form_error', 'ຫົວຂໍ້ກິດຈະກຳຕ້ອງບໍ່ເກີນ 255 ໂຕອັກສອນ');
             return null;
         }
 
         if ($activityDate === '') {
-            $this->setFlashMessage('activity_form_error', 'กรุณาเลือกวันที่จัดกิจกรรม');
+            $this->setFlashMessage('activity_form_error', 'ກະລຸນາເລືອກວັນທີຈັດກິດຈະກຳ');
             return null;
         }
 
         $parsedDate = DateTime::createFromFormat('Y-m-d', $activityDate);
 
         if (!$parsedDate || $parsedDate->format('Y-m-d') !== $activityDate) {
-            $this->setFlashMessage('activity_form_error', 'รูปแบบวันที่จัดกิจกรรมไม่ถูกต้อง (YYYY-MM-DD)');
+            $this->setFlashMessage('activity_form_error', 'ຮູບແບບວັນທີຈັດກິດຈະກຳບໍ່ຖືກຕ້ອງ (YYYY-MM-DD)');
             return null;
         }
 
         if (mb_strlen($location) > 255) {
-            $this->setFlashMessage('activity_form_error', 'สถานที่จัดกิจกรรมต้องไม่เกิน 255 ตัวอักษร');
+            $this->setFlashMessage('activity_form_error', 'ສະຖານທີ່ຈັດກິດຈະກຳຕ້ອງບໍ່ເກີນ 255 ໂຕອັກສອນ');
             return null;
         }
 
         if (!in_array($status, ['Draft', 'Published'], true)) {
-            $this->setFlashMessage('activity_form_error', 'สถานะไม่ถูกต้อง ต้องเป็น Draft หรือ Published เท่านั้น');
+            $this->setFlashMessage('activity_form_error', 'ສະຖານະບໍ່ຖືກຕ້ອງ ຕ້ອງເປັນ Draft ຫລື Published ເທົ່ານັ້ນ');
             return null;
         }
 

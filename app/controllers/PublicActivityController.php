@@ -29,9 +29,9 @@ class PublicActivityController extends BaseController
         );
 
         $this->render('public/activities/index', [
-            'pageTitle'       => 'กิจกรรม',
-            'metaDescription' => 'กิจกรรมและโครงการต่างๆ ของ ' . APP_NAME,
-            'metaKeywords'    => 'กิจกรรม, โครงการ, ' . APP_NAME,
+            'pageTitle'       => 'ກິດຈະກຳ',
+            'metaDescription' => 'ກິດຈະກຳ ແລະ ໂຄງການຕ່າງໆ ຂອງ ' . APP_NAME,
+            'metaKeywords'    => 'ກິດຈະກຳ, ໂຄງການ, ' . APP_NAME,
             'ogType'          => 'website',
             'activeNav'       => 'activities',
             'activities'      => $result['data'],
@@ -56,7 +56,7 @@ class PublicActivityController extends BaseController
         $this->render('public/activities/detail', [
             'pageTitle'       => $activity['title'],
             'metaDescription' => mb_substr((string) ($activity['description'] ?? $activity['title']), 0, 160),
-            'metaKeywords'    => $activity['title'] . ', กิจกรรม, ' . APP_NAME,
+            'metaKeywords'    => $activity['title'] . ', ກິດຈະກຳ, ' . APP_NAME,
             'ogType'          => 'article',
             'ogImage'         => !empty($activity['image']) ? uploadUrl('activities/' . $activity['image']) : null,
             'activeNav'       => 'activities',

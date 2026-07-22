@@ -80,7 +80,7 @@ class NewsController extends BaseController
         $news  = $model->find($id);
 
         if ($news === null) {
-            $this->setFlashMessage('news_error', 'ไม่พบข่าวที่ต้องการแก้ไข');
+            $this->setFlashMessage('news_error', 'ບໍ່ພົບຂ່າວທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/news/index.php');
             return;
         }
@@ -115,9 +115,9 @@ class NewsController extends BaseController
         $model = new NewsModel();
         $model->create($data);
 
-        ActivityLogger::log('news', 'create', 'เพิ่มข่าว: ' . $data['title']);
+        ActivityLogger::log('news', 'create', 'ເພີ່ມຂ່າວ: ' . $data['title']);
 
-        $this->setFlashMessage('news_success', 'เพิ่มข่าวสำเร็จ');
+        $this->setFlashMessage('news_success', 'ເພີ່ມຂ່າວສຳເລັດ');
         $this->redirect('admin/news/index.php');
     }
 
@@ -129,7 +129,7 @@ class NewsController extends BaseController
         $news  = $model->find($id);
 
         if ($news === null) {
-            $this->setFlashMessage('news_error', 'ไม่พบข่าวที่ต้องการแก้ไข');
+            $this->setFlashMessage('news_error', 'ບໍ່ພົບຂ່າວທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/news/index.php');
             return;
         }
@@ -163,9 +163,9 @@ class NewsController extends BaseController
             UploadHelper::delete(self::uploadDirectory(), $news['image']);
         }
 
-        ActivityLogger::log('news', 'update', 'แก้ไขข่าว: ' . $data['title']);
+        ActivityLogger::log('news', 'update', 'ແກ້ໄຂຂ່າວ: ' . $data['title']);
 
-        $this->setFlashMessage('news_success', 'แก้ไขข่าวสำเร็จ');
+        $this->setFlashMessage('news_success', 'ແກ້ໄຂຂ່າວສຳເລັດ');
         $this->redirect('admin/news/index.php');
     }
 
@@ -176,7 +176,7 @@ class NewsController extends BaseController
         $token = (string) ($_POST['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('news_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('news_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             $this->redirect('admin/news/index.php');
             return;
         }
@@ -185,7 +185,7 @@ class NewsController extends BaseController
         $news  = $model->find($id);
 
         if ($news === null) {
-            $this->setFlashMessage('news_error', 'ไม่พบข่าวที่ต้องการลบ');
+            $this->setFlashMessage('news_error', 'ບໍ່ພົບຂ່າວທີ່ຕ້ອງການລຶບ');
             $this->redirect('admin/news/index.php');
             return;
         }
@@ -193,9 +193,9 @@ class NewsController extends BaseController
         // Soft Delete เท่านั้น - ไม่ลบไฟล์รูปจริง เพื่อรักษาประวัติข้อมูลตามที่อนุมัติ
         $model->softDelete($id);
 
-        ActivityLogger::log('news', 'delete', 'ลบข่าว: ' . $news['title']);
+        ActivityLogger::log('news', 'delete', 'ລຶບຂ່າວ: ' . $news['title']);
 
-        $this->setFlashMessage('news_success', 'ลบข่าวสำเร็จ');
+        $this->setFlashMessage('news_success', 'ລຶບຂ່າວສຳເລັດ');
         $this->redirect('admin/news/index.php');
     }
 
@@ -232,7 +232,7 @@ class NewsController extends BaseController
         $token = (string) ($input['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('news_form_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('news_form_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             return null;
         }
 
@@ -242,17 +242,17 @@ class NewsController extends BaseController
         $status       = (string) ($input['status'] ?? '');
 
         if ($title === '') {
-            $this->setFlashMessage('news_form_error', 'กรุณากรอกหัวข้อข่าว');
+            $this->setFlashMessage('news_form_error', 'ກະລຸນາປ້ອນຫົວຂໍ້ຂ່າວ');
             return null;
         }
 
         if ($detail === '') {
-            $this->setFlashMessage('news_form_error', 'กรุณากรอกรายละเอียดข่าว');
+            $this->setFlashMessage('news_form_error', 'ກະລຸນາປ້ອນລາຍລະອຽດຂ່າວ');
             return null;
         }
 
         if (!in_array($status, ['Draft', 'Published'], true)) {
-            $this->setFlashMessage('news_form_error', 'สถานะไม่ถูกต้อง ต้องเป็น Draft หรือ Published เท่านั้น');
+            $this->setFlashMessage('news_form_error', 'ສະຖານະບໍ່ຖືກຕ້ອງ ຕ້ອງເປັນ Draft ຫລື Published ເທົ່ານັ້ນ');
             return null;
         }
 
@@ -260,7 +260,7 @@ class NewsController extends BaseController
             $parsedDate = DateTime::createFromFormat('Y-m-d', $activityDate);
 
             if (!$parsedDate || $parsedDate->format('Y-m-d') !== $activityDate) {
-                $this->setFlashMessage('news_form_error', 'รูปแบบวันที่ไม่ถูกต้อง (YYYY-MM-DD)');
+                $this->setFlashMessage('news_form_error', 'ຮູບແບບວັນທີບໍ່ຖືກຕ້ອງ (YYYY-MM-DD)');
                 return null;
             }
         }

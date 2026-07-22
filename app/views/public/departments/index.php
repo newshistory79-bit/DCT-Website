@@ -4,7 +4,7 @@
     <div class="container">
         <?php renderBreadcrumb($breadcrumb); ?>
 
-        <?php renderPageHeader('แผนก', 'รวมแผนกและหน่วยงานภายใน ' . APP_NAME); ?>
+        <?php renderPageHeader('ພະແນກ', 'ລວມພະແນກຕ່າງໆພາຍໃນ ' . APP_NAME); ?>
 
         <?php if (empty($departmentItems)): ?>
             <?php renderEmptyState('department'); ?>

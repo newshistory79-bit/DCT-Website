@@ -241,7 +241,7 @@ function initConfirmDialog() {
             }
 
             event.preventDefault();
-            open(form, form.getAttribute('data-confirm-modal') || 'ยืนยันการทำรายการ');
+            open(form, form.getAttribute('data-confirm-modal') || 'ຢືນຢັນການດຳເນີນການ');
         });
     });
 
@@ -278,7 +278,7 @@ function initToast() {
         var dismissBtn = document.createElement('button');
         dismissBtn.type = 'button';
         dismissBtn.className = 'alert-dismiss';
-        dismissBtn.setAttribute('aria-label', 'ปิดข้อความแจ้งเตือน');
+        dismissBtn.setAttribute('aria-label', 'ປິດຂໍ້ຄວາມແຈ້ງເຕືອນ');
         dismissBtn.textContent = '×';
         alertEl.appendChild(dismissBtn);
 

@@ -29,14 +29,14 @@ class PublicNewsController extends BaseController
         );
 
         $this->render('public/news/index', [
-            'pageTitle'       => 'ข่าวประชาสัมพันธ์',
-            'metaDescription' => 'ข่าวสารและประกาศจาก ' . APP_NAME,
-            'metaKeywords'    => 'ข่าวประชาสัมพันธ์, ข่าวสาร, ' . APP_NAME,
+            'pageTitle'       => 'ຂ່າວສານ',
+            'metaDescription' => 'ຂ່າວສານ ແລະ ປະກາດຈາກ ' . APP_NAME,
+            'metaKeywords'    => 'ຂ່າວສານ, ປະກາດ, ' . APP_NAME,
             'ogType'          => 'website',
             'activeNav'       => 'news',
             'breadcrumb'      => [
-                ['label' => 'หน้าแรก', 'url' => baseUrl('')],
-                ['label' => 'ข่าวประชาสัมพันธ์', 'url' => null],
+                ['label' => 'ຫນ້າຫຼັກ', 'url' => baseUrl('')],
+                ['label' => 'ຂ່າວສານ', 'url' => null],
             ],
             'newsItems'       => $result['data'],
             'total'           => $result['total'],
@@ -74,13 +74,13 @@ class PublicNewsController extends BaseController
         $this->render('public/news/detail', [
             'pageTitle'       => $news['title'],
             'metaDescription' => mb_substr((string) ($news['detail'] ?? $news['title']), 0, 160),
-            'metaKeywords'    => $news['title'] . ', ข่าวประชาสัมพันธ์, ' . APP_NAME,
+            'metaKeywords'    => $news['title'] . ', ຂ່າວສານ, ' . APP_NAME,
             'ogType'          => 'article',
             'ogImage'         => !empty($news['image']) ? uploadUrl('news/' . $news['image']) : null,
             'activeNav'       => 'news',
             'breadcrumb'      => [
-                ['label' => 'หน้าแรก', 'url' => baseUrl('')],
-                ['label' => 'ข่าวประชาสัมพันธ์', 'url' => baseUrl('news/index.php')],
+                ['label' => 'ຫນ້າຫຼັກ', 'url' => baseUrl('')],
+                ['label' => 'ຂ່າວສານ', 'url' => baseUrl('news/index.php')],
                 ['label' => $news['title'], 'url' => null],
             ],
             'news'            => $news,
@@ -111,12 +111,13 @@ class PublicNewsController extends BaseController
         $excerpt = mb_substr($detail, 0, 90) . (mb_strlen($detail) > 90 ? '…' : '');
 
         return [
-            'url'       => baseUrl('news/detail.php?id=' . $item['ID']),
-            'image'     => !empty($item['image']) ? uploadUrl('news/' . $item['image']) : null,
-            'icon'      => 'news',
-            'dateBadge' => thaiDateParts((string) ($item['activity_date'] ?? $item['created_at'])),
-            'title'     => $item['title'],
-            'excerpt'   => $excerpt,
+            'url'         => baseUrl('news/detail.php?id=' . $item['ID']),
+            'image'       => !empty($item['image']) ? uploadUrl('news/' . $item['image']) : null,
+            'icon'        => 'news',
+            'dateBadge'   => thaiDateParts((string) ($item['activity_date'] ?? $item['created_at'])),
+            'title'       => $item['title'],
+            'excerpt'     => $excerpt,
+            'actionLabel' => 'ອ່ານຕໍ່',
         ];
     }
 }

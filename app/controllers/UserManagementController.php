@@ -77,7 +77,7 @@ class UserManagementController extends BaseController
         $user  = $model->find($id);
 
         if ($user === null) {
-            $this->setFlashMessage('user_error', 'ไม่พบผู้ใช้ที่ต้องการแก้ไข');
+            $this->setFlashMessage('user_error', 'ບໍ່ພົບຜູ້ໃຊ້ທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/users/index.php');
             return;
         }
@@ -103,9 +103,9 @@ class UserManagementController extends BaseController
 
         $model->create($data);
 
-        ActivityLogger::log('users', 'create', 'สร้างผู้ใช้งาน: ' . $data['username'] . ' (Role: ' . $data['role'] . ')');
+        ActivityLogger::log('users', 'create', 'ສ້າງຜູ້ໃຊ້ງານ: ' . $data['username'] . ' (Role: ' . $data['role'] . ')');
 
-        $this->setFlashMessage('user_success', 'เพิ่มผู้ใช้งานสำเร็จ');
+        $this->setFlashMessage('user_success', 'ເພີ່ມຜູ້ໃຊ້ງານສຳເລັດ');
         $this->redirect('admin/users/index.php');
     }
 
@@ -117,7 +117,7 @@ class UserManagementController extends BaseController
         $user  = $model->find($id);
 
         if ($user === null) {
-            $this->setFlashMessage('user_error', 'ไม่พบผู้ใช้ที่ต้องการแก้ไข');
+            $this->setFlashMessage('user_error', 'ບໍ່ພົບຜູ້ໃຊ້ທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/users/index.php');
             return;
         }
@@ -131,9 +131,9 @@ class UserManagementController extends BaseController
 
         $model->update($id, $data);
 
-        ActivityLogger::log('users', 'update', 'แก้ไขผู้ใช้งาน: ' . $data['username']);
+        ActivityLogger::log('users', 'update', 'ແກ້ໄຂຜູ້ໃຊ້ງານ: ' . $data['username']);
 
-        $this->setFlashMessage('user_success', 'แก้ไขผู้ใช้งานสำเร็จ');
+        $this->setFlashMessage('user_success', 'ແກ້ໄຂຜູ້ໃຊ້ງານສຳເລັດ');
         $this->redirect('admin/users/index.php');
     }
 
@@ -144,7 +144,7 @@ class UserManagementController extends BaseController
         $token = (string) ($_POST['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('user_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('user_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             $this->redirect('admin/users/index.php');
             return;
         }
@@ -153,14 +153,14 @@ class UserManagementController extends BaseController
         $user  = $model->find($id);
 
         if ($user === null) {
-            $this->setFlashMessage('user_error', 'ไม่พบผู้ใช้ที่ต้องการลบ');
+            $this->setFlashMessage('user_error', 'ບໍ່ພົບຜູ້ໃຊ້ທີ່ຕ້ອງການລຶບ');
             $this->redirect('admin/users/index.php');
             return;
         }
 
         // ป้องกันไม่ให้ผู้ใช้ลบบัญชีของตัวเอง เพื่อไม่ให้ระบบขาดผู้ดูแลที่ใช้งานได้
         if ((int) ($_SESSION['user_id'] ?? 0) === $id) {
-            $this->setFlashMessage('user_error', 'ไม่สามารถลบบัญชีของตัวเองได้');
+            $this->setFlashMessage('user_error', 'ບໍ່ສາມາດລຶບບັນຊີຂອງຕົນເອງໄດ້');
             $this->redirect('admin/users/index.php');
             return;
         }
@@ -168,9 +168,9 @@ class UserManagementController extends BaseController
         // Soft Delete เท่านั้น - ไม่ลบข้อมูลจริง
         $model->softDelete($id);
 
-        ActivityLogger::log('users', 'delete', 'ลบผู้ใช้งาน: ' . $user['username']);
+        ActivityLogger::log('users', 'delete', 'ລຶບຜູ້ໃຊ້ງານ: ' . $user['username']);
 
-        $this->setFlashMessage('user_success', 'ลบผู้ใช้งานสำเร็จ');
+        $this->setFlashMessage('user_success', 'ລຶບຜູ້ໃຊ້ງານສຳເລັດ');
         $this->redirect('admin/users/index.php');
     }
 
@@ -179,7 +179,7 @@ class UserManagementController extends BaseController
         $token = (string) ($input['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('user_form_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('user_form_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             return null;
         }
 
@@ -191,64 +191,64 @@ class UserManagementController extends BaseController
         $password = trim((string) ($input['password'] ?? ''));
 
         if ($username === '') {
-            $this->setFlashMessage('user_form_error', 'กรุณากรอกชื่อผู้ใช้');
+            $this->setFlashMessage('user_form_error', 'ກະລຸນາປ້ອນຊື່ຜູ້ໃຊ້');
             return null;
         }
 
         if (mb_strlen($username) > 50) {
-            $this->setFlashMessage('user_form_error', 'ชื่อผู้ใช้ต้องไม่เกิน 50 ตัวอักษร');
+            $this->setFlashMessage('user_form_error', 'ຊື່ຜູ້ໃຊ້ຕ້ອງບໍ່ເກີນ 50 ໂຕອັກສອນ');
             return null;
         }
 
         if ($fullName === '') {
-            $this->setFlashMessage('user_form_error', 'กรุณากรอกชื่อ-นามสกุล');
+            $this->setFlashMessage('user_form_error', 'ກະລຸນາປ້ອນຊື່-ນາມສະກຸນ');
             return null;
         }
 
         if (mb_strlen($fullName) > 255) {
-            $this->setFlashMessage('user_form_error', 'ชื่อ-นามสกุลต้องไม่เกิน 255 ตัวอักษร');
+            $this->setFlashMessage('user_form_error', 'ຊື່-ນາມສະກຸນຕ້ອງບໍ່ເກີນ 255 ໂຕອັກສອນ');
             return null;
         }
 
         if ($email !== '') {
             if (mb_strlen($email) > 100) {
-                $this->setFlashMessage('user_form_error', 'อีเมลต้องไม่เกิน 100 ตัวอักษร');
+                $this->setFlashMessage('user_form_error', 'ອີເມວຕ້ອງບໍ່ເກີນ 100 ໂຕອັກສອນ');
                 return null;
             }
 
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $this->setFlashMessage('user_form_error', 'รูปแบบอีเมลไม่ถูกต้อง');
+                $this->setFlashMessage('user_form_error', 'ຮູບແບບອີເມວບໍ່ຖືກຕ້ອງ');
                 return null;
             }
         }
 
         if (!in_array($role, ['Admin', 'Editor', 'Staff'], true)) {
-            $this->setFlashMessage('user_form_error', 'สิทธิ์ไม่ถูกต้อง ต้องเป็น Admin, Editor หรือ Staff เท่านั้น');
+            $this->setFlashMessage('user_form_error', 'ສິດທິບໍ່ຖືກຕ້ອງ ຕ້ອງເປັນ Admin, Editor ຫລື Staff ເທົ່ານັ້ນ');
             return null;
         }
 
         if (!in_array($status, ['Active', 'Inactive'], true)) {
-            $this->setFlashMessage('user_form_error', 'สถานะไม่ถูกต้อง ต้องเป็น Active หรือ Inactive เท่านั้น');
+            $this->setFlashMessage('user_form_error', 'ສະຖານະບໍ່ຖືກຕ້ອງ ຕ້ອງເປັນ Active ຫລື Inactive ເທົ່ານັ້ນ');
             return null;
         }
 
         if ($isCreate && $password === '') {
-            $this->setFlashMessage('user_form_error', 'กรุณากรอกรหัสผ่าน');
+            $this->setFlashMessage('user_form_error', 'ກະລຸນາປ້ອນລະຫັດຜ່ານ');
             return null;
         }
 
         if ($password !== '' && mb_strlen($password) < 8) {
-            $this->setFlashMessage('user_form_error', 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
+            $this->setFlashMessage('user_form_error', 'ລະຫັດຜ່ານຕ້ອງມີຢ່າງໜ້ອຍ 8 ໂຕອັກສອນ');
             return null;
         }
 
         if ($model->usernameExists($username, $excludeId)) {
-            $this->setFlashMessage('user_form_error', 'ชื่อผู้ใช้นี้ถูกใช้งานแล้ว');
+            $this->setFlashMessage('user_form_error', 'ຊື່ຜູ້ໃຊ້ນີ້ຖືກນຳໃຊ້ແລ້ວ');
             return null;
         }
 
         if ($email !== '' && $model->emailExists($email, $excludeId)) {
-            $this->setFlashMessage('user_form_error', 'อีเมลนี้ถูกใช้งานแล้ว');
+            $this->setFlashMessage('user_form_error', 'ອີເມວນີ້ຖືກນຳໃຊ້ແລ້ວ');
             return null;
         }
 

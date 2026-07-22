@@ -44,10 +44,10 @@ $sortIndicator = function (string $column) use ($sort, $direction): string {
 };
 
 $columns = [
-    'created_at' => 'เวลา',
-    'username'   => 'ผู้ใช้',
-    'module'     => 'โมดูล',
-    'action'     => 'การกระทำ',
+    'created_at' => 'ເວລາ',
+    'username'   => 'ຜູ້ໃຊ້',
+    'module'     => 'ໂມດູນ',
+    'action'     => 'ການກະທຳ',
 ];
 
 // Action Badge Variant (Presentation เท่านั้น ไม่กระทบ Logic การบันทึก Log จริง)
@@ -85,37 +85,37 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/activity-log/i
         <form method="get" action="<?= e(baseUrl('admin/activity-log/index.php')) ?>" class="filter-bar">
             <div class="search-input-icon">
                 <?= icon('search', 16) ?>
-                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาผู้ใช้งานหรือรายละเอียด" aria-label="ค้นหาประวัติการใช้งาน">
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາຜູ້ໃຊ້ງານຫລືລາຍລະອຽດ" aria-label="ຄົ້ນຫາປະຫວັດການນຳໃຊ້">
             </div>
 
             <select name="module">
-                <option value="">โมดูลทั้งหมด</option>
+                <option value="">ໂມດູນທັງໝົດ</option>
                 <?php foreach ($moduleOptions as $option): ?>
                     <option value="<?= e($option) ?>" <?= $module === $option ? 'selected' : '' ?>><?= e($option) ?></option>
                 <?php endforeach; ?>
             </select>
 
             <select name="action">
-                <option value="">การกระทำทั้งหมด</option>
+                <option value="">ການກະທຳທັງໝົດ</option>
                 <?php foreach ($actionOptions as $option): ?>
                     <option value="<?= e($option) ?>" <?= $action === $option ? 'selected' : '' ?>><?= e($option) ?></option>
                 <?php endforeach; ?>
             </select>
 
-            <input type="date" name="date_from" value="<?= e($dateFrom) ?>" title="จากวันที่" aria-label="จากวันที่">
-            <input type="date" name="date_to" value="<?= e($dateTo) ?>" title="ถึงวันที่" aria-label="ถึงวันที่">
+            <input type="date" name="date_from" value="<?= e($dateFrom) ?>" title="ຈາກວັນທີ" aria-label="ຈາກວັນທີ">
+            <input type="date" name="date_to" value="<?= e($dateTo) ?>" title="ຮອດວັນທີ" aria-label="ຮອດວັນທີ">
 
             <select name="per_page">
                 <?php foreach ($perPageOptions as $option): ?>
-                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> รายการ/หน้า</option>
+                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> ລາຍການ/ໜ້າ</option>
                 <?php endforeach; ?>
             </select>
 
-            <button type="submit" class="btn-secondary">ค้นหา</button>
+            <button type="submit" class="btn-secondary">ຄົ້ນຫາ</button>
         </form>
 
         <?php if (empty($logs)): ?>
-            <?php renderAdminEmptyState('ไม่พบประวัติการใช้งานตามเงื่อนไขที่เลือก', 'log'); ?>
+            <?php renderAdminEmptyState('ບໍ່ພົບປະຫວັດການນຳໃຊ້ຕາມເງື່ອນໄຂທີ່ເລືອກ', 'log'); ?>
         <?php else: ?>
             <div class="table-wrapper">
                 <table class="data-table data-table-zebra">
@@ -124,8 +124,8 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/activity-log/i
                             <?php foreach ($columns as $col => $label): ?>
                                 <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
                             <?php endforeach; ?>
-                            <th>สิทธิ์</th>
-                            <th>รายละเอียด</th>
+                            <th>ສິດທິ</th>
+                            <th>ລາຍລະອຽດ</th>
                             <th>IP Address</th>
                         </tr>
                     </thead>

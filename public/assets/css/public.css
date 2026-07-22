@@ -1,4 +1,17 @@
 /* ============================================================
+   Font ประจำระบบ — Phetsarath OT (ผสม Latin/ตัวเลขจาก Time New Roman)
+   ฝังไฟล์เอง (self-hosted) เพื่อให้ผู้เข้าชมทุกคนเห็นฟอนต์เดียวกัน
+   ไม่ต้องพึ่งฟอนต์ที่ติดตั้งในเครื่องผู้ใช้
+   ============================================================ */
+@font-face {
+    font-family: "Phetsarath OT+Time New Roman";
+    src: url("../fonts/PhetsarathOT-TimesNewRoman.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ============================================================
    Public Website — Design Tokens
    สีหลักอ้างอิงจาก public/assets/css/admin.css (#1a3d7c) เพื่อคง Identity
    เดียวกันทั้งระบบ (Admin + Public)
@@ -27,7 +40,7 @@
     --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.12);
 
     --container-width: 1280px;
-    --font-family: "Segoe UI", "Noto Sans Thai", "Noto Sans Lao", Tahoma, sans-serif;
+    --font-family: "Phetsarath OT+Time New Roman", "Segoe UI", "Noto Sans Thai", "Noto Sans Lao", Tahoma, sans-serif;
 }
 
 * {
@@ -46,6 +59,15 @@ select:focus-visible,
 textarea:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
+}
+
+/* Form Controls ไม่ Inherit font-family จาก body เองตาม Default UA Stylesheet ของเบราว์เซอร์
+   (input/button/select/textarea ใช้ Font ของระบบปฏิบัติการแทน) ต้องบังคับ inherit เอง */
+input,
+button,
+select,
+textarea {
+    font-family: inherit;
 }
 
 body {
@@ -323,9 +345,9 @@ a {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    min-height: 84px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    min-height: 100px;
+    padding-top: 14px;
+    padding-bottom: 14px;
 }
 
 .site-brand {
@@ -340,19 +362,10 @@ a {
 
 .site-brand-mark {
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
+    width: 84px;
+    height: 84px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #ffe9a8 0%, #e8b93f 45%, #b9821f 100%);
-    color: var(--color-primary-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 11px;
-    letter-spacing: 0.5px;
-    border: 3px solid #fff;
-    box-shadow: 0 0 0 2px var(--color-primary);
+    object-fit: cover;
 }
 
 .site-brand-text {
@@ -398,7 +411,7 @@ a {
     border-bottom: 2px solid transparent;
     text-decoration: none;
     color: var(--color-text);
-    font-size: 13px;
+    font-size: 14.5px;
     font-weight: 600;
     white-space: nowrap;
 }
@@ -627,7 +640,7 @@ Card Grid (News / Legislation / Gallery / Documents / Departments / Employees)
 .card-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    gap: 10px;
 }
 
 .card {
@@ -664,38 +677,51 @@ a.card {
     overflow: hidden;
 }
 
+/* หน้าแรก — การ์ดข่าวประชาสัมพันธ์ล่าสุด ใช้สัดส่วนภาพเตี้ยกว่าปกติตาม design/index.png */
+.card-grid-news .card-thumb {
+    aspect-ratio: 4 / 1;
+}
+
 .card-date-badge {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 8px;
+    left: 8px;
     z-index: 2;
     background: var(--color-white);
     color: var(--color-primary);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-md);
-    padding: 6px 10px;
+    padding: 5px 9px;
     text-align: center;
     line-height: 1.2;
 }
 
 .card-date-badge .day {
     display: block;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
 }
 
 .card-date-badge .month,
 .card-date-badge .year {
     display: block;
-    font-size: 11px;
+    font-size: 10px;
     color: var(--color-text-muted);
+}
+
+/* หน้าแรก — การ์ดข่าวประชาสัมพันธ์ล่าสุด: วันที่แบบตัวเลข dd.mm.yyyy บรรทัดเดียว อ่านง่ายกว่าตัวเลขวันตัวใหญ่ซ้อน 3 บรรทัด */
+.card-date-badge-inline {
+    white-space: nowrap;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--color-primary);
 }
 
 .card-readmore {
     align-self: flex-end;
     margin-top: auto;
     padding-top: 4px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--color-accent);
 }
@@ -707,13 +733,13 @@ a.card {
 }
 
 .card-thumb svg {
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
     opacity: 0.6;
 }
 
 .card-body {
-    padding: 16px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -721,12 +747,12 @@ a.card {
 }
 
 .card-date {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--color-text-muted);
 }
 
 .card-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     margin: 0;
     display: -webkit-box;
@@ -739,7 +765,7 @@ a.card {
 
 .card-excerpt {
     margin-top: 4px;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--color-text-muted);
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -945,6 +971,20 @@ Badge / Empty State / Breadcrumb / Pagination
     margin: 0 0 20px;
 }
 
+/* ============================================================
+   About Page (ພາລະບົດບາດຂອງພະແນກ)
+   ============================================================ */
+.about-org-chart {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-bg);
+}
+
+.about-org-chart img {
+    width: 100%;
+    height: auto;
+}
+
 .breadcrumb {
     font-size: 13px;
     color: var(--color-text-muted);
@@ -1034,7 +1074,7 @@ Badge / Empty State / Breadcrumb / Pagination
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 16px;
 }
 
@@ -1141,129 +1181,10 @@ Badge / Empty State / Breadcrumb / Pagination
    Responsive
    ============================================================ */
 /* ============================================================
-   Gallery Search + Lightbox (Stage 2.4)
+   Gallery Search (Stage 2.4) — ยังใช้โดยหน้าค้นหา (search/index.php)
    ============================================================ */
 .gallery-search {
     margin: 0 0 24px;
-}
-
-.lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(10, 14, 26, 0.92);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.25s ease;
-    padding: 24px;
-}
-
-.lightbox.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.lightbox[hidden] {
-    display: none;
-}
-
-.lightbox-content {
-    max-width: 900px;
-    width: 100%;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.lightbox-image {
-    max-width: 100%;
-    max-height: 68vh;
-    object-fit: contain;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    background: var(--color-bg-alt);
-}
-
-.lightbox-caption {
-    color: var(--color-white);
-    text-align: center;
-    margin-top: 16px;
-    max-width: 640px;
-}
-
-.lightbox-title {
-    font-size: 17px;
-    margin: 0 0 6px;
-}
-
-.lightbox-description {
-    font-size: 14px;
-    opacity: 0.85;
-    margin: 0;
-}
-
-.lightbox-counter {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
-    margin: 10px 0 0;
-}
-
-.lightbox-close,
-.lightbox-prev,
-.lightbox-next {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.12);
-    border: none;
-    border-radius: 50%;
-    color: var(--color-white);
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.lightbox-close:hover,
-.lightbox-prev:hover:not(:disabled),
-.lightbox-next:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.24);
-}
-
-.lightbox-close {
-    top: 20px;
-    right: 20px;
-    width: 44px;
-    height: 44px;
-}
-
-.lightbox-prev,
-.lightbox-next {
-    top: 50%;
-    transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-}
-
-.lightbox-prev {
-    left: 20px;
-}
-
-.lightbox-next {
-    right: 20px;
-}
-
-.lightbox-prev:disabled,
-.lightbox-next:disabled {
-    opacity: 0.3;
-    cursor: default;
-}
-
-body.lightbox-open {
-    overflow: hidden;
 }
 
 @media (max-width: 1024px) {
@@ -1384,41 +1305,176 @@ body.lightbox-open {
     .site-brand-subtitle {
         display: none;
     }
+}
 
-    .lightbox {
-        padding: 12px;
+/* ============================================================
+   Employees — Card (Public Redesign, Stage 2)
+   Scoped ทับ .card/.card-thumb เดิม เฉพาะใน .card-grid-employees เท่านั้น
+   ไม่กระทบ .card-grid ของโมดูลอื่น (News/Activities/Departments/Documents/Search)
+   ============================================================ */
+.card-grid-employees {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
+
+.card-grid-employees .card-thumb {
+    aspect-ratio: 4 / 5;
+}
+
+.card-grid-employees .card-thumb svg {
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+}
+
+.card-grid-employees .card-readmore {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+    font-size: 13px;
+    transition: background 0.2s ease;
+}
+
+.card-grid-employees .card:hover .card-readmore {
+    background: var(--color-accent);
+    color: var(--color-white);
+}
+
+@media (max-width: 1024px) {
+    .card-grid-employees {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .card-grid-employees {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+.card-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    max-width: calc(100% - 16px);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: var(--shadow-sm);
+}
+
+.card-badge-indigo  { background: #4f46e5; }
+.card-badge-green   { background: #16a34a; }
+.card-badge-orange  { background: #ea580c; }
+.card-badge-purple  { background: #7e22ce; }
+.card-badge-teal    { background: #0d9488; }
+.card-badge-yellow  { background: #ca8a04; }
+.card-badge-pink    { background: #db2777; }
+.card-badge-brown   { background: #92400e; }
+.card-badge-blue    { background: #2563eb; }
+.card-badge-gray    { background: #475569; }
+
+/* ============================================================
+   Employees — Detail Page (Public Redesign, Stage 3)
+   Scoped ทับ .detail-article เดิม เฉพาะ .employee-detail เท่านั้น
+   ไม่กระทบ Detail Page ของโมดูลอื่น (News/Activities/Departments)
+   อ้างอิง design/employee2.png — ไม่แสดง email/เบอร์โทร/ที่อยู่ ตาม Privacy
+   Decision เดิมที่ยืนยันกับผู้ใช้แล้ว (ดู PublicEmployeeController::detail())
+   ============================================================ */
+.employee-detail {
+    max-width: 720px;
+}
+
+.employee-profile-card {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 28px;
+    margin-bottom: 8px;
+}
+
+.employee-profile-image {
+    flex-shrink: 0;
+    width: 220px;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-accent-light);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.employee-profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.employee-profile-info {
+    padding-top: 4px;
+}
+
+.employee-profile-name {
+    font-size: 26px;
+    margin: 0 0 8px;
+    color: var(--color-text);
+}
+
+.employee-profile-position {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin: 0 0 4px;
+}
+
+.employee-profile-dept {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.employee-detail .btn-outline {
+    display: flex;
+    width: fit-content;
+    margin: 24px auto 0;
+    background: var(--color-accent);
+    color: var(--color-white);
+    border-color: var(--color-accent);
+}
+
+.employee-detail .btn-outline:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+@media (max-width: 640px) {
+    .employee-profile-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
     }
 
-    .lightbox-close {
-        top: 8px;
-        right: 8px;
-        width: 38px;
-        height: 38px;
-    }
-
-    .lightbox-prev,
-    .lightbox-next {
-        width: 40px;
-        height: 40px;
-    }
-
-    .lightbox-prev {
-        left: 8px;
-    }
-
-    .lightbox-next {
-        right: 8px;
-    }
-
-    .lightbox-image {
-        max-height: 58vh;
-    }
-
-    .lightbox-title {
-        font-size: 15px;
-    }
-
-    .lightbox-description {
-        font-size: 13px;
+    .employee-profile-image {
+        width: 160px;
     }
 }

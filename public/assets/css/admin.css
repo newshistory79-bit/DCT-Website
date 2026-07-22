@@ -1,4 +1,16 @@
 /* ============================================================
+   Font ประจำระบบ — Phetsarath OT (ผสม Latin/ตัวเลขจาก Time New Roman)
+   ฝังไฟล์เอง (self-hosted) — ไฟล์เดียวกับที่ public.css ใช้
+   ============================================================ */
+@font-face {
+    font-family: "Phetsarath OT+Time New Roman";
+    src: url("../fonts/PhetsarathOT-TimesNewRoman.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ============================================================
    Admin Panel — Design Tokens (สอดคล้องกับ public/assets/css/public.css
    เพื่อให้ Admin + Public ใช้ Identity เดียวกันทั้งระบบ)
    ============================================================ */
@@ -33,9 +45,17 @@
 
 body {
     margin: 0;
-    font-family: "Segoe UI", "Noto Sans Thai", "Noto Sans Lao", Tahoma, sans-serif;
+    font-family: "Phetsarath OT+Time New Roman", "Segoe UI", "Noto Sans Thai", "Noto Sans Lao", Tahoma, sans-serif;
     background: var(--color-bg);
     color: var(--color-text);
+}
+
+/* Form Controls ไม่ Inherit font-family จาก body เองตาม Default UA Stylesheet ของเบราว์เซอร์ */
+input,
+button,
+select,
+textarea {
+    font-family: inherit;
 }
 
 /* ============================================================
@@ -46,7 +66,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 62px;
+    height: 72px;
     background: linear-gradient(120deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
     color: #fff;
     display: flex;
@@ -85,17 +105,10 @@ body {
 
 .brand-logo {
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #ffe9a8 0%, #e8b93f 45%, #b9821f 100%);
-    color: var(--color-primary-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 11px;
-    border: 2px solid #fff;
+    object-fit: cover;
 }
 
 .brand-name {
@@ -291,7 +304,7 @@ body {
    ============================================================ */
 .admin-layout {
     display: flex;
-    padding-top: 62px;
+    padding-top: 72px;
     min-height: 100vh;
 }
 
@@ -299,7 +312,7 @@ body {
     width: 232px;
     background: var(--color-primary-dark);
     position: fixed;
-    top: 62px;
+    top: 72px;
     bottom: 0;
     left: 0;
     overflow-y: auto;
@@ -786,7 +799,7 @@ body {
 
     .dropdown-menu-wide {
         position: fixed;
-        top: 62px;
+        top: 72px;
         left: 12px;
         right: 12px;
         min-width: 0;
@@ -1173,45 +1186,6 @@ textarea:focus-visible {
     color: var(--color-accent);
 }
 
-/* ------------------------------------------------------------
-   Topbar — Search Box (Decorative เท่านั้น ยังไม่มี Global Search Backend — ดู admin_header.php)
-   ------------------------------------------------------------ */
-.topbar-search {
-    position: relative;
-    flex: 1;
-    max-width: 360px;
-    min-width: 0;
-}
-
-.topbar-search svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.6);
-    pointer-events: none;
-}
-
-.topbar-search input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid transparent;
-    border-radius: 999px;
-    padding: 9px 14px 9px 36px;
-    font-size: 13.5px;
-    font-family: inherit;
-    color: #fff;
-}
-
-.topbar-search input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.topbar-search input:disabled {
-    cursor: not-allowed;
-    opacity: 0.85;
-}
-
 .icon-btn:disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -1219,12 +1193,6 @@ textarea:focus-visible {
 
 .icon-btn:disabled:hover {
     background: rgba(255, 255, 255, 0.1);
-}
-
-@media (max-width: 900px) {
-    .topbar-search {
-        display: none;
-    }
 }
 
 /* ============================================================

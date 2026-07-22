@@ -75,7 +75,7 @@ class DepartmentController extends BaseController
         $department = $model->find($id);
 
         if ($department === null) {
-            $this->setFlashMessage('department_error', 'ไม่พบข้อมูลแผนกที่ต้องการแก้ไข');
+            $this->setFlashMessage('department_error', 'ບໍ່ພົບຂໍ້ມູນພະແນກທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/departments/index.php');
             return;
         }
@@ -101,9 +101,9 @@ class DepartmentController extends BaseController
 
         $model->create($data);
 
-        ActivityLogger::log('departments', 'create', 'เพิ่มหน่วยงาน: ' . $data['name']);
+        ActivityLogger::log('departments', 'create', 'ເພີ່ມພະແນກ: ' . $data['name']);
 
-        $this->setFlashMessage('department_success', 'เพิ่มข้อมูลแผนกสำเร็จ');
+        $this->setFlashMessage('department_success', 'ເພີ່ມຂໍ້ມູນພະແນກສຳເລັດ');
         $this->redirect('admin/departments/index.php');
     }
 
@@ -115,7 +115,7 @@ class DepartmentController extends BaseController
         $department = $model->find($id);
 
         if ($department === null) {
-            $this->setFlashMessage('department_error', 'ไม่พบข้อมูลแผนกที่ต้องการแก้ไข');
+            $this->setFlashMessage('department_error', 'ບໍ່ພົບຂໍ້ມູນພະແນກທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/departments/index.php');
             return;
         }
@@ -129,9 +129,9 @@ class DepartmentController extends BaseController
 
         $model->update($id, $data);
 
-        ActivityLogger::log('departments', 'update', 'แก้ไขหน่วยงาน: ' . $data['name']);
+        ActivityLogger::log('departments', 'update', 'ແກ້ໄຂພະແນກ: ' . $data['name']);
 
-        $this->setFlashMessage('department_success', 'แก้ไขข้อมูลแผนกสำเร็จ');
+        $this->setFlashMessage('department_success', 'ແກ້ໄຂຂໍ້ມູນພະແນກສຳເລັດ');
         $this->redirect('admin/departments/index.php');
     }
 
@@ -142,7 +142,7 @@ class DepartmentController extends BaseController
         $token = (string) ($_POST['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('department_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('department_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             $this->redirect('admin/departments/index.php');
             return;
         }
@@ -151,16 +151,16 @@ class DepartmentController extends BaseController
         $department = $model->find($id);
 
         if ($department === null) {
-            $this->setFlashMessage('department_error', 'ไม่พบข้อมูลแผนกที่ต้องการลบ');
+            $this->setFlashMessage('department_error', 'ບໍ່ພົບຂໍ້ມູນພະແນກທີ່ຕ້ອງການລຶບ');
             $this->redirect('admin/departments/index.php');
             return;
         }
 
         $model->softDelete($id);
 
-        ActivityLogger::log('departments', 'delete', 'ลบหน่วยงาน: ' . $department['name']);
+        ActivityLogger::log('departments', 'delete', 'ລຶບພະແນກ: ' . $department['name']);
 
-        $this->setFlashMessage('department_success', 'ลบข้อมูลแผนกสำเร็จ');
+        $this->setFlashMessage('department_success', 'ລຶບຂໍ້ມູນພະແນກສຳເລັດ');
         $this->redirect('admin/departments/index.php');
     }
 
@@ -170,7 +170,7 @@ class DepartmentController extends BaseController
         $token = (string) ($input['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('department_form_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('department_form_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             return null;
         }
 
@@ -181,49 +181,49 @@ class DepartmentController extends BaseController
         $sortOrderRaw = trim((string) ($input['sort_order'] ?? '0'));
 
         if ($code === '' || $name === '') {
-            $this->setFlashMessage('department_form_error', 'กรุณากรอกรหัสแผนกและชื่อแผนกให้ครบถ้วน');
+            $this->setFlashMessage('department_form_error', 'ກະລຸນາປ້ອນລະຫັດພະແນກ ແລະ ຊື່ພະແນກໃຫ້ຄົບຖ້ວນ');
             return null;
         }
 
         if (mb_strlen($code) > 20) {
-            $this->setFlashMessage('department_form_error', 'รหัสแผนกต้องไม่เกิน 20 ตัวอักษร');
+            $this->setFlashMessage('department_form_error', 'ລະຫັດພະແນກຕ້ອງບໍ່ເກີນ 20 ໂຕອັກສອນ');
             return null;
         }
 
         if (!preg_match('/^[A-Z0-9\-]+$/', $code)) {
-            $this->setFlashMessage('department_form_error', 'รหัสแผนกต้องเป็นตัวอักษร A-Z ตัวเลข 0-9 และเครื่องหมาย - เท่านั้น');
+            $this->setFlashMessage('department_form_error', 'ລະຫັດພະແນກຕ້ອງເປັນໂຕອັກສອນ A-Z ໂຕເລກ 0-9 ແລະ ເຄື່ອງໝາຍ - ເທົ່ານັ້ນ');
             return null;
         }
 
         if (mb_strlen($name) > 255) {
-            $this->setFlashMessage('department_form_error', 'ชื่อแผนกต้องไม่เกิน 255 ตัวอักษร');
+            $this->setFlashMessage('department_form_error', 'ຊື່ພະແນກຕ້ອງບໍ່ເກີນ 255 ໂຕອັກສອນ');
             return null;
         }
 
         if (!ctype_digit($sortOrderRaw)) {
-            $this->setFlashMessage('department_form_error', 'ลำดับการแสดงผลต้องเป็นตัวเลขจำนวนเต็มตั้งแต่ 0 ขึ้นไป');
+            $this->setFlashMessage('department_form_error', 'ລຳດັບການສະແດງຜົນຕ້ອງເປັນຕົວເລກຈຳນວນເຕັມຕັ້ງແຕ່ 0 ຂຶ້ນໄປ');
             return null;
         }
 
         $sortOrder = (int) $sortOrderRaw;
 
         if ($sortOrder < 0) {
-            $this->setFlashMessage('department_form_error', 'ลำดับการแสดงผลต้องมากกว่าหรือเท่ากับ 0');
+            $this->setFlashMessage('department_form_error', 'ລຳດັບການສະແດງຜົນຕ້ອງຫລາຍກວ່າຫລືເທົ່າກັບ 0');
             return null;
         }
 
         if (!in_array($status, ['Active', 'Inactive'], true)) {
-            $this->setFlashMessage('department_form_error', 'สถานะไม่ถูกต้อง ต้องเป็น Active หรือ Inactive เท่านั้น');
+            $this->setFlashMessage('department_form_error', 'ສະຖານະບໍ່ຖືກຕ້ອງ ຕ້ອງເປັນ Active ຫລື Inactive ເທົ່ານັ້ນ');
             return null;
         }
 
         if ($model->codeExists($code, $excludeId)) {
-            $this->setFlashMessage('department_form_error', 'รหัสแผนกนี้ถูกใช้งานแล้ว');
+            $this->setFlashMessage('department_form_error', 'ລະຫັດພະແນກນີ້ຖືກນຳໃຊ້ແລ້ວ');
             return null;
         }
 
         if ($model->nameExists($name, $excludeId)) {
-            $this->setFlashMessage('department_form_error', 'ชื่อแผนกนี้ถูกใช้งานแล้ว');
+            $this->setFlashMessage('department_form_error', 'ຊື່ພະແນກນີ້ຖືກນຳໃຊ້ແລ້ວ');
             return null;
         }
 

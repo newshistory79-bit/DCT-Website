@@ -51,15 +51,14 @@ if (!empty($resolvedBreadcrumb)) {
 }
 
 $navItems = [
-    'home'        => ['label' => 'หน้าแรก', 'url' => baseUrl('')],
-    'about'       => ['label' => 'เกี่ยวกับหน่วยงาน', 'url' => baseUrl('about.php')],
-    'news'        => ['label' => 'ข่าวประชาสัมพันธ์', 'url' => baseUrl('news/index.php')],
-    'activities'  => ['label' => 'กิจกรรม', 'url' => baseUrl('activities/index.php')],
-    'gallery'     => ['label' => 'คลังภาพ', 'url' => baseUrl('gallery/index.php')],
-    'departments' => ['label' => 'แผนก', 'url' => baseUrl('departments/index.php')],
-    'employees'   => ['label' => 'บุคลากร', 'url' => baseUrl('employees/index.php')],
-    'documents'   => ['label' => 'ดาวน์โหลดเอกสาร', 'url' => baseUrl('documents/index.php')],
-    'contact'     => ['label' => 'ติดต่อเรา', 'url' => baseUrl('contact.php')],
+    'home'        => ['label' => 'ຫນ້າຫຼັກ', 'url' => baseUrl('')],
+    'about'       => ['label' => 'ພາລະບົດບາດຂອງພະແນກ', 'url' => baseUrl('about.php')],
+    'news'        => ['label' => 'ຂ່າວສານ', 'url' => baseUrl('news/index.php')],
+    'activities'  => ['label' => 'ກິດຈະກຳ', 'url' => baseUrl('activities/index.php')],
+    'departments' => ['label' => 'ພະແນກ', 'url' => baseUrl('departments/index.php')],
+    'employees'   => ['label' => 'ພະນັກງານ', 'url' => baseUrl('employees/index.php')],
+    'documents'   => ['label' => 'ນິຕິກຳ', 'url' => baseUrl('documents/index.php')],
+    'contact'     => ['label' => 'ຕຶດຕໍ່ເຮົາ', 'url' => baseUrl('contact.php')],
 ];
 ?>
 <!DOCTYPE html>
@@ -97,22 +96,13 @@ $navItems = [
         <div class="top-bar-contacts">
             <a href="tel:0425111123"><?= icon('phone', 14) ?> 042-511-123</a>
             <a href="mailto:info@dtcsav.gov.la"><?= icon('mail', 14) ?> info@dtcsav.gov.la</a>
-            <span><?= icon('clock', 14) ?> จันทร์ - ศุกร์ 08:00 - 16:30 น.</span>
+            <span><?= icon('clock', 14) ?> ວັນຈັນ - ວັນສຸກ 08:00 - 16:30 ໂມງ</span>
         </div>
 
         <div class="top-bar-right">
             <div class="top-bar-links">
-                <a href="<?= e(baseUrl('documents/index.php')) ?>">บริการออนไลน์</a>
-                <span class="sep">|</span>
-                <a href="<?= e(baseUrl('contact.php')) ?>">คำถามที่พบบ่อย</a>
-                <span class="sep">|</span>
-                <a href="<?= e(baseUrl('sitemap.php')) ?>">แผนผังเว็บไซต์</a>
+                <a href="<?= e(baseUrl('sitemap.php')) ?>">ແຜນຜັງເວັບໄຊທ໌</a>
             </div>
-
-            <form class="search-box" action="<?= e(baseUrl('search.php')) ?>" method="get">
-                <input type="text" name="q" placeholder="ค้นหาข้อมูล..." value="<?= e((string) ($_GET['q'] ?? '')) ?>">
-                <button type="submit" aria-label="ค้นหา"><?= icon('search', 14) ?></button>
-            </form>
         </div>
     </div>
 </div>
@@ -120,9 +110,9 @@ $navItems = [
 <header class="site-header">
     <div class="container">
         <a href="<?= e(baseUrl('')) ?>" class="site-brand">
-            <span class="site-brand-mark">DTC</span>
+            <img src="<?= e(baseUrl('assets/images/logo.jpg')) ?>" alt="<?= e(APP_NAME) ?>" class="site-brand-mark">
             <span class="site-brand-text">
-                <span class="site-brand-title">พะแนก เทคโนโลยีและการสื่อสาร<br>แขวงสะหวันนะเขต</span>
+                <span class="site-brand-title">ພະແນກເຕັກໂນໂລຊີ ແລະ ການສື່ສານ<br>ແຂວງສະຫວັນນະເຂດ</span>
                 <span class="site-brand-subtitle"><?= e(APP_NAME) ?></span>
             </span>
         </a>

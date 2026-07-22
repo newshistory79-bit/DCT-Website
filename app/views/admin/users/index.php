@@ -42,11 +42,11 @@ $sortIndicator = function (string $column) use ($sort, $direction): string {
 
 $columns = [
     'id'         => 'ID',
-    'username'   => 'ชื่อผู้ใช้',
-    'full_name'  => 'ชื่อ-นามสกุล',
-    'role'       => 'สิทธิ์',
-    'status'     => 'สถานะ',
-    'created_at' => 'วันที่สร้าง',
+    'username'   => 'ຊື່ຜູ້ໃຊ້',
+    'full_name'  => 'ຊື່-ນາມສະກຸນ',
+    'role'       => 'ສິດທິ',
+    'status'     => 'ສະຖານະ',
+    'created_at' => 'ວັນທີສ້າງ',
 ];
 
 $currentUserId = (int) ($_SESSION['user_id'] ?? 0);
@@ -83,7 +83,7 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/users/index.ph
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('users', 'create') ? [['label' => '+ เพิ่มผู้ใช้งาน', 'url' => baseUrl('admin/users/form.php')]] : []
+            can('users', 'create') ? [['label' => '+ ເພີ່ມຜູ້ໃຊ້ງານ', 'url' => baseUrl('admin/users/form.php')]] : []
         ); ?>
 
         <?php if ($successMessage !== null): ?>
@@ -96,36 +96,36 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/users/index.ph
         <form method="get" action="<?= e(baseUrl('admin/users/index.php')) ?>" class="filter-bar">
             <div class="search-input-icon">
                 <?= icon('search', 16) ?>
-                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาชื่อผู้ใช้, ชื่อ-นามสกุล หรืออีเมล" aria-label="ค้นหาผู้ใช้งาน">
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາຊື່ຜູ້ໃຊ້, ຊື່-ນາມສະກຸນ ຫລືອີເມວ" aria-label="ຄົ້ນຫາຜູ້ໃຊ້ງານ">
             </div>
 
             <select name="role">
-                <option value="">สิทธิ์ทั้งหมด</option>
+                <option value="">ສິດທິທັງໝົດ</option>
                 <option value="Admin" <?= $role === 'Admin' ? 'selected' : '' ?>>Admin</option>
                 <option value="Editor" <?= $role === 'Editor' ? 'selected' : '' ?>>Editor</option>
                 <option value="Staff" <?= $role === 'Staff' ? 'selected' : '' ?>>Staff</option>
             </select>
 
             <select name="status">
-                <option value="">สถานะทั้งหมด</option>
+                <option value="">ສະຖານະທັງໝົດ</option>
                 <option value="Active" <?= $status === 'Active' ? 'selected' : '' ?>>Active</option>
                 <option value="Inactive" <?= $status === 'Inactive' ? 'selected' : '' ?>>Inactive</option>
             </select>
 
             <select name="per_page">
                 <?php foreach ($perPageOptions as $option): ?>
-                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> รายการ/หน้า</option>
+                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> ລາຍການ/ໜ້າ</option>
                 <?php endforeach; ?>
             </select>
 
-            <button type="submit" class="btn-secondary">ค้นหา</button>
+            <button type="submit" class="btn-secondary">ຄົ້ນຫາ</button>
         </form>
 
         <?php if (empty($users)): ?>
             <?php renderAdminEmptyState(
-                'ไม่พบข้อมูลผู้ใช้งาน ลองปรับคำค้นหาหรือตัวกรอง',
+                'ບໍ່ພົບຂໍ້ມູນຜູ້ໃຊ້ງານ ລອງປັບຄຳຄົ້ນຫາຫລືຕົວກອງ',
                 'users',
-                can('users', 'create') ? ['url' => baseUrl('admin/users/form.php'), 'label' => '+ เพิ่มผู้ใช้งาน'] : null
+                can('users', 'create') ? ['url' => baseUrl('admin/users/form.php'), 'label' => '+ ເພີ່ມຜູ້ໃຊ້ງານ'] : null
             ); ?>
         <?php else: ?>
             <div class="table-wrapper">
@@ -135,8 +135,8 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/users/index.ph
                             <?php foreach ($columns as $col => $label): ?>
                                 <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
                             <?php endforeach; ?>
-                            <th>อีเมล</th>
-                            <th>จัดการ</th>
+                            <th>ອີເມວ</th>
+                            <th>ຈັດການ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -152,16 +152,16 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/users/index.ph
                                 <td><?= e($u['email'] ?? '-') ?></td>
                                 <td class="actions">
                                     <?php if (can('users', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/users/form.php?id=' . $u['id'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขผู้ใช้ <?= e($u['username']) ?>"><?= icon('edit', 16) ?></a>
+                                        <a href="<?= e(baseUrl('admin/users/form.php?id=' . $u['id'])) ?>" class="btn-icon" title="ແກ້ໄຂ" aria-label="ແກ້ໄຂຜູ້ໃຊ້ <?= e($u['username']) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if ($canDeleteThisUser): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/users/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm-modal="ยืนยันการลบผู้ใช้ &quot;<?= e($u['username']) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ຢືນຢັນການລຶບຜູ້ໃຊ້ &quot;<?= e($u['username']) ?>&quot; ແທ້ບໍ?">
                                             <input type="hidden" name="id" value="<?= (int) $u['id'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบผู้ใช้ <?= e($u['username']) ?>"><?= icon('trash', 16) ?></button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ລຶບ" aria-label="ລຶບຜູ້ໃຊ້ <?= e($u['username']) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('users', 'edit') && !$canDeleteThisUser): ?>

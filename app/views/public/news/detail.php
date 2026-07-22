@@ -2,7 +2,7 @@
 require APP_PATH . '/includes/public_header.php';
 
 $dateSource = $news['activity_date'] ?? $news['created_at'];
-$dateParts  = thaiDateParts((string) $dateSource);
+$dateLabel  = formatDateNumeric((string) $dateSource);
 ?>
 
 <section class="section">
@@ -21,23 +21,23 @@ $dateParts  = thaiDateParts((string) $dateSource);
             <h1 class="detail-title"><?= e($news['title']) ?></h1>
 
             <?php renderDetailMeta([
-                ['icon' => 'clock', 'text' => $dateParts !== null ? 'วันที่: ' . $dateParts['day'] . ' ' . $dateParts['month'] . ' ' . $dateParts['year'] : ''],
+                ['icon' => 'clock', 'text' => $dateLabel !== null ? 'ວັນທີ: ' . $dateLabel : ''],
             ]); ?>
 
             <div class="detail-body">
                 <?php if (!empty($news['detail'])): ?>
                     <p><?= nl2br(e($news['detail'])) ?></p>
                 <?php else: ?>
-                    <p class="text-muted">ไม่มีรายละเอียดเพิ่มเติม</p>
+                    <p class="text-muted">ບໍ່ມີລາຍລະອຽດເພີ່ມເຕີມ</p>
                 <?php endif; ?>
             </div>
 
             <?php renderPrevNextNav($prevItem, $nextItem); ?>
 
-            <?php renderBackToList(baseUrl('news/index.php'), 'กลับรายการข่าว'); ?>
+            <?php renderBackToList(baseUrl('news/index.php'), 'ກັບຄືນລາຍການຂ່າວ'); ?>
         </article>
 
-        <?php renderRelatedItems($relatedItems, 'ข่าวที่เกี่ยวข้อง'); ?>
+        <?php renderRelatedItems($relatedItems, 'ຂ່າວທີ່ກ່ຽວຂ້ອງ'); ?>
     </div>
 </section>
 

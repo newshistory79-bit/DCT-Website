@@ -16,13 +16,13 @@ class UploadHelper
         int $maxSizeBytes
     ): array {
         if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
-            return ['success' => false, 'filename' => null, 'error' => 'ไม่พบไฟล์ที่อัปโหลด หรือเกิดข้อผิดพลาดระหว่างอัปโหลด'];
+            return ['success' => false, 'filename' => null, 'error' => 'ບໍ່ພົບໄຟລ໌ທີ່ອັບໂຫລດ ຫລືເກີດຂໍ້ຜິດພາດລະຫວ່າງອັບໂຫລດ'];
         }
 
         if ($file['size'] > $maxSizeBytes) {
             $maxMb = round($maxSizeBytes / 1024 / 1024, 1);
 
-            return ['success' => false, 'filename' => null, 'error' => "ขนาดไฟล์ต้องไม่เกิน {$maxMb} MB"];
+            return ['success' => false, 'filename' => null, 'error' => "ຂະໜາດໄຟລ໌ຕ້ອງບໍ່ເກີນ {$maxMb} MB"];
         }
 
         $extension = strtolower((string) pathinfo((string) $file['name'], PATHINFO_EXTENSION));
@@ -31,7 +31,7 @@ class UploadHelper
             return [
                 'success'  => false,
                 'filename' => null,
-                'error'    => 'นามสกุลไฟล์ไม่ได้รับอนุญาต (อนุญาตเฉพาะ ' . implode(', ', $allowedExtensions) . ')',
+                'error'    => 'ນາມສະກຸນໄຟລ໌ບໍ່ໄດ້ຮັບອະນຸຍາດ (ອະນຸຍາດສະເພາະ ' . implode(', ', $allowedExtensions) . ')',
             ];
         }
 
@@ -40,18 +40,21 @@ class UploadHelper
         finfo_close($finfo);
 
         if (!in_array($mimeType, $allowedMimeTypes, true)) {
-            return ['success' => false, 'filename' => null, 'error' => 'ประเภทไฟล์ไม่ถูกต้อง (ตรวจพบ MIME Type: ' . $mimeType . ')'];
+            return ['success' => false, 'filename' => null, 'error' => 'ປະເພດໄຟລ໌ບໍ່ຖືກຕ້ອງ (ກວດພົບ MIME Type: ' . $mimeType . ')'];
         }
 
         if (!is_dir($targetDir) && !mkdir($targetDir, 0755, true) && !is_dir($targetDir)) {
-            return ['success' => false, 'filename' => null, 'error' => 'ไม่สามารถสร้างโฟลเดอร์จัดเก็บไฟล์ได้'];
+            return ['success' => false, 'filename' => null, 'error' => 'ບໍ່ສາມາດສ້າງໂຟນເດີຈັດເກັບໄຟລ໌ໄດ້'];
         }
 
-        $newFilename = bin2hex(random_bytes(16)) . '.' . $extension;
+        // .jfif เป็นไฟล์ JPEG จริง แค่คนละนามสกุล — เก็บเป็น .jpg แทน เพราะ Apache mime.types ไม่รู้จัก .jfif
+        // ทำให้เสิร์ฟไฟล์ static แล้วไม่ได้ Content-Type ที่ถูกต้อง
+        $storedExtension = $extension === 'jfif' ? 'jpg' : $extension;
+        $newFilename     = bin2hex(random_bytes(16)) . '.' . $storedExtension;
         $destination = rtrim($targetDir, '/\\') . DIRECTORY_SEPARATOR . $newFilename;
 
         if (!move_uploaded_file($file['tmp_name'], $destination)) {
-            return ['success' => false, 'filename' => null, 'error' => 'ไม่สามารถบันทึกไฟล์ลงเซิร์ฟเวอร์ได้'];
+            return ['success' => false, 'filename' => null, 'error' => 'ບໍ່ສາມາດບັນທຶກໄຟລ໌ລົງເຊີບເວີໄດ້'];
         }
 
         return ['success' => true, 'filename' => $newFilename, 'error' => null];

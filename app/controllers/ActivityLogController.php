@@ -15,7 +15,7 @@ class ActivityLogController extends BaseController
     private const PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
     private const MODULE_OPTIONS = [
-        'auth', 'departments', 'employees', 'news', 'legislation', 'documents', 'gallery', 'users',
+        'auth', 'departments', 'employees', 'news', 'documents', 'users',
     ];
 
     private const ACTION_OPTIONS = [

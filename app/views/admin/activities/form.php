@@ -7,7 +7,7 @@ declare(strict_types=1);
 /** @var string|null $formError */
 
 $isEdit = $activity !== null;
-$title  = $isEdit ? 'แก้ไขกิจกรรม' : 'เพิ่มกิจกรรม';
+$title  = $isEdit ? 'ແກ້ໄຂກິດຈະກຳ' : 'ເພີ່ມກິດຈະກຳ';
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -27,8 +27,8 @@ $title  = $isEdit ? 'แก้ไขกิจกรรม' : 'เพิ่มก
     <main class="admin-content">
         <?php renderAdminPageHeader(
             $title,
-            $isEdit ? 'แก้ไขข้อมูลกิจกรรม "' . $activity['title'] . '"' : 'กรอกข้อมูลเพื่อเพิ่มกิจกรรมใหม่เข้าสู่ระบบ',
-            [['label' => 'กลับไปรายการ', 'url' => baseUrl('admin/activities/index.php'), 'class' => 'btn-secondary']]
+            $isEdit ? 'ແກ້ໄຂຂໍ້ມູນກິດຈະກຳ "' . $activity['title'] . '"' : 'ປ້ອນຂໍ້ມູນເພື່ອເພີ່ມກິດຈະກຳໃໝ່ເຂົ້າສູ່ລະບົບ',
+            [['label' => 'ກັບຄືນລາຍການ', 'url' => baseUrl('admin/activities/index.php'), 'class' => 'btn-secondary']]
         ); ?>
 
         <?php if ($formError !== null): ?>
@@ -44,53 +44,53 @@ $title  = $isEdit ? 'แก้ไขกิจกรรม' : 'เพิ่มก
                 <input type="hidden" name="id" value="<?= (int) $activity['id'] ?>">
             <?php endif; ?>
 
-            <?php renderAdminSectionCard('ข้อมูลทั่วไป', function () use ($activity): void { ?>
-                <label for="title">หัวข้อกิจกรรม</label>
+            <?php renderAdminSectionCard('ຂໍ້ມູນທົ່ວໄປ', function () use ($activity): void { ?>
+                <label for="title">ຫົວຂໍ້ກິດຈະກຳ</label>
                 <input type="text" id="title" name="title" maxlength="255" required
                        value="<?= e((string) ($activity['title'] ?? '')) ?>">
 
-                <label for="activity_date">วันที่จัดกิจกรรม</label>
+                <label for="activity_date">ວັນທີຈັດກິດຈະກຳ</label>
                 <input type="date" id="activity_date" name="activity_date" required
                        value="<?= e((string) ($activity['activity_date'] ?? '')) ?>">
 
-                <label for="location">สถานที่จัดกิจกรรม</label>
+                <label for="location">ສະຖານທີ່ຈັດກິດຈະກຳ</label>
                 <input type="text" id="location" name="location" maxlength="255"
                        value="<?= e((string) ($activity['location'] ?? '')) ?>">
-            <?php }, 'หัวข้อ วันที่ และสถานที่จัดกิจกรรม'); ?>
+            <?php }, 'ຫົວຂໍ້ ວັນທີ ແລະ ສະຖານທີ່ຈັດກິດຈະກຳ'); ?>
 
-            <?php renderAdminSectionCard('เนื้อหา', function () use ($activity): void { ?>
-                <label for="description">รายละเอียด</label>
+            <?php renderAdminSectionCard('ເນື້ອຫາ', function () use ($activity): void { ?>
+                <label for="description">ລາຍລະອຽດ</label>
                 <textarea id="description" name="description" rows="4"><?= e((string) ($activity['description'] ?? '')) ?></textarea>
-            <?php }, 'รายละเอียดฉบับเต็มของกิจกรรม'); ?>
+            <?php }, 'ລາຍລະອຽດສະບັບເຕັມຂອງກິດຈະກຳ'); ?>
 
-            <?php renderAdminSectionCard('รูปภาพ', function () use ($activity, $isEdit): void { ?>
+            <?php renderAdminSectionCard('ຮູບພາບ', function () use ($activity, $isEdit): void { ?>
                 <?php if ($isEdit && !empty($activity['image'])): ?>
                     <div class="current-image">
                         <img src="<?= e(uploadUrl('activities/' . $activity['image'])) ?>" alt="">
                     </div>
                 <?php endif; ?>
-                <label for="image">รูปภาพกิจกรรม</label>
+                <label for="image">ຮູບພາບກິດຈະກຳ</label>
                 <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
                 <small>
-                    อนุญาตเฉพาะไฟล์ jpg, jpeg, png, webp ขนาดไม่เกิน 2 MB (ไม่บังคับแนบ)
-                    <?php if ($isEdit): ?>— หากไม่เลือกไฟล์ใหม่จะคงรูปเดิมไว้<?php endif; ?>
+                    ອະນຸຍາດສະເພາະໄຟລ໌ jpg, jpeg, png, webp ຂະໜາດບໍ່ເກີນ 2 MB (ບໍ່ບັງຄັບແນບ)
+                    <?php if ($isEdit): ?>— ຫາກບໍ່ເລືອກໄຟລ໌ໃໝ່ຈະຄົງຮູບເດີມໄວ້<?php endif; ?>
                 </small>
-            <?php }, 'ภาพประกอบกิจกรรม (ไม่บังคับ)'); ?>
+            <?php }, 'ຮູບພາບປະກອບກິດຈະກຳ (ບໍ່ບັງຄັບ)'); ?>
 
-            <?php renderAdminSectionCard('สถานะ', function () use ($activity): void { ?>
-                <label for="status">สถานะการเผยแพร่</label>
+            <?php renderAdminSectionCard('ສະຖານະ', function () use ($activity): void { ?>
+                <label for="status">ສະຖານະການເຜີຍແຜ່</label>
                 <select id="status" name="status">
                     <option value="Draft" <?= ($activity['status'] ?? 'Draft') === 'Draft' ? 'selected' : '' ?>>Draft</option>
                     <option value="Published" <?= ($activity['status'] ?? '') === 'Published' ? 'selected' : '' ?>>Published</option>
                 </select>
-            <?php }, 'กำหนดว่ากิจกรรมนี้เผยแพร่บนเว็บไซต์แล้วหรือไม่'); ?>
+            <?php }, 'ກຳນົດວ່າກິດຈະກຳນີ້ເຜີຍແຜ່ເທິງເວັບໄຊທ໌ແລ້ວຫລືບໍ່'); ?>
 
-            <?php renderAdminSectionCard('การดำเนินการ', function () use ($isEdit): void { ?>
+            <?php renderAdminSectionCard('ການດຳເນີນການ', function () use ($isEdit): void { ?>
                 <div class="admin-form-actions">
-                    <button type="submit" class="btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มกิจกรรม' ?></button>
-                    <a href="<?= e(baseUrl('admin/activities/index.php')) ?>" class="btn-ghost">ยกเลิก</a>
+                    <button type="submit" class="btn-primary"><?= $isEdit ? 'ບັນທຶກການແກ້ໄຂ' : 'ເພີ່ມກິດຈະກຳ' ?></button>
+                    <a href="<?= e(baseUrl('admin/activities/index.php')) ?>" class="btn-ghost">ຍົກເລີກ</a>
                 </div>
-            <?php }, 'ตรวจสอบข้อมูลให้ถูกต้องก่อนบันทึก'); ?>
+            <?php }, 'ກວດສອບຂໍ້ມູນໃຫ້ຖືກຕ້ອງກ່ອນບັນທຶກ'); ?>
         </form>
     </main>
 </div>

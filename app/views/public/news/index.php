@@ -4,24 +4,26 @@
     <div class="container">
         <?php renderBreadcrumb($breadcrumb); ?>
 
-        <?php renderPageHeader('ข่าวประชาสัมพันธ์', 'ติดตามข่าวสารและประกาศจาก ' . APP_NAME); ?>
+        <?php renderPageHeader('ຂ່າວສານ', 'ຕິດຕາມຂ່າວສານ ແລະ ປະກາດຈາກ ' . APP_NAME); ?>
 
         <?php if (empty($newsItems)): ?>
             <?php renderEmptyState('news'); ?>
         <?php else: ?>
-            <div class="card-grid">
+            <div class="card-grid card-grid-news">
                 <?php foreach ($newsItems as $item):
-                    $dateSource = $item['activity_date'] ?? $item['created_at'];
-                    $detail     = (string) ($item['detail'] ?? '');
-                    $excerpt    = mb_substr($detail, 0, 90) . (mb_strlen($detail) > 90 ? '…' : '');
+                    $dateSource    = $item['activity_date'] ?? $item['created_at'];
+                    $dateTimestamp = strtotime((string) $dateSource);
+                    $detail        = (string) ($item['detail'] ?? '');
+                    $excerpt       = mb_substr($detail, 0, 90) . (mb_strlen($detail) > 90 ? '…' : '');
 
                     renderCard([
-                        'url'       => baseUrl('news/detail.php?id=' . $item['ID']),
-                        'image'     => !empty($item['image']) ? uploadUrl('news/' . $item['image']) : null,
-                        'icon'      => 'news',
-                        'dateBadge' => thaiDateParts((string) $dateSource),
-                        'title'     => $item['title'],
-                        'excerpt'   => $excerpt,
+                        'url'             => baseUrl('news/detail.php?id=' . $item['ID']),
+                        'image'           => !empty($item['image']) ? uploadUrl('news/' . $item['image']) : null,
+                        'icon'            => 'news',
+                        'dateBadgeInline' => $dateTimestamp !== false ? date('d.m.Y', $dateTimestamp) : null,
+                        'title'           => $item['title'],
+                        'excerpt'         => $excerpt,
+                        'actionLabel'     => 'ອ່ານຕໍ່',
                     ]);
                 endforeach; ?>
             </div>

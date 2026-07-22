@@ -404,6 +404,21 @@
     border-color: var(--color-accent);
 }
 
+/* Fix: .btn-danger (เพิ่มทีหลังใน DS3) มี display/padding/background เป็น class เดี่ยว specificity เท่ากับ .btn-icon
+   ทำให้ตัวที่มาทีหลังใน Cascade ชนะ และไปทับ inline-flex/ขนาด 34x34 ของปุ่มไอคอนลบ จนไอคอนถังขยะเยื้องมุมซ้ายบน
+   จึงต้องประกาศ Combined Selector (specificity สูงกว่า) เพื่อคืนค่าทรง Icon Button เดิม */
+.btn-icon.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+}
+
 .btn-icon.btn-danger:hover {
     background: var(--color-danger-bg);
     color: #b42318;

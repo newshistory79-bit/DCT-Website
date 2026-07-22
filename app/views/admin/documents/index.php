@@ -40,9 +40,9 @@ $sortIndicator = function (string $column) use ($sort, $direction): string {
 
 $columns = [
     'id'         => 'ID',
-    'title'      => 'ชื่อเอกสาร',
-    'status'     => 'สถานะ',
-    'created_at' => 'วันที่สร้าง',
+    'title'      => 'ຊື່ເອກະສານ',
+    'status'     => 'ສະຖານະ',
+    'created_at' => 'ວັນທີສ້າງ',
 ];
 
 // Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2-DS4 Pattern)
@@ -68,7 +68,7 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/documents/inde
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('documents', 'create') ? [['label' => '+ เพิ่มเอกสาร', 'url' => baseUrl('admin/documents/form.php')]] : []
+            can('documents', 'create') ? [['label' => '+ ເພີ່ມເອກະສານ', 'url' => baseUrl('admin/documents/form.php')]] : []
         ); ?>
 
         <?php if ($successMessage !== null): ?>
@@ -81,29 +81,29 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/documents/inde
         <form method="get" action="<?= e(baseUrl('admin/documents/index.php')) ?>" class="filter-bar">
             <div class="search-input-icon">
                 <?= icon('search', 16) ?>
-                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาชื่อเอกสารหรือรายละเอียด" aria-label="ค้นหาเอกสาร">
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາຊື່ເອກະສານຫລືລາຍລະອຽດ" aria-label="ຄົ້ນຫາເອກະສານ">
             </div>
 
             <select name="status">
-                <option value="">สถานะทั้งหมด</option>
+                <option value="">ສະຖານະທັງໝົດ</option>
                 <option value="Published" <?= $status === 'Published' ? 'selected' : '' ?>>Published</option>
                 <option value="Draft" <?= $status === 'Draft' ? 'selected' : '' ?>>Draft</option>
             </select>
 
             <select name="per_page">
                 <?php foreach ($perPageOptions as $option): ?>
-                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> รายการ/หน้า</option>
+                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> ລາຍການ/ໜ້າ</option>
                 <?php endforeach; ?>
             </select>
 
-            <button type="submit" class="btn-secondary">ค้นหา</button>
+            <button type="submit" class="btn-secondary">ຄົ້ນຫາ</button>
         </form>
 
         <?php if (empty($documents)): ?>
             <?php renderAdminEmptyState(
-                'ไม่พบข้อมูลเอกสาร ลองปรับคำค้นหาหรือตัวกรอง',
+                'ບໍ່ພົບຂໍ້ມູນເອກະສານ ລອງປັບຄຳຄົ້ນຫາຫລືຕົວກອງ',
                 'download',
-                can('documents', 'create') ? ['url' => baseUrl('admin/documents/form.php'), 'label' => '+ เพิ่มเอกสาร'] : null
+                can('documents', 'create') ? ['url' => baseUrl('admin/documents/form.php'), 'label' => '+ ເພີ່ມເອກະສານ'] : null
             ); ?>
         <?php else: ?>
             <div class="table-wrapper">
@@ -113,9 +113,9 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/documents/inde
                             <?php foreach ($columns as $col => $label): ?>
                                 <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
                             <?php endforeach; ?>
-                            <th>ไฟล์</th>
-                            <th>รายละเอียด</th>
-                            <th>จัดการ</th>
+                            <th>ໄຟລ໌</th>
+                            <th>ລາຍລະອຽດ</th>
+                            <th>ຈັດການ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,16 +136,16 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/documents/inde
                                 <td class="truncate"><?= e(mb_strimwidth((string) ($doc['description'] ?? '-'), 0, 60, '...')) ?></td>
                                 <td class="actions">
                                     <?php if (can('documents', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/documents/form.php?id=' . $doc['id'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขเอกสาร <?= e($docTitle) ?>"><?= icon('edit', 16) ?></a>
+                                        <a href="<?= e(baseUrl('admin/documents/form.php?id=' . $doc['id'])) ?>" class="btn-icon" title="ແກ້ໄຂ" aria-label="ແກ້ໄຂເອກະສານ <?= e($docTitle) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('documents', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/documents/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm-modal="ยืนยันการลบเอกสาร &quot;<?= e($docTitle) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ຢືນຢັນການລຶບເອກະສານ &quot;<?= e($docTitle) ?>&quot; ແທ້ບໍ?">
                                             <input type="hidden" name="id" value="<?= (int) $doc['id'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบเอกสาร <?= e($docTitle) ?>"><?= icon('trash', 16) ?></button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ລຶບ" aria-label="ລຶບເອກະສານ <?= e($docTitle) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('documents', 'edit') && !can('documents', 'delete')): ?>

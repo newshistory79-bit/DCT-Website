@@ -95,7 +95,7 @@ class DocumentController extends BaseController
         $document = $model->find($id);
 
         if ($document === null) {
-            $this->setFlashMessage('document_error', 'ไม่พบเอกสารที่ต้องการแก้ไข');
+            $this->setFlashMessage('document_error', 'ບໍ່ພົບເອກະສານທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/documents/index.php');
             return;
         }
@@ -122,7 +122,7 @@ class DocumentController extends BaseController
 
         // Create ต้องบังคับแนบไฟล์เสมอ
         if ($file === null || $file['error'] === UPLOAD_ERR_NO_FILE) {
-            $this->setFlashMessage('document_form_error', 'กรุณาแนบไฟล์เอกสาร');
+            $this->setFlashMessage('document_form_error', 'ກະລຸນາແນບໄຟລ໌ເອກະສານ');
             $this->redirect('admin/documents/form.php');
             return;
         }
@@ -142,9 +142,9 @@ class DocumentController extends BaseController
         $model = new DocumentModel();
         $model->create($data);
 
-        ActivityLogger::log('documents', 'create', 'เพิ่มเอกสาร: ' . $data['title']);
+        ActivityLogger::log('documents', 'create', 'ເພີ່ມເອກະສານ: ' . $data['title']);
 
-        $this->setFlashMessage('document_success', 'เพิ่มเอกสารสำเร็จ');
+        $this->setFlashMessage('document_success', 'ເພີ່ມເອກະສານສຳເລັດ');
         $this->redirect('admin/documents/index.php');
     }
 
@@ -156,7 +156,7 @@ class DocumentController extends BaseController
         $document = $model->find($id);
 
         if ($document === null) {
-            $this->setFlashMessage('document_error', 'ไม่พบเอกสารที่ต้องการแก้ไข');
+            $this->setFlashMessage('document_error', 'ບໍ່ພົບເອກະສານທີ່ຕ້ອງການແກ້ໄຂ');
             $this->redirect('admin/documents/index.php');
             return;
         }
@@ -198,9 +198,9 @@ class DocumentController extends BaseController
             UploadHelper::delete(self::uploadDirectory(), $document['file_name']);
         }
 
-        ActivityLogger::log('documents', 'update', 'แก้ไขเอกสาร: ' . $data['title']);
+        ActivityLogger::log('documents', 'update', 'ແກ້ໄຂເອກະສານ: ' . $data['title']);
 
-        $this->setFlashMessage('document_success', 'แก้ไขเอกสารสำเร็จ');
+        $this->setFlashMessage('document_success', 'ແກ້ໄຂເອກະສານສຳເລັດ');
         $this->redirect('admin/documents/index.php');
     }
 
@@ -211,7 +211,7 @@ class DocumentController extends BaseController
         $token = (string) ($_POST['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('document_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('document_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             $this->redirect('admin/documents/index.php');
             return;
         }
@@ -220,7 +220,7 @@ class DocumentController extends BaseController
         $document = $model->find($id);
 
         if ($document === null) {
-            $this->setFlashMessage('document_error', 'ไม่พบเอกสารที่ต้องการลบ');
+            $this->setFlashMessage('document_error', 'ບໍ່ພົບເອກະສານທີ່ຕ້ອງການລຶບ');
             $this->redirect('admin/documents/index.php');
             return;
         }
@@ -228,9 +228,9 @@ class DocumentController extends BaseController
         // Soft Delete เท่านั้น - ไม่ลบไฟล์จริง เพื่อรักษาประวัติข้อมูลตามที่อนุมัติ
         $model->softDelete($id);
 
-        ActivityLogger::log('documents', 'delete', 'ลบเอกสาร: ' . $document['title']);
+        ActivityLogger::log('documents', 'delete', 'ລຶບເອກະສານ: ' . $document['title']);
 
-        $this->setFlashMessage('document_success', 'ลบเอกสารสำเร็จ');
+        $this->setFlashMessage('document_success', 'ລຶບເອກະສານສຳເລັດ');
         $this->redirect('admin/documents/index.php');
     }
 
@@ -270,7 +270,7 @@ class DocumentController extends BaseController
         $token = (string) ($input['csrf_token'] ?? '');
 
         if (!verifyCsrfToken($token)) {
-            $this->setFlashMessage('document_form_error', 'คำขอไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            $this->setFlashMessage('document_form_error', 'ຄຳຮ້ອງຂໍບໍ່ຖືກຕ້ອງ ກະລຸນາລອງໃໝ່ອີກຄັ້ງ');
             return null;
         }
 
@@ -279,17 +279,17 @@ class DocumentController extends BaseController
         $status      = (string) ($input['status'] ?? '');
 
         if ($title === '') {
-            $this->setFlashMessage('document_form_error', 'กรุณากรอกชื่อเอกสาร');
+            $this->setFlashMessage('document_form_error', 'ກະລຸນາປ້ອນຊື່ເອກະສານ');
             return null;
         }
 
         if (mb_strlen($title) > 255) {
-            $this->setFlashMessage('document_form_error', 'ชื่อเอกสารต้องไม่เกิน 255 ตัวอักษร');
+            $this->setFlashMessage('document_form_error', 'ຊື່ເອກະສານຕ້ອງບໍ່ເກີນ 255 ໂຕອັກສອນ');
             return null;
         }
 
         if (!in_array($status, ['Draft', 'Published'], true)) {
-            $this->setFlashMessage('document_form_error', 'สถานะไม่ถูกต้อง ต้องเป็น Draft หรือ Published เท่านั้น');
+            $this->setFlashMessage('document_form_error', 'ສະຖານະບໍ່ຖືກຕ້ອງ ຕ້ອງເປັນ Draft ຫລື Published ເທົ່ານັ້ນ');
             return null;
         }
 

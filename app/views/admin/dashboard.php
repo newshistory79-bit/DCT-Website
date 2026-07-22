@@ -13,43 +13,40 @@ declare(strict_types=1);
 // (Pattern เดียวกับ $chartPoints/$chartLinePath เดิมที่มีอยู่ก่อนแล้ว)
 
 $statCards = [
-    'news'        => ['label' => 'จำนวนข่าว',           'icon' => 'news',       'color' => 'blue',   'url' => 'admin/news/index.php'],
-    'employees'   => ['label' => 'จำนวนพนักงาน',        'icon' => 'employee',   'color' => 'green',  'url' => 'admin/employees/index.php'],
-    'departments' => ['label' => 'จำนวนแผนก',           'icon' => 'department', 'color' => 'purple', 'url' => 'admin/departments/index.php'],
-    'activities'  => ['label' => 'จำนวนกิจกรรม',        'icon' => 'activity',   'color' => 'orange', 'url' => 'admin/activities/index.php'],
-    'documents'   => ['label' => 'จำนวนเอกสาร',         'icon' => 'download',   'color' => 'teal',   'url' => 'admin/documents/index.php'],
-    'gallery'     => ['label' => 'จำนวนภาพกิจกรรม',     'icon' => 'image',      'color' => 'pink',   'url' => 'admin/gallery/index.php'],
-    'legislation' => ['label' => 'จำนวนกฎหมาย/ระเบียบ', 'icon' => 'news',       'color' => 'indigo', 'url' => 'admin/legislation/index.php'],
+    'news'        => ['label' => 'ຈຳນວນຂ່າວສານ',   'icon' => 'news',       'color' => 'blue',   'url' => 'admin/news/index.php'],
+    'employees'   => ['label' => 'ຈຳນວນພະນັກງານ',  'icon' => 'employee',   'color' => 'green',  'url' => 'admin/employees/index.php'],
+    'departments' => ['label' => 'ຈຳນວນພະແນກ',     'icon' => 'department', 'color' => 'purple', 'url' => 'admin/departments/index.php'],
+    'activities'  => ['label' => 'ຈຳນວນກິດຈະກຳ',    'icon' => 'activity',   'color' => 'orange', 'url' => 'admin/activities/index.php'],
+    'documents'   => ['label' => 'ຈຳນວນເອກະສານ',    'icon' => 'download',   'color' => 'teal',   'url' => 'admin/documents/index.php'],
 ];
 
 $quickActions = [
-    ['label' => 'เพิ่มข่าว',      'description' => 'สร้างข่าวประชาสัมพันธ์ใหม่', 'icon' => 'news',       'url' => 'admin/news/form.php',        'module' => 'news'],
-    ['label' => 'เพิ่มพนักงาน',   'description' => 'เพิ่มข้อมูลบุคลากรใหม่',     'icon' => 'employee',   'url' => 'admin/employees/form.php',   'module' => 'employees'],
-    ['label' => 'เพิ่มแผนก',      'description' => 'สร้างหน่วยงานใหม่',          'icon' => 'department', 'url' => 'admin/departments/form.php', 'module' => 'departments'],
-    ['label' => 'อัปโหลดเอกสาร', 'description' => 'อัปโหลดเอกสารใหม่',          'icon' => 'download',   'url' => 'admin/documents/form.php',   'module' => 'documents'],
-    ['label' => 'จัดการแกลเลอรี', 'description' => 'จัดการภาพกิจกรรม',           'icon' => 'image',      'url' => 'admin/gallery/index.php',    'module' => 'gallery'],
+    ['label' => 'ເພີ່ມຂ່າວສານ',   'description' => 'ສ້າງຂ່າວສານໃໝ່',           'icon' => 'news',       'url' => 'admin/news/form.php',        'module' => 'news'],
+    ['label' => 'ເພີ່ມພະນັກງານ', 'description' => 'ເພີ່ມຂໍ້ມູນພະນັກງານໃໝ່',    'icon' => 'employee',   'url' => 'admin/employees/form.php',   'module' => 'employees'],
+    ['label' => 'ເພີ່ມພະແນກ',    'description' => 'ສ້າງພະແນກໃໝ່',              'icon' => 'department', 'url' => 'admin/departments/form.php', 'module' => 'departments'],
+    ['label' => 'ອັບໂຫລດເອກະສານ', 'description' => 'ອັບໂຫລດເອກະສານໃໝ່',       'icon' => 'download',   'url' => 'admin/documents/form.php',   'module' => 'documents'],
 ];
 
 // วันที่/เวลาปัจจุบันแบบไทย พ.ศ. สำหรับ Hero Header (เดิมใช้แค่ $todayThai ใน Date Badge เดียว
 // ตอนนี้ Hero ต้องการทั้งวันในสัปดาห์ + เวลา จึงเพิ่ม $thaiDaysFull/$nowTimeThai — Presentation ล้วน)
 $thaiMonthsFull = [
-    1 => 'มกราคม', 2 => 'กุมภาพันธ์', 3 => 'มีนาคม', 4 => 'เมษายน', 5 => 'พฤษภาคม', 6 => 'มิถุนายน',
-    7 => 'กรกฎาคม', 8 => 'สิงหาคม', 9 => 'กันยายน', 10 => 'ตุลาคม', 11 => 'พฤศจิกายน', 12 => 'ธันวาคม',
+    1 => 'ມັງກອນ', 2 => 'ກຸມພາ', 3 => 'ມີນາ', 4 => 'ເມສາ', 5 => 'ພຶດສະພາ', 6 => 'ມິຖຸນາ',
+    7 => 'ກໍລະກົດ', 8 => 'ສິງຫາ', 9 => 'ກັນຍາ', 10 => 'ຕຸລາ', 11 => 'ພະຈິກ', 12 => 'ທັນວາ',
 ];
 $thaiDaysFull = [
-    0 => 'วันอาทิตย์', 1 => 'วันจันทร์', 2 => 'วันอังคาร', 3 => 'วันพุธ', 4 => 'วันพฤหัสบดี', 5 => 'วันศุกร์', 6 => 'วันเสาร์',
+    0 => 'ວັນອາທິດ', 1 => 'ວັນຈັນ', 2 => 'ວັນອັງຄານ', 3 => 'ວັນພຸດ', 4 => 'ວັນພະຫັດ', 5 => 'ວັນສຸກ', 6 => 'ວັນເສົາ',
 ];
 $today       = new DateTimeImmutable();
-$todayThai   = $thaiDaysFull[(int) $today->format('w')] . ' ที่ ' . (int) $today->format('j') . ' ' . $thaiMonthsFull[(int) $today->format('n')] . ' ' . ((int) $today->format('Y') + 543);
-$nowTimeThai = 'เวลา ' . $today->format('H:i') . ' น.';
+$todayThai   = $thaiDaysFull[(int) $today->format('w')] . ' ທີ ' . (int) $today->format('j') . ' ' . $thaiMonthsFull[(int) $today->format('n')] . ' ' . ((int) $today->format('Y') + 543);
+$nowTimeThai = 'ເວລາ ' . $today->format('H:i') . ' ໂມງ';
 
 $hour = (int) $today->format('G');
 if ($hour < 12) {
-    $heroGreeting = 'สวัสดีตอนเช้า';
+    $heroGreeting = 'ສະບາຍດີຕອນເຊົ້າ';
 } elseif ($hour < 17) {
-    $heroGreeting = 'สวัสดีตอนบ่าย';
+    $heroGreeting = 'ສະບາຍດີຕອນບ່າຍ';
 } else {
-    $heroGreeting = 'สวัสดีตอนเย็น';
+    $heroGreeting = 'ສະບາຍດີຕອນແລງ';
 }
 $heroName = (string) ($_SESSION['full_name'] ?? $_SESSION['username'] ?? '');
 $heroRole = (string) ($_SESSION['role'] ?? '');
@@ -96,7 +93,7 @@ if (!empty($chartPoints)) {
 // Panel ว่าง (renderAdminEmptyState เดิม) แทนการดึงข้อมูลจริง — initSegmentedControl() ใน admin.js (Stage
 // UI-1/UI-2) เป็นตัวสลับ Panel ให้ ไม่มี JavaScript เฉพาะหน้านี้
 ob_start();
-renderAdminSegmentedControl('chartRange', ['7' => '7 วัน', '30' => '30 วัน', '90' => '90 วัน'], '7');
+renderAdminSegmentedControl('chartRange', ['7' => '7 ວັນ', '30' => '30 ວັນ', '90' => '90 ວັນ'], '7');
 $chartRangeControlHtml = ob_get_clean();
 
 // Summary Cards ใต้กราฟ — คำนวณจาก $dailyCounts ที่ Controller ส่งมาให้อยู่แล้ว (Presentation ล้วน ไม่ใช่
@@ -125,7 +122,7 @@ $activityAvg     = !empty($dailyCounts) ? (int) round($activityTotal / count($da
         <?php renderAdminHero(
             $heroGreeting,
             $heroName,
-            'จัดการระบบและติดตามข้อมูลสำคัญของหน่วยงานได้จากที่นี่',
+            'ຈັດການລະບົບ ແລະ ຕິດຕາມຂໍ້ມູນສຳຄັນຂອງພະແນກໄດ້ຈາກບ່ອນນີ້',
             $heroAsideHtml
         ); ?>
 
@@ -136,14 +133,14 @@ $activityAvg     = !empty($dailyCounts) ? (int) round($activityTotal / count($da
                     <span class="stat-text">
                         <span class="stat-label"><?= e($card['label']) ?></span>
                         <span class="stat-value">
-                            <?= $stats[$key] === null ? 'ยังไม่มีโมดูล' : e((string) $stats[$key]) ?>
+                            <?= $stats[$key] === null ? 'ຍັງບໍ່ມີໂມດູນ' : e((string) $stats[$key]) ?>
                         </span>
                         <?php if ($stats[$key] !== null): ?>
-                            <span class="stat-trend stat-trend-flat">– ยังไม่มีข้อมูลเปรียบเทียบ</span>
+                            <span class="stat-trend stat-trend-flat">– ຍັງບໍ່ມີຂໍ້ມູນປຽບທຽບ</span>
                         <?php endif; ?>
                     </span>
                     <?php if ($card['url'] !== null && $stats[$key] !== null): ?>
-                        <a href="<?= e(baseUrl($card['url'])) ?>" class="stat-link">ดูทั้งหมด &rarr;</a>
+                        <a href="<?= e(baseUrl($card['url'])) ?>" class="stat-link">ເບິ່ງທັງໝົດ &rarr;</a>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
@@ -165,13 +162,13 @@ $activityAvg     = !empty($dailyCounts) ? (int) round($activityTotal / count($da
         </section>
 
         <section class="dashboard-info">
-            <?php renderAdminSectionCard('กิจกรรมล่าสุด', function () use ($recentActivity): void { ?>
+            <?php renderAdminSectionCard('ກິດຈະກຳຫລ້າສຸດ', function () use ($recentActivity): void { ?>
                 <?php if (!can('activity_log', 'view')): ?>
-                    <p>ชื่อผู้ใช้: <strong><?= e($_SESSION['full_name'] ?? '') ?></strong></p>
+                    <p>ຊື່ຜູ້ໃຊ້: <strong><?= e($_SESSION['full_name'] ?? '') ?></strong></p>
                     <p>Role: <strong><?= e($_SESSION['role'] ?? '') ?></strong></p>
-                    <p>เวลาปัจจุบัน: <strong><?= e(date('d/m/Y H:i:s')) ?></strong></p>
+                    <p>ເວລາປັດຈຸບັນ: <strong><?= e(date('d/m/Y H:i:s')) ?></strong></p>
                 <?php elseif (empty($recentActivity)): ?>
-                    <?php renderAdminEmptyState('ยังไม่มีกิจกรรม', 'log'); ?>
+                    <?php renderAdminEmptyState('ຍັງບໍ່ມີກິດຈະກຳ', 'log'); ?>
                 <?php else: ?>
                     <div class="timeline-scroll">
                         <ul class="timeline">
@@ -184,7 +181,7 @@ $activityAvg     = !empty($dailyCounts) ? (int) round($activityTotal / count($da
                                         <?php endif; ?>
                                     </span>
                                     <span class="timeline-body">
-                                        <span class="timeline-desc"><strong><?= e($log['username'] ?? 'ระบบ') ?></strong> <?= e($log['description']) ?></span>
+                                        <span class="timeline-desc"><strong><?= e($log['username'] ?? 'ລະບົບ') ?></strong> <?= e($log['description']) ?></span>
                                         <span class="timeline-meta">
                                             <?php renderBadge($log['module'], 'muted'); ?>
                                             <?= e($log['created_at']) ?>
@@ -198,9 +195,9 @@ $activityAvg     = !empty($dailyCounts) ? (int) round($activityTotal / count($da
             <?php }); ?>
 
             <?php if (can('activity_log', 'view')): ?>
-                <?php renderAdminSectionCard('สถิติการใช้งาน', function () use ($chartPoints, $chartWidth, $chartHeight, $chartAreaPath, $chartLinePath, $dailyCounts): void { ?>
+                <?php renderAdminSectionCard('ສະຖິຕິການນຳໃຊ້', function () use ($chartPoints, $chartWidth, $chartHeight, $chartAreaPath, $chartLinePath, $dailyCounts): void { ?>
                     <?php if (empty($chartPoints)): ?>
-                        <?php renderAdminEmptyState('ยังไม่มีข้อมูลเพียงพอสำหรับแสดงกราฟ', 'log'); ?>
+                        <?php renderAdminEmptyState('ຍັງບໍ່ມີຂໍ້ມູນພຽງພໍສຳລັບສະແດງກຣາຟ', 'log'); ?>
                     <?php else: ?>
                         <div data-segmented-panel="chartRange" data-segmented-value="7">
                             <div class="chart-wrapper">
@@ -222,10 +219,10 @@ $activityAvg     = !empty($dailyCounts) ? (int) round($activityTotal / count($da
                             </div>
                         </div>
                         <div data-segmented-panel="chartRange" data-segmented-value="30" hidden>
-                            <?php renderAdminEmptyState('ยังไม่รองรับช่วงเวลานี้ในขณะนี้', 'log'); ?>
+                            <?php renderAdminEmptyState('ຍັງບໍ່ຮອງຮັບຊ່ວງເວລານີ້ໃນຂະນະນີ້', 'log'); ?>
                         </div>
                         <div data-segmented-panel="chartRange" data-segmented-value="90" hidden>
-                            <?php renderAdminEmptyState('ยังไม่รองรับช่วงเวลานี้ในขณะนี้', 'log'); ?>
+                            <?php renderAdminEmptyState('ຍັງບໍ່ຮອງຮັບຊ່ວງເວລານີ້ໃນຂະນະນີ້', 'log'); ?>
                         </div>
                     <?php endif; ?>
                 <?php }, '', $chartRangeControlHtml); ?>
@@ -235,14 +232,14 @@ $activityAvg     = !empty($dailyCounts) ? (int) round($activityTotal / count($da
                         <div class="stat-card">
                             <span class="stat-icon stat-icon-blue"><?= icon('users', 22) ?></span>
                             <span class="stat-text">
-                                <span class="stat-label">กิจกรรมรวม (7 วันล่าสุด)</span>
+                                <span class="stat-label">ກິດຈະກຳລວມ (7 ວັນຫລ້າສຸດ)</span>
                                 <span class="stat-value"><?= e((string) $activityTotal) ?></span>
                             </span>
                         </div>
                         <div class="stat-card">
                             <span class="stat-icon stat-icon-purple"><?= icon('trend-up', 22) ?></span>
                             <span class="stat-text">
-                                <span class="stat-label">วันที่มีกิจกรรมสูงสุด</span>
+                                <span class="stat-label">ວັນທີ່ມີກິດຈະກຳສູງສຸດ</span>
                                 <span class="stat-value"><?= e((string) $activityPeakVal) ?></span>
                                 <?php if ($activityPeakKey !== ''): ?>
                                     <span class="stat-trend stat-trend-flat"><?= e(date('d/m/Y', strtotime($activityPeakKey))) ?></span>
@@ -252,25 +249,25 @@ $activityAvg     = !empty($dailyCounts) ? (int) round($activityTotal / count($da
                         <div class="stat-card">
                             <span class="stat-icon stat-icon-teal"><?= icon('activity', 22) ?></span>
                             <span class="stat-text">
-                                <span class="stat-label">ค่าเฉลี่ยต่อวัน</span>
+                                <span class="stat-label">ຄ່າສະເລ່ຍຕໍ່ວັນ</span>
                                 <span class="stat-value"><?= e((string) $activityAvg) ?></span>
-                                <span class="stat-trend stat-trend-flat">ใน 7 วันที่ผ่านมา</span>
+                                <span class="stat-trend stat-trend-flat">ໃນ 7 ວັນທີ່ຜ່ານມາ</span>
                             </span>
                         </div>
                     </section>
                 <?php endif; ?>
             <?php else: ?>
-                <?php renderAdminSectionCard('ผู้ใช้ Login ล่าสุด', function () use ($recentLogins): void { ?>
+                <?php renderAdminSectionCard('ຜູ້ໃຊ້ Login ຫລ້າສຸດ', function () use ($recentLogins): void { ?>
                     <?php if (empty($recentLogins)): ?>
-                        <?php renderAdminEmptyState('ยังไม่มีข้อมูลการ Login', 'users'); ?>
+                        <?php renderAdminEmptyState('ຍັງບໍ່ມີຂໍ້ມູນການ Login', 'users'); ?>
                     <?php else: ?>
                         <table class="simple-table data-table-zebra">
                             <thead>
                                 <tr>
-                                    <th>ชื่อผู้ใช้</th>
-                                    <th>ชื่อ-นามสกุล</th>
+                                    <th>ຊື່ຜູ້ໃຊ້</th>
+                                    <th>ຊື່-ນາມສະກຸນ</th>
                                     <th>Role</th>
-                                    <th>เวลา Login</th>
+                                    <th>ເວລາ Login</th>
                                 </tr>
                             </thead>
                             <tbody>

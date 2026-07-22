@@ -4,34 +4,30 @@
     <div class="container">
         <nav aria-label="breadcrumb" class="breadcrumb">
             <ol>
-                <li><a href="<?= e(baseUrl('')) ?>">หน้าแรก</a></li>
-                <li aria-current="page">กิจกรรม</li>
+                <li><a href="<?= e(baseUrl('')) ?>">ຫນ້າຫຼັກ</a></li>
+                <li aria-current="page">ກິດຈະກຳ</li>
             </ol>
         </nav>
 
         <div class="section-head">
             <div>
-                <h2>กิจกรรมของหน่วยงาน</h2>
-                <p>ติดตามกิจกรรมและโครงการต่างๆ ของ <?= e(APP_NAME) ?></p>
+                <h2>ກິດຈະກຳຂອງພະແນກ</h2>
+                <p>ຕິດຕາມກິດຈະກຳ ແລະ ໂຄງການຕ່າງໆ ຂອງ <?= e(APP_NAME) ?></p>
             </div>
         </div>
 
         <?php if (empty($activities)): ?>
             <?php renderEmptyState('activity'); ?>
         <?php else: ?>
-            <div class="card-grid">
+            <div class="card-grid card-grid-news">
                 <?php foreach ($activities as $item):
-                    $dateParts = thaiDateParts((string) $item['activity_date']);
-                    $excerpt   = mb_substr((string) ($item['description'] ?? ''), 0, 90);
+                    $dateTimestamp = strtotime((string) $item['activity_date']);
+                    $excerpt       = mb_substr((string) ($item['description'] ?? ''), 0, 90);
                 ?>
                     <a href="<?= e(baseUrl('activities/detail.php?id=' . $item['id'])) ?>" class="card">
                         <div class="card-thumb">
-                            <?php if ($dateParts !== null): ?>
-                                <span class="card-date-badge">
-                                    <span class="day"><?= e($dateParts['day']) ?></span>
-                                    <span class="month"><?= e($dateParts['month']) ?></span>
-                                    <span class="year"><?= e($dateParts['year']) ?></span>
-                                </span>
+                            <?php if ($dateTimestamp !== false): ?>
+                                <span class="card-date-badge card-date-badge-inline"><?= e(date('d.m.Y', $dateTimestamp)) ?></span>
                             <?php endif; ?>
 
                             <?php if (!empty($item['image'])): ?>
@@ -43,7 +39,7 @@
                         <div class="card-body">
                             <h3 class="card-title"><?= e($item['title']) ?></h3>
                             <p class="card-excerpt"><?= e($excerpt) ?><?= mb_strlen((string) ($item['description'] ?? '')) > 90 ? '…' : '' ?></p>
-                            <span class="card-readmore">อ่านต่อ <?= icon('arrow', 12) ?></span>
+                            <span class="card-readmore">ອ່ານຕໍ່ <?= icon('arrow', 12) ?></span>
                         </div>
                     </a>
                 <?php endforeach; ?>

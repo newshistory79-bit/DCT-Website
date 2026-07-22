@@ -47,7 +47,7 @@ $lastGroup = null;
                             <span class="menu-label"><?= e($menuItem['label']) ?></span>
                         </a>
                     <?php else: ?>
-                        <span title="โมดูลนี้ยังไม่เปิดใช้งาน">
+                        <span title="ໂມດູນນີ້ຍັງບໍ່ໄດ້ເປີດໃຊ້ງານ">
                             <span class="menu-icon"><?= icon($menuItem['icon'], 18) ?></span>
                             <span class="menu-label"><?= e($menuItem['label']) ?></span>
                         </span>
@@ -55,9 +55,9 @@ $lastGroup = null;
                 </li>
             <?php endforeach; ?>
             <li class="menu-logout">
-                <a href="<?= e(baseUrl('admin/logout.php')) ?>" title="Logout">
+                <a href="<?= e(baseUrl('admin/logout.php')) ?>" title="ອອກຈາກລະບົບ">
                     <span class="menu-icon"><?= icon('logout', 18) ?></span>
-                    <span class="menu-label">Logout</span>
+                    <span class="menu-label">ອອກຈາກລະບົບ</span>
                 </a>
             </li>
         </ul>

@@ -40,10 +40,10 @@ $sortIndicator = function (string $column) use ($sort, $direction): string {
 
 $columns = [
     'id'         => 'ID',
-    'code'       => 'รหัสแผนก',
-    'name'       => 'ชื่อแผนก',
-    'status'     => 'สถานะ',
-    'created_at' => 'วันที่สร้าง',
+    'code'       => 'ລະຫັດພະແນກ',
+    'name'       => 'ຊື່ພະແນກ',
+    'status'     => 'ສະຖານະ',
+    'created_at' => 'ວັນທີສ້າງ',
 ];
 
 // Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2)
@@ -69,7 +69,7 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/departments/in
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('departments', 'create') ? [['label' => '+ เพิ่มแผนก', 'url' => baseUrl('admin/departments/form.php')]] : []
+            can('departments', 'create') ? [['label' => '+ ເພີ່ມພະແນກ', 'url' => baseUrl('admin/departments/form.php')]] : []
         ); ?>
 
         <?php if ($successMessage !== null): ?>
@@ -82,29 +82,29 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/departments/in
         <form method="get" action="<?= e(baseUrl('admin/departments/index.php')) ?>" class="filter-bar">
             <div class="search-input-icon">
                 <?= icon('search', 16) ?>
-                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหารหัสหรือชื่อแผนก" aria-label="ค้นหารหัสหรือชื่อแผนก">
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາລະຫັດຫລືຊື່ພະແນກ" aria-label="ຄົ້ນຫາລະຫັດຫລືຊື່ພະແນກ">
             </div>
 
             <select name="status">
-                <option value="">สถานะทั้งหมด</option>
+                <option value="">ສະຖານະທັງໝົດ</option>
                 <option value="Active" <?= $status === 'Active' ? 'selected' : '' ?>>Active</option>
                 <option value="Inactive" <?= $status === 'Inactive' ? 'selected' : '' ?>>Inactive</option>
             </select>
 
             <select name="per_page">
                 <?php foreach ($perPageOptions as $option): ?>
-                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> รายการ/หน้า</option>
+                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> ລາຍການ/ໜ້າ</option>
                 <?php endforeach; ?>
             </select>
 
-            <button type="submit" class="btn-secondary">ค้นหา</button>
+            <button type="submit" class="btn-secondary">ຄົ້ນຫາ</button>
         </form>
 
         <?php if (empty($departments)): ?>
             <?php renderAdminEmptyState(
-                'ไม่พบข้อมูลแผนก ลองปรับคำค้นหาหรือตัวกรอง',
+                'ບໍ່ພົບຂໍ້ມູນພະແນກ ລອງປັບຄຳຄົ້ນຫາຫລືຕົວກອງ',
                 'department',
-                can('departments', 'create') ? ['url' => baseUrl('admin/departments/form.php'), 'label' => '+ เพิ่มแผนก'] : null
+                can('departments', 'create') ? ['url' => baseUrl('admin/departments/form.php'), 'label' => '+ ເພີ່ມພະແນກ'] : null
             ); ?>
         <?php else: ?>
             <div class="table-wrapper">
@@ -114,8 +114,8 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/departments/in
                             <?php foreach ($columns as $col => $label): ?>
                                 <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
                             <?php endforeach; ?>
-                            <th>คำอธิบาย</th>
-                            <th>จัดการ</th>
+                            <th>ຄຳອະທິບາຍ</th>
+                            <th>ຈັດການ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,16 +129,16 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/departments/in
                                 <td class="truncate"><?= e($dept['description'] ?? '-') ?></td>
                                 <td class="actions">
                                     <?php if (can('departments', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/departments/form.php?id=' . $dept['id'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขแผนก <?= e($dept['name']) ?>"><?= icon('edit', 16) ?></a>
+                                        <a href="<?= e(baseUrl('admin/departments/form.php?id=' . $dept['id'])) ?>" class="btn-icon" title="ແກ້ໄຂ" aria-label="ແກ້ໄຂພະແນກ <?= e($dept['name']) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('departments', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/departments/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm-modal="ยืนยันการลบแผนก &quot;<?= e($dept['name']) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ຢືນຢັນການລຶບພະແນກ &quot;<?= e($dept['name']) ?>&quot; ແທ້ບໍ?">
                                             <input type="hidden" name="id" value="<?= (int) $dept['id'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบแผนก <?= e($dept['name']) ?>"><?= icon('trash', 16) ?></button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ລຶບ" aria-label="ລຶບພະແນກ <?= e($dept['name']) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('departments', 'edit') && !can('departments', 'delete')): ?>

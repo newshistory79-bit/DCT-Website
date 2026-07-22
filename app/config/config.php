@@ -5,7 +5,7 @@ declare(strict_types=1);
 // Environment: development หรือ production
 define('APP_ENV', 'development');
 
-define('APP_NAME', 'Department of Technology and Communication of Savannakhet Province');
+define('APP_NAME', 'Department of Technology and Communications');
 define('APP_VERSION', '1.0.0');
 
 // URL หลักของเว็บไซต์ - ปรับตาม path ที่ติดตั้งจริงบนเครื่อง

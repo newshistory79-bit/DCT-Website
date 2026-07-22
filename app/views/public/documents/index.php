@@ -4,7 +4,7 @@
     <div class="container">
         <?php renderBreadcrumb($breadcrumb); ?>
 
-        <?php renderPageHeader('ดาวน์โหลดเอกสาร', 'รวมเอกสาร แบบฟอร์ม และไฟล์เผยแพร่จาก ' . APP_NAME); ?>
+        <?php renderPageHeader('ນິຕິກຳ', 'ລວມເອກະສານ, ແບບຟອມ ແລະ ໄຟລ໌ເຜີຍແຜ່ຈາກ ' . APP_NAME); ?>
 
         <?php if (empty($documentItems)): ?>
             <?php renderEmptyState('download'); ?>

@@ -32,7 +32,7 @@ function icon(string $name, int $size = 24): string
 
         // เพิ่มสำหรับ Admin Panel Design System v2 (Stage DS1) — Entry ใหม่เท่านั้น ไม่แก้ Entry เดิมด้านบน
         'edit'            => '<path d="M4 20l1-4L16 5l3 3L8 19l-4 1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><path d="m14 7 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
-        'trash'           => '<path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+        'trash'           => '<path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
         'plus'            => '<path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
         'eye'             => '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6" fill="none"/>',
         'spinner'         => '<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.25"/><path d="M20.5 12a8.5 8.5 0 0 0-8.5-8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>',

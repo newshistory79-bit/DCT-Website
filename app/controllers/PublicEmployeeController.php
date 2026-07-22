@@ -35,14 +35,14 @@ class PublicEmployeeController extends BaseController
         );
 
         $this->render('public/employees/index', [
-            'pageTitle'       => 'บุคลากร',
-            'metaDescription' => 'รายชื่อบุคลากรของ ' . APP_NAME,
-            'metaKeywords'    => 'บุคลากร, เจ้าหน้าที่, ' . APP_NAME,
+            'pageTitle'       => 'ພະນັກງານ',
+            'metaDescription' => 'ລາຍຊື່ພະນັກງານຂອງ ' . APP_NAME,
+            'metaKeywords'    => 'ພະນັກງານ, ເຈົ້າຫນ້າທີ່, ' . APP_NAME,
             'ogType'          => 'website',
             'activeNav'       => 'employees',
             'breadcrumb'      => [
-                ['label' => 'หน้าแรก', 'url' => baseUrl('')],
-                ['label' => 'บุคลากร', 'url' => null],
+                ['label' => 'ຫນ້າຫຼັກ', 'url' => baseUrl('')],
+                ['label' => 'ພະນັກງານ', 'url' => null],
             ],
             'employeeItems'   => array_map([$this, 'mapEmployeeToCard'], $result['data']),
             'total'           => $result['total'],
@@ -81,13 +81,13 @@ class PublicEmployeeController extends BaseController
         $this->render('public/employees/detail', [
             'pageTitle'       => $fullName,
             'metaDescription' => $fullName . (!empty($employee['position']) ? ' - ' . $employee['position'] : '') . ' - ' . APP_NAME,
-            'metaKeywords'    => $fullName . ', บุคลากร, ' . APP_NAME,
+            'metaKeywords'    => $fullName . ', ພະນັກງານ, ' . APP_NAME,
             'ogType'          => 'profile',
             'ogImage'         => !empty($employee['image']) ? uploadUrl('employees/' . $employee['image']) : null,
             'activeNav'       => 'employees',
             'breadcrumb'      => [
-                ['label' => 'หน้าแรก', 'url' => baseUrl('')],
-                ['label' => 'บุคลากร', 'url' => baseUrl('employees/index.php')],
+                ['label' => 'ຫນ້າຫຼັກ', 'url' => baseUrl('')],
+                ['label' => 'ພະນັກງານ', 'url' => baseUrl('employees/index.php')],
                 ['label' => $fullName, 'url' => null],
             ],
             'employee'        => $employee,
@@ -116,11 +116,12 @@ class PublicEmployeeController extends BaseController
     private function mapEmployeeToCard(array $item): array
     {
         return [
-            'url'     => baseUrl('employees/detail.php?id=' . $item['ID']),
-            'image'   => !empty($item['image']) ? uploadUrl('employees/' . $item['image']) : null,
-            'icon'    => 'employee',
-            'title'   => trim($item['Fname'] . ' ' . $item['Lname']),
-            'excerpt' => $item['position'],
+            'url'         => baseUrl('employees/detail.php?id=' . $item['ID']),
+            'image'       => !empty($item['image']) ? uploadUrl('employees/' . $item['image']) : null,
+            'icon'        => 'employee',
+            'title'       => trim($item['Fname'] . ' ' . $item['Lname']),
+            'excerpt'     => $item['position'],
+            'actionLabel' => 'ລາຍລະອຽດ',
         ];
     }
 }

@@ -75,6 +75,19 @@ function thaiDateParts(?string $date): ?array
     ];
 }
 
+// แปลงวันที่ (Y-m-d ฯลฯ) เป็นรูปแบบตัวเลข dd.mm.yyyy (เช่น 05.06.2026) สำหรับข้อความ Meta ใน Detail Page
+// คืนค่า null หาก $date ว่างหรือแปลงไม่ได้ (View ต้องเช็คก่อนแสดงผล)
+function formatDateNumeric(?string $date): ?string
+{
+    if ($date === null || $date === '') {
+        return null;
+    }
+
+    $timestamp = strtotime($date);
+
+    return $timestamp !== false ? date('d.m.Y', $timestamp) : null;
+}
+
 // แปลงขนาดไฟล์ (Byte) เป็นข้อความอ่านง่าย (KB/MB) สำหรับ Documents ฝั่ง Public
 // คืนค่า '-' หาก $bytes เป็น null (ไม่ทราบขนาดไฟล์)
 function formatFileSize(?int $bytes): string

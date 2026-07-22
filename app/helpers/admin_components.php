@@ -151,7 +151,7 @@ function renderAdminPagination(int $currentPage, int $totalPages, int $total, ca
 {
     ?>
     <div class="pagination">
-        <span>ทั้งหมด <?= (int) $total ?> รายการ</span>
+        <span>ທັງໝົດ <?= (int) $total ?> ລາຍການ</span>
         <div class="pagination-links">
             <?php for ($p = 1; $p <= $totalPages; $p++): ?>
                 <a href="<?= e($buildUrl($p)) ?>" class="<?= $p === $currentPage ? 'active' : '' ?>"><?= $p ?></a>
@@ -189,7 +189,7 @@ function renderModal(string $id, string $title, callable $renderBody, string $fo
         <div class="admin-modal-dialog">
             <div class="admin-modal-head">
                 <h2 id="<?= e($id) ?>-title"><?= e($title) ?></h2>
-                <button type="button" class="admin-modal-close" data-modal-close aria-label="ปิด"><?= icon('close', 18) ?></button>
+                <button type="button" class="admin-modal-close" data-modal-close aria-label="ປິດ"><?= icon('close', 18) ?></button>
             </div>
             <div class="admin-modal-body">
                 <?php $renderBody(); ?>
@@ -211,14 +211,14 @@ function renderConfirmDialog(): void
     <div class="admin-modal admin-confirm-dialog" id="adminConfirmDialog" role="alertdialog" aria-modal="true" aria-labelledby="adminConfirmTitle" aria-describedby="adminConfirmMessage" hidden>
         <div class="admin-modal-dialog">
             <div class="admin-modal-head">
-                <h2 id="adminConfirmTitle"><?= icon('alert-triangle', 20) ?> ยืนยันการทำรายการ</h2>
+                <h2 id="adminConfirmTitle"><?= icon('alert-triangle', 20) ?> ຢືນຢັນການດຳເນີນການ</h2>
             </div>
             <div class="admin-modal-body">
                 <p id="adminConfirmMessage"></p>
             </div>
             <div class="admin-modal-footer">
-                <button type="button" class="btn-secondary" data-confirm-cancel>ยกเลิก</button>
-                <button type="button" class="btn-primary" data-confirm-accept>ยืนยัน</button>
+                <button type="button" class="btn-secondary" data-confirm-cancel>ຍົກເລີກ</button>
+                <button type="button" class="btn-primary" data-confirm-accept>ຢືນຢັນ</button>
             </div>
         </div>
     </div>

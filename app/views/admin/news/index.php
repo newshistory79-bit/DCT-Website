@@ -40,10 +40,10 @@ $sortIndicator = function (string $column) use ($sort, $direction): string {
 
 $columns = [
     'id'            => 'ID',
-    'title'         => 'หัวข้อข่าว',
-    'activity_date' => 'วันที่กิจกรรม',
-    'status'        => 'สถานะ',
-    'created_at'    => 'วันที่สร้าง',
+    'title'         => 'ຫົວຂໍ້ຂ່າວ',
+    'activity_date' => 'ວັນທີກິດຈະກຳ',
+    'status'        => 'ສະຖານະ',
+    'created_at'    => 'ວັນທີສ້າງ',
 ];
 
 // Page Header — ดึง title/description จาก Single Source of Truth เดียวกับ Sidebar/Breadcrumb (Stage DS2/DS3 Pattern)
@@ -69,7 +69,7 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/news/index.php
         <?php renderAdminPageHeader(
             $currentMenuItem['title'],
             $currentMenuItem['description'],
-            can('news', 'create') ? [['label' => '+ เพิ่มข่าว', 'url' => baseUrl('admin/news/form.php')]] : [],
+            can('news', 'create') ? [['label' => '+ ເພີ່ມຂ່າວສານ', 'url' => baseUrl('admin/news/form.php')]] : [],
             '<span class="stat-icon stat-icon-blue">' . icon('news', 22) . '</span>'
         ); ?>
 
@@ -83,41 +83,41 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/news/index.php
         <form method="get" action="<?= e(baseUrl('admin/news/index.php')) ?>" class="filter-bar">
             <div class="search-input-icon">
                 <?= icon('search', 16) ?>
-                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ค้นหาหัวข้อข่าวหรือรายละเอียด" aria-label="ค้นหาข่าว">
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາຫົວຂໍ້ຂ່າວຫລືລາຍລະອຽດ" aria-label="ຄົ້ນຫາຂ່າວສານ">
             </div>
 
             <select name="status">
-                <option value="">สถานะทั้งหมด</option>
+                <option value="">ສະຖານະທັງໝົດ</option>
                 <option value="Published" <?= $status === 'Published' ? 'selected' : '' ?>>Published</option>
                 <option value="Draft" <?= $status === 'Draft' ? 'selected' : '' ?>>Draft</option>
             </select>
 
             <select name="per_page">
                 <?php foreach ($perPageOptions as $option): ?>
-                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> รายการ/หน้า</option>
+                    <option value="<?= (int) $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= (int) $option ?> ລາຍການ/ໜ້າ</option>
                 <?php endforeach; ?>
             </select>
 
-            <button type="submit" class="btn-secondary">ค้นหา</button>
+            <button type="submit" class="btn-secondary">ຄົ້ນຫາ</button>
         </form>
 
         <?php if (empty($newsItems)): ?>
             <?php renderAdminEmptyState(
-                'ไม่พบข้อมูลข่าว ลองปรับคำค้นหาหรือตัวกรอง',
+                'ບໍ່ພົບຂໍ້ມູນຂ່າວ ລອງປັບຄຳຄົ້ນຫາຫລືຕົວກອງ',
                 'news',
-                can('news', 'create') ? ['url' => baseUrl('admin/news/form.php'), 'label' => '+ เพิ่มข่าว'] : null
+                can('news', 'create') ? ['url' => baseUrl('admin/news/form.php'), 'label' => '+ ເພີ່ມຂ່າວສານ'] : null
             ); ?>
         <?php else: ?>
             <div class="table-wrapper">
                 <table class="data-table data-table-zebra">
                     <thead>
                         <tr>
-                            <th>รูป</th>
+                            <th>ຮູບ</th>
                             <?php foreach ($columns as $col => $label): ?>
                                 <th><a href="<?= e($sortUrl($col)) ?>"><?= e($label) . $sortIndicator($col) ?></a></th>
                             <?php endforeach; ?>
-                            <th>รายละเอียด</th>
-                            <th>จัดการ</th>
+                            <th>ລາຍລະອຽດ</th>
+                            <th>ຈັດການ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,16 +139,16 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/news/index.php
                                 <td class="truncate"><?= e(mb_strimwidth((string) $item['detail'], 0, 60, '...')) ?></td>
                                 <td class="actions">
                                     <?php if (can('news', 'edit')): ?>
-                                        <a href="<?= e(baseUrl('admin/news/form.php?id=' . $item['ID'])) ?>" class="btn-icon" title="แก้ไข" aria-label="แก้ไขข่าว <?= e($itemTitle) ?>"><?= icon('edit', 16) ?></a>
+                                        <a href="<?= e(baseUrl('admin/news/form.php?id=' . $item['ID'])) ?>" class="btn-icon" title="ແກ້ໄຂ" aria-label="ແກ້ໄຂຂ່າວ <?= e($itemTitle) ?>"><?= icon('edit', 16) ?></a>
                                     <?php endif; ?>
                                     <?php if (can('news', 'delete')): ?>
                                         <form method="post"
                                               action="<?= e(baseUrl('admin/news/delete.php')) ?>"
                                               class="inline-form"
-                                              data-confirm-modal="ยืนยันการลบข่าว &quot;<?= e($itemTitle) ?>&quot; ใช่หรือไม่?">
+                                              data-confirm-modal="ຢືນຢັນການລຶບຂ່າວ &quot;<?= e($itemTitle) ?>&quot; ແທ້ບໍ?">
                                             <input type="hidden" name="id" value="<?= (int) $item['ID'] ?>">
                                             <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
-                                            <button type="submit" class="btn-icon btn-danger" title="ลบ" aria-label="ลบข่าว <?= e($itemTitle) ?>"><?= icon('trash', 16) ?></button>
+                                            <button type="submit" class="btn-icon btn-danger" title="ລຶບ" aria-label="ລຶບຂ່າວ <?= e($itemTitle) ?>"><?= icon('trash', 16) ?></button>
                                         </form>
                                     <?php endif; ?>
                                     <?php if (!can('news', 'edit') && !can('news', 'delete')): ?>

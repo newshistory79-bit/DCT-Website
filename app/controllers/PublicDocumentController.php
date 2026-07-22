@@ -29,14 +29,14 @@ class PublicDocumentController extends BaseController
         );
 
         $this->render('public/documents/index', [
-            'pageTitle'       => 'ดาวน์โหลดเอกสาร',
-            'metaDescription' => 'รวมเอกสาร แบบฟอร์ม และไฟล์เผยแพร่จาก ' . APP_NAME,
-            'metaKeywords'    => 'เอกสาร, ดาวน์โหลด, แบบฟอร์ม, ' . APP_NAME,
+            'pageTitle'       => 'ນິຕິກຳ',
+            'metaDescription' => 'ລວມເອກະສານ, ແບບຟອມ ແລະ ໄຟລ໌ເຜີຍແຜ່ຈາກ ' . APP_NAME,
+            'metaKeywords'    => 'ເອກະສານ, ດາວໂຫລດ, ແບບຟອມ, ' . APP_NAME,
             'ogType'          => 'website',
             'activeNav'       => 'documents',
             'breadcrumb'      => [
-                ['label' => 'หน้าแรก', 'url' => baseUrl('')],
-                ['label' => 'ดาวน์โหลดเอกสาร', 'url' => null],
+                ['label' => 'ຫນ້າຫຼັກ', 'url' => baseUrl('')],
+                ['label' => 'ນິຕິກຳ', 'url' => null],
             ],
             'documentItems'   => array_map([$this, 'mapDocumentToCard'], $result['data']),
             'total'           => $result['total'],
@@ -63,13 +63,7 @@ class PublicDocumentController extends BaseController
 
     private function formatPublishedDate(string $date): ?string
     {
-        $parts = thaiDateParts($date);
-
-        if ($parts === null) {
-            return null;
-        }
-
-        return $parts['day'] . ' ' . $parts['month'] . ' ' . $parts['year'];
+        return formatDateNumeric($date);
     }
 
     private static function uploadDirectory(): string
