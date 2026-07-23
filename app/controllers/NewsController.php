@@ -15,7 +15,7 @@ class NewsController extends BaseController
 {
     private const MODULE             = 'news';
     private const PER_PAGE_OPTIONS   = [10, 25, 50, 100];
-    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'jfif'];
     private const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const MAX_FILE_SIZE      = 2097152; // 2 MB
 

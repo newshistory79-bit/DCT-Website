@@ -66,8 +66,8 @@ $title  = $isEdit ? 'ແກ້ໄຂຂ່າວ' : 'ເພີ່ມຂ່າວ
                     </div>
                 <?php endif; ?>
                 <label for="image">ຮູບພາບປະກອບຂ່າວ</label>
-                <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp">
-                <small>ອະນຸຍາດສະເພາະໄຟລ໌ jpg, jpeg, png, webp ຂະໜາດບໍ່ເກີນ 2 MB</small>
+                <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png,.webp,.jfif">
+                <small>ອະນຸຍາດສະເພາະໄຟລ໌ jpg, jpeg, png, webp, jfif ຂະໜາດບໍ່ເກີນ 2 MB</small>
             <?php }, 'ຮູບພາບປະກອບຂ່າວ (ບໍ່ບັງຄັບ)'); ?>
 
             <?php renderAdminSectionCard('ສະຖານະ', function () use ($news): void { ?>
