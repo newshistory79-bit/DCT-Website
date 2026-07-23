@@ -44,12 +44,6 @@ $title  = $isEdit ? 'ແກ້ໄຂພະແນກ' : 'ເພີ່ມພະແ
             <?php endif; ?>
 
             <?php renderAdminSectionCard('ຂໍ້ມູນທົ່ວໄປ', function () use ($department): void { ?>
-                <label for="code">ລະຫັດພະແນກ</label>
-                <input type="text" id="code" name="code" maxlength="20" required
-                       pattern="[A-Z0-9\-]+" class="input-uppercase"
-                       value="<?= e($department['code'] ?? '') ?>">
-                <small>ອະນຸຍາດສະເພາະໂຕອັກສອນ A-Z, ໂຕເລກ 0-9 ແລະ ເຄື່ອງໝາຍ - ເທົ່ານັ້ນ</small>
-
                 <label for="name">ຊື່ພະແນກ</label>
                 <input type="text" id="name" name="name" maxlength="255" required
                        value="<?= e($department['name'] ?? '') ?>">

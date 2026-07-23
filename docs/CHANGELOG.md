@@ -346,3 +346,30 @@ Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไ
 - ไม่พบ Bug ใหม่ในรอบ Final Quality Review (Stage UI-6) จึงไม่มีการแก้โค้ดเพิ่มเติมนอกจาก Documentation
 
 Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไม่ Commit/Push ตามคำสั่ง)
+
+## Remove Department Code
+
+### Removed
+- คอลัมน์ `departments.code`, Generated Column `code_active`, UNIQUE INDEX `departments_code_active_unique` — ลบถาวรผ่าน `database/migrations/013_departments_drop_code.sql` (Executed, มี Backup ก่อน Execute)
+- Validation ทั้งหมดของ code (required/ความยาว/รูปแบบ A-Z0-9-/ตรวจซ้ำ) ใน `DepartmentController::validate()`
+- Method `DepartmentModel::codeExists()`
+- ช่องกรอกรหัสแผนกในฟอร์ม Admin, คอลัมน์รหัสแผนกในตาราง Admin List, การแสดงรหัสแผนกในหน้ารายละเอียด Public
+- Class CSS `.input-uppercase` (`crud.css`) — สร้างมาเฉพาะช่องรหัสแผนก กลายเป็น Dead CSS หลังลบช่องนี้
+
+### Changed
+- `DepartmentModel::SORTABLE_COLUMNS` เหลือ `id, name, status, created_at`
+- ค้นหาแผนก (Admin List + Public Search) เปลี่ยนจากค้นหาด้วย code หรือ name → ค้นหาด้วยชื่อแผนกเท่านั้น
+- Placeholder ช่องค้นหาใน Admin List: "ค้นหารหัสหลือชื่อแผนก" → "ค้นหาชื่อแผนก"
+
+### Not Affected (ตรวจสอบแล้ว)
+- Employees, News, Activities, Documents, Users, Dashboard, Public Home, Activity Log — ไม่มี Module ใดอ้างอิง Department Code (ไม่มี Foreign Key ผูกกับ `departments`)
+- ข้อความ Activity Log ของ Departments ใช้ชื่อแผนก (`$data['name']`) อยู่แล้วตั้งแต่เดิม ไม่ต้องแก้ไข
+
+### Testing
+- `php -l` PASS ทุกไฟล์ที่แก้ไข (Model/Controller/Views)
+- Model Regression ผ่าน PHP CLI กับฐานข้อมูลจริงหลัง Migration — 18/18 PASS: Create/Find/Update/SoftDelete ไม่มี code, nameExists, ค้นหาด้วยชื่อ, ป้องกัน SQL Injection ผ่าน keyword, Sort Whitelist ปฏิเสธ `code` และ fallback เป็น `id` อย่างปลอดภัย, ชื่อที่มี `<script>` ถูกเก็บ/ดึงคืนถูกต้อง (Escape เป็นหน้าที่ View Layer ผ่าน `e()` เดิม)
+- HTTP Smoke Test: `public/departments/index.php`, `public/departments/detail.php`, `public/search/index.php` → 200 ไม่มี PHP Warning/Notice/Fatal Error; Route Admin Departments (List/Form) → 302 Redirect ไปหน้า Login ตามปกติเมื่อไม่ได้ Authenticate (ยืนยัน Bootstrap/Controller ไม่ Fatal Error)
+- ข้อมูลจริงในฐานข้อมูล (13 แถว) ไม่เปลี่ยนแปลงหลัง Test เสร็จ (Insert/Update/Delete ทดสอบใช้แถวชั่วคราวที่ลบออกหลังทดสอบเสร็จทุกครั้ง)
+- Full HTTP Login + CRUD ผ่าน Session จริงไม่ได้ทดสอบรอบนี้ — รหัสผ่าน Admin ปัจจุบันถูกเปลี่ยนไปแล้วจาก Default ในการทดสอบรอบก่อนหน้า (`first_login = 0`) ไม่ทราบค่าปัจจุบัน และไม่ได้รับอนุญาตให้ Reset รหัสผ่านโดยไม่ขออนุมัติก่อน — ทดสอบ Logic ระดับ Model แทนแบบครบถ้วนทุก Method
+
+Status : รอผู้ใช้ตรวจสอบและอนุมัติ Commit/Push (ยังไม่ Commit/Push ตามคำสั่ง)

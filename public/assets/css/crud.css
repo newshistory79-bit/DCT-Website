@@ -735,12 +735,6 @@ button.is-loading {
    + Cross-module Audit Fixes)
    ============================================================ */
 
-/* Utility Class ใหม่ — แทนที่ Inline Style style="text-transform:uppercase" ที่พบใน departments/form.php
-   ระหว่างตรวจสอบ Audit (ช่องรหัสแผนกบังคับพิมพ์ตัวใหญ่) */
-.input-uppercase {
-    text-transform: uppercase;
-}
-
 /* ============================================================
    Design System v3 — Stage UI-1 (Additive Layer)
    ห้ามลบ/แก้ไข Selector เดิมด้านบน — Section นี้เพิ่ม Class ใหม่/เสริม Property เดิมเท่านั้น

@@ -174,24 +174,13 @@ class DepartmentController extends BaseController
             return null;
         }
 
-        $code        = trim((string) ($input['code'] ?? ''));
         $name        = trim((string) ($input['name'] ?? ''));
         $description = trim((string) ($input['description'] ?? ''));
         $status      = (string) ($input['status'] ?? '');
         $sortOrderRaw = trim((string) ($input['sort_order'] ?? '0'));
 
-        if ($code === '' || $name === '') {
-            $this->setFlashMessage('department_form_error', 'ກະລຸນາປ້ອນລະຫັດພະແນກ ແລະ ຊື່ພະແນກໃຫ້ຄົບຖ້ວນ');
-            return null;
-        }
-
-        if (mb_strlen($code) > 20) {
-            $this->setFlashMessage('department_form_error', 'ລະຫັດພະແນກຕ້ອງບໍ່ເກີນ 20 ໂຕອັກສອນ');
-            return null;
-        }
-
-        if (!preg_match('/^[A-Z0-9\-]+$/', $code)) {
-            $this->setFlashMessage('department_form_error', 'ລະຫັດພະແນກຕ້ອງເປັນໂຕອັກສອນ A-Z ໂຕເລກ 0-9 ແລະ ເຄື່ອງໝາຍ - ເທົ່ານັ້ນ');
+        if ($name === '') {
+            $this->setFlashMessage('department_form_error', 'ກະລຸນາປ້ອນຊື່ພະແນກໃຫ້ຄົບຖ້ວນ');
             return null;
         }
 
@@ -217,18 +206,12 @@ class DepartmentController extends BaseController
             return null;
         }
 
-        if ($model->codeExists($code, $excludeId)) {
-            $this->setFlashMessage('department_form_error', 'ລະຫັດພະແນກນີ້ຖືກນຳໃຊ້ແລ້ວ');
-            return null;
-        }
-
         if ($model->nameExists($name, $excludeId)) {
             $this->setFlashMessage('department_form_error', 'ຊື່ພະແນກນີ້ຖືກນຳໃຊ້ແລ້ວ');
             return null;
         }
 
         return [
-            'code'        => $code,
             'name'        => $name,
             'description' => $description !== '' ? $description : null,
             'status'      => $status,

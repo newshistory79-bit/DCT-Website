@@ -40,7 +40,6 @@ $sortIndicator = function (string $column) use ($sort, $direction): string {
 
 $columns = [
     'id'         => 'ID',
-    'code'       => 'ລະຫັດພະແນກ',
     'name'       => 'ຊື່ພະແນກ',
     'status'     => 'ສະຖານະ',
     'created_at' => 'ວັນທີສ້າງ',
@@ -82,7 +81,7 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/departments/in
         <form method="get" action="<?= e(baseUrl('admin/departments/index.php')) ?>" class="filter-bar">
             <div class="search-input-icon">
                 <?= icon('search', 16) ?>
-                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາລະຫັດຫລືຊື່ພະແນກ" aria-label="ຄົ້ນຫາລະຫັດຫລືຊື່ພະແນກ">
+                <input type="text" name="keyword" value="<?= e($keyword) ?>" placeholder="ຄົ້ນຫາຊື່ພະແນກ" aria-label="ຄົ້ນຫາຊື່ພະແນກ">
             </div>
 
             <select name="status">
@@ -122,7 +121,6 @@ $currentMenuItem = findAdminMenuItemByUrl($adminMenuItems, 'admin/departments/in
                         <?php foreach ($departments as $dept): ?>
                             <tr>
                                 <td><?= (int) $dept['id'] ?></td>
-                                <td><?= e($dept['code']) ?></td>
                                 <td><?= e($dept['name']) ?></td>
                                 <td><?php renderBadge($dept['status'], $dept['status'] === 'Active' ? 'success' : 'muted'); ?></td>
                                 <td><?= e($dept['created_at']) ?></td>

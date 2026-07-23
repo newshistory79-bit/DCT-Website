@@ -11,10 +11,6 @@
 
             <h1 class="detail-title"><?= e($department['name']) ?></h1>
 
-            <?php renderDetailMeta([
-                ['icon' => 'department', 'text' => !empty($department['code']) ? 'ລະຫັດພະແນກ: ' . $department['code'] : ''],
-            ]); ?>
-
             <div class="detail-body">
                 <?php if (!empty($department['description'])): ?>
                     <p><?= nl2br(e($department['description'])) ?></p>

@@ -2,8 +2,8 @@
 
 **Project:** TCSP Administration System (Department of Technology and Communication of Savannakhet Province)
 **Architecture:** PHP MVC (Native PHP 8+) + PDO + MariaDB 10.4.x
-**Current Phase:** Admin Panel Design System v3 (Stage UI-1–UI-6, Final Quality Review) Completed ✅
-**Next Phase:** รอผู้ใช้อนุมัติ Commit/Push Admin Panel Design System v2 (DS1–DS5) + v3 (UI-1–UI-6) จากนั้นดำเนินการตาม Task ถัดไปที่ผู้ใช้กำหนด
+**Current Phase:** Remove Department Code (ลบ `code`/`code_active` ออกจากตาราง `departments` ถาวร) Completed ✅
+**Next Phase:** รอผู้ใช้อนุมัติ Commit/Push งานนี้ รวมถึง Admin Panel Design System v2 (DS1–DS5) + v3 (UI-1–UI-6) ที่ค้างอยู่ก่อนหน้า จากนั้นดำเนินการตาม Task ถัดไปที่ผู้ใช้กำหนด
 
 ---
 
@@ -645,10 +645,34 @@ Status : รอผู้ใช้อนุมัติ Commit/Push (ยังไ
 
 ---
 
+## Remove Department Code
+
+ยกเลิกการใช้งาน Department Code (`code`) ทั้งระบบอย่างถาวรตามคำขอผู้ใช้ ดำเนินการครบ 4 Stage ตาม Workflow ที่ผู้ใช้กำหนด
+
+### Stage 1 — Impact Analysis
+วิเคราะห์ผลกระทบครบ 9 หัวข้อ (Database/Model/Controller/View/Helper/Other Module/Activity Log/Documentation/Regression) — สรุป: ไม่มี Foreign Key ผูกกับ `departments`, ไม่มี Module อื่นพึ่งพา code, จุดที่ต้องแก้จำกัดเฉพาะ Departments Module (5 ไฟล์โค้ด + 1 CSS) — ผู้ใช้อนุมัติให้ดำเนินการต่อ
+
+### Stage 2 — Migration Proposal & Execute
+สร้าง `database/migrations/013_departments_drop_code.sql` (DROP INDEX `departments_code_active_unique` → DROP COLUMN `code_active` → DROP COLUMN `code`) พบระหว่างวิเคราะห์ว่าคอลัมน์ `code` เดิมเป็น `NOT NULL` ไม่มี Default — หากแก้โค้ดก่อน Execute Migration จะทำให้ Create/Edit พังทันที จึงหยุดรายงานและขอการตัดสินใจจากผู้ใช้ — **ผู้ใช้เลือกให้ Execute Migration ก่อนเข้า Stage 3** จึง Backup ตาราง `departments` ทั้ง 13 แถวไว้ที่ `database/backups/departments_backup_20260723_pre_drop_code.sql` แล้ว Execute จริง ยืนยันด้วย `SHOW COLUMNS`/`SHOW INDEX` ว่าลบสำเร็จและข้อมูลยังครบ 13 แถว
+
+### Stage 3 — Implementation
+แก้ไข `DepartmentModel.php` (SELECT/INSERT/UPDATE/SORTABLE_COLUMNS/buildWhere ลบ code, ลบ method `codeExists()`), `DepartmentController.php` (ลบ Validation/Flash Message ของ code ทั้งหมดใน `validate()`), `admin/departments/form.php` (ลบช่องกรอกรหัสแผนก), `admin/departments/index.php` (ลบคอลัมน์ตาราง + ปรับ placeholder ค้นหา), `public/departments/detail.php` (ลบการแสดงรหัสแผนก), `crud.css` (ลบ `.input-uppercase` ที่กลายเป็น Dead CSS) — `php -l` PASS ทุกไฟล์, ตรวจ Grep ทั้งโปรเจกต์ยืนยันไม่มี `code`/`ລະຫັດພະແນກ` หลงเหลือ
+
+### Stage 4 — Regression Test
+- Model Regression ผ่าน PHP CLI กับฐานข้อมูลจริงหลัง Migration: 18/18 PASS (Create/Find/Update/SoftDelete ไม่มี code, nameExists, ค้นหาด้วยชื่อ, SQL Injection-style keyword ปลอดภัย, Sort Whitelist ปฏิเสธ `code` fallback เป็น `id`, ชื่อที่มี `<script>` เก็บ/ดึงคืนถูกต้อง)
+- HTTP Smoke Test: หน้า Public Departments List/Detail/Search → 200 ไม่มี PHP Warning/Notice/Fatal Error; Route Admin Departments → 302 Redirect Login ตามปกติเมื่อไม่ได้ Authenticate
+- ข้อมูลจริง 13 แถวไม่เปลี่ยนแปลงหลังทดสอบ (ทดสอบด้วยแถวชั่วคราวที่ลบออกทุกครั้ง)
+- **ข้อจำกัด**: ไม่ได้ทดสอบ Full HTTP Login + CRUD ผ่าน Session จริง เพราะรหัสผ่าน Admin ปัจจุบันถูกเปลี่ยนไปแล้วจาก Default (`first_login = 0`) ในการทดสอบรอบก่อนหน้า และไม่ได้รับอนุญาตให้ Reset โดยไม่ขออนุมัติก่อน — ใช้การทดสอบระดับ Model แทนแบบครบทุก Method
+- Documentation: อัปเดต `docs/DATABASE.md` (Schema ปัจจุบันของ `departments`), `docs/CHANGELOG.md` (Section ใหม่ "Remove Department Code"), `docs/PROJECT_STATUS.md` (Section นี้) — ไม่แก้ประวัติเดิมของ Phase 4/DS4 ที่เคยกล่าวถึง code
+
+Status : Completed ✅ — รอผู้ใช้ตรวจสอบและอนุมัติ Commit/Push (ยังไม่ Commit/Push ตามคำสั่ง)
+
+---
+
 ## Next Task
 
 รอคำสั่งอนุมัติ Commit/Push Admin Panel Design System v2 (Stage DS1–DS5) และ v3 (Stage UI-1–UI-6) จากผู้ใช้ จากนั้นดำเนินการตาม Task ถัดไปที่ผู้ใช้กำหนด
 
 ---
 
-**Last Updated:** 2026-07-21 — Admin Panel Design System v3 (Stage UI-1–UI-6) Completed
+**Last Updated:** 2026-07-23 — Remove Department Code Completed (Migration Executed, Regression PASS)
