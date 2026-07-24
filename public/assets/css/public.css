@@ -1032,6 +1032,39 @@ Badge / Empty State / Breadcrumb / Pagination
 /* ============================================================
    About Page (ພາລະບົດບາດຂອງພະແນກ)
    ============================================================ */
+.about-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 24px;
+}
+
+.about-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    color: var(--color-text);
+    margin: 0 0 20px;
+}
+
+.about-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.about-doc-title {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.6;
+    color: var(--color-text);
+    margin: 0;
+}
+
 .about-org-chart {
     border-radius: var(--radius-lg);
     overflow: hidden;
