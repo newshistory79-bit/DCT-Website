@@ -53,6 +53,7 @@ class PublicDocumentController extends BaseController
         return [
             'title'        => $item['title'],
             'description'  => $item['description'],
+            'category'     => $item['category'] ?? null,
             'extension'    => (string) ($item['file_extension'] ?? ''),
             'sizeLabel'    => formatFileSize($item['file_size'] !== null ? (int) $item['file_size'] : null),
             'dateLabel'    => $this->formatPublishedDate((string) ($item['created_at'] ?? '')),

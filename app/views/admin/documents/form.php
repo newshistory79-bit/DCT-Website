@@ -51,6 +51,13 @@ $title  = $isEdit ? 'ແກ້ໄຂເອກະສານ' : 'ເພີ່ມເ
 
                 <label for="description">ລາຍລະອຽດ</label>
                 <textarea id="description" name="description" rows="4"><?= e((string) ($document['description'] ?? '')) ?></textarea>
+
+                <label for="category">ປະເພດເອກະສານ</label>
+                <select id="category" name="category">
+                    <?php foreach (\App\Models\DocumentModel::CATEGORIES as $value => $label): ?>
+                        <option value="<?= e($value) ?>" <?= ($document['category'] ?? 'law') === $value ? 'selected' : '' ?>><?= e($label) ?></option>
+                    <?php endforeach; ?>
+                </select>
             <?php }, 'ຊື່ ແລະ ລາຍລະອຽດຂອງເອກະສານ'); ?>
 
             <?php renderAdminSectionCard('ສະຖານະ', function () use ($document): void { ?>

@@ -276,6 +276,7 @@ class DocumentController extends BaseController
 
         $title       = trim((string) ($input['title'] ?? ''));
         $description = trim((string) ($input['description'] ?? ''));
+        $category    = (string) ($input['category'] ?? '');
         $status      = (string) ($input['status'] ?? '');
 
         if ($title === '') {
@@ -288,6 +289,11 @@ class DocumentController extends BaseController
             return null;
         }
 
+        if (!array_key_exists($category, DocumentModel::CATEGORIES)) {
+            $this->setFlashMessage('document_form_error', 'ກະລຸນາເລືອກປະເພດເອກະສານໃຫ້ຖືກຕ້ອງ');
+            return null;
+        }
+
         if (!in_array($status, ['Draft', 'Published'], true)) {
             $this->setFlashMessage('document_form_error', 'ສະຖານະບໍ່ຖືກຕ້ອງ ຕ້ອງເປັນ Draft ຫລື Published ເທົ່ານັ້ນ');
             return null;
@@ -296,6 +302,7 @@ class DocumentController extends BaseController
         return [
             'title'       => $title,
             'description' => $description !== '' ? $description : null,
+            'category'    => $category,
             'status'      => $status,
         ];
     }

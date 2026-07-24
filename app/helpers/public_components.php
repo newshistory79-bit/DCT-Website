@@ -268,13 +268,20 @@ function renderBackToList(string $url, string $label): void
 // ]
 function renderDocumentCard(array $doc): void
 {
-    $description = $doc['description'] ?? null;
-    $dateLabel   = $doc['dateLabel'] ?? null;
-    $downloadUrl = $doc['downloadUrl'] ?? null;
+    $description   = $doc['description'] ?? null;
+    $dateLabel     = $doc['dateLabel'] ?? null;
+    $downloadUrl   = $doc['downloadUrl'] ?? null;
+    $categoryValue = $doc['category'] ?? null;
+    // Resolve Label ของประเภทเอกสารภายใน Component นี้จุดเดียว (Single Source of Truth: DocumentModel::CATEGORIES)
+    // ไม่มี category ส่งมา (เช่น จากหน้า Search ที่ยังไม่ได้ Map ฟิลด์นี้) = ไม่แสดง Badge เพื่อ Backward Compatible
+    $categoryLabel = $categoryValue !== null ? (\App\Models\DocumentModel::CATEGORIES[$categoryValue] ?? null) : null;
     ?>
-    <div class="card doc-card">
+    <div class="card doc-card" data-category="<?= e((string) $categoryValue) ?>">
         <div class="card-thumb">
             <span class="badge doc-ext-badge">.<?= e(strtoupper($doc['extension'])) ?></span>
+            <?php if ($categoryLabel !== null): ?>
+                <span class="badge doc-ext-badge"><?= e($categoryLabel) ?></span>
+            <?php endif; ?>
         </div>
         <div class="card-body">
             <h3 class="card-title"><?= e($doc['title']) ?></h3>

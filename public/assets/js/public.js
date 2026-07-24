@@ -9,6 +9,7 @@ function initNavigation() {
     initNavToggle();
     initHeroSlider();
     initBackLinks();
+    initDocumentFilter();
 }
 
 // ปุ่ม "กลับหน้าก่อนหน้า" (เช่นหน้า 404) - ใช้ History กลับไปหน้าก่อน ถ้าไม่มีประวัติให้ไปหน้าแรกแทน
@@ -105,4 +106,88 @@ function initHeroSlider() {
     slider.addEventListener('mouseleave', start);
 
     start();
+}
+
+// ============================================================
+// Public Documents — Filter ตามประเภทเอกสาร (Client-side ล้วน กรองเฉพาะการ์ดที่ Render อยู่ในหน้าปัจจุบัน)
+// ============================================================
+function initDocumentFilter() {
+    var container    = document.querySelector('.filter-buttons');
+    var grid          = document.getElementById('documentGrid');
+    var emptyMessage  = document.getElementById('documentFilterEmpty');
+
+    if (!container || !grid) {
+        return;
+    }
+
+    var buttons = container.querySelectorAll('.filter-button');
+    var cards   = grid.querySelectorAll('[data-category]');
+
+    function countFor(filter) {
+        if (filter === 'all') {
+            return cards.length;
+        }
+
+        var total = 0;
+
+        cards.forEach(function (card) {
+            if (card.getAttribute('data-category') === filter) {
+                total += 1;
+            }
+        });
+
+        return total;
+    }
+
+    // นับจำนวนการ์ดต่อหมวดจากข้อมูลที่ Render อยู่จริงในหน้านี้ (ไม่ยิง Query ใหม่)
+    buttons.forEach(function (button) {
+        var countEl = button.querySelector('.filter-count');
+
+        if (countEl) {
+            countEl.textContent = String(countFor(button.getAttribute('data-filter')));
+        }
+    });
+
+    cards.forEach(function (card) {
+        card.addEventListener('transitionend', function (event) {
+            // ใช้ style.display แทน .hidden — .card กำหนด display:flex ไว้อยู่แล้วใน CSS
+            // ซึ่งมี Priority สูงกว่า [hidden] ของ User-Agent Stylesheet เสมอ ทำให้ .hidden ไม่มีผลจริง
+            if (event.propertyName === 'opacity' && card.classList.contains('doc-card-fade-out')) {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    function applyFilter(filter) {
+        var visibleCount = 0;
+
+        cards.forEach(function (card) {
+            var matches = filter === 'all' || card.getAttribute('data-category') === filter;
+
+            if (matches) {
+                card.style.display = '';
+                // ต้องรอ 1 Frame ก่อนเอา Class ออก ไม่งั้น Browser จะไม่เห็นการเปลี่ยนจาก opacity:0 -> 1 เป็น Transition (Reflow ก่อนเสมอ)
+                window.requestAnimationFrame(function () {
+                    card.classList.remove('doc-card-fade-out');
+                });
+                visibleCount += 1;
+            } else {
+                card.classList.add('doc-card-fade-out');
+            }
+        });
+
+        if (emptyMessage) {
+            emptyMessage.hidden = visibleCount > 0;
+        }
+    }
+
+    buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            buttons.forEach(function (btn) {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+            applyFilter(button.getAttribute('data-filter'));
+        });
+    });
 }

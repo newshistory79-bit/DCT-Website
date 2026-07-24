@@ -17,6 +17,15 @@ class DocumentModel extends BaseModel
         'status'     => 'status',
     ];
 
+    // Whitelist + Label ประเภทเอกสาร — Single Source of Truth ใช้ร่วมกันทั้ง Admin Dropdown/Validation และ Public Badge
+    // เพิ่มประเภทใหม่ในอนาคตแค่แก้ Array นี้ (คอลัมน์เป็น VARCHAR ไม่ใช่ ENUM จึงไม่ต้อง Migration ซ้ำ)
+    public const CATEGORIES = [
+        'law'       => 'ກົດໝາຍ',
+        'decree'    => 'ດຳລັດ',
+        'agreement' => 'ຂໍ້ຕົກລົງ',
+        'guideline' => 'ຄຳແນະນຳ',
+    ];
+
     public function paginate(array $filters, string $sortKey, string $sortDirection, int $page, int $perPage): array
     {
         $sortColumn    = self::SORTABLE_COLUMNS[$sortKey] ?? 'id';
@@ -31,7 +40,7 @@ class DocumentModel extends BaseModel
         $page   = max(1, $page);
         $offset = ($page - 1) * $perPage;
 
-        $sql = 'SELECT id, title, description, file_name, original_file_name, file_extension, file_size, status, created_at, updated_at
+        $sql = 'SELECT id, title, description, category, file_name, original_file_name, file_extension, file_size, status, created_at, updated_at
                 FROM documents
                 ' . $where . '
                 ORDER BY `' . $sortColumn . '` ' . $sortDirection . '
@@ -56,7 +65,7 @@ class DocumentModel extends BaseModel
     public function find(int $id): ?array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, title, description, file_name, original_file_name, file_extension, file_size, status, created_at, updated_at
+            'SELECT id, title, description, category, file_name, original_file_name, file_extension, file_size, status, created_at, updated_at
              FROM documents
              WHERE id = :id AND deleted_at IS NULL
              LIMIT 1'
@@ -71,12 +80,13 @@ class DocumentModel extends BaseModel
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO documents (title, description, file_name, original_file_name, file_extension, file_size, status)
-             VALUES (:title, :description, :file_name, :original_file_name, :file_extension, :file_size, :status)'
+            'INSERT INTO documents (title, description, category, file_name, original_file_name, file_extension, file_size, status)
+             VALUES (:title, :description, :category, :file_name, :original_file_name, :file_extension, :file_size, :status)'
         );
         $stmt->execute([
             'title'              => $data['title'],
             'description'        => $data['description'],
+            'category'           => $data['category'],
             'file_name'          => $data['file_name'],
             'original_file_name' => $data['original_file_name'],
             'file_extension'     => $data['file_extension'],
@@ -91,7 +101,7 @@ class DocumentModel extends BaseModel
     {
         $stmt = $this->db->prepare(
             'UPDATE documents
-             SET title = :title, description = :description, file_name = :file_name,
+             SET title = :title, description = :description, category = :category, file_name = :file_name,
                  original_file_name = :original_file_name, file_extension = :file_extension,
                  file_size = :file_size, status = :status
              WHERE id = :id AND deleted_at IS NULL'
@@ -100,6 +110,7 @@ class DocumentModel extends BaseModel
         return $stmt->execute([
             'title'              => $data['title'],
             'description'        => $data['description'],
+            'category'           => $data['category'],
             'file_name'          => $data['file_name'],
             'original_file_name' => $data['original_file_name'],
             'file_extension'     => $data['file_extension'],

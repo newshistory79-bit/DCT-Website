@@ -647,7 +647,7 @@ Card Grid (News / Legislation / Gallery / Documents / Departments / Employees)
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
     line-height: normal;
 }
 
@@ -669,6 +669,8 @@ a.card {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
     color: var(--color-primary);
     overflow: hidden;
 }
@@ -813,6 +815,66 @@ Badge / Empty State / Breadcrumb / Pagination
 
 .text-muted {
     color: var(--color-text-muted);
+}
+
+/* ============================================================
+   Document Category Filter (Public Documents — Client-side Filter)
+   ============================================================ */
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0 24px;
+}
+
+.filter-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
+    color: var(--color-primary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-button:hover {
+    border-color: var(--color-primary);
+}
+
+.filter-button.active {
+    background: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent-light);
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.filter-button.active .filter-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: var(--color-white);
+}
+
+.doc-card-fade-out {
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* ============================================================
